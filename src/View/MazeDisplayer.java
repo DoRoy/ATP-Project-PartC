@@ -13,8 +13,11 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.URL;
@@ -48,11 +51,21 @@ public class MazeDisplayer extends Canvas {
     }
 
     public void setCharacterPosition(int row, int column) {
+        if(maze.getCharAt(row,column) == 'E'){
+           // String musicFile = "StayTheNight.mp3";     // For example
+//
+           // Media sound = new Media(new File(musicFile).toURI().toString());
+           // MediaPlayer mediaPlayer = new MediaPlayer(sound);
+           // mediaPlayer.play();
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setContentText(String.format("Congratulations!!"));
+            alert.show();
+        }
         if (maze.getCharAt(row,column) == '0' || maze.getCharAt(row,column) == 'S') {
             characterPositionRow = row;
             characterPositionColumn = column;
-            redraw();
         }
+        redraw();
     }
 
 
@@ -85,7 +98,7 @@ public class MazeDisplayer extends Canvas {
                 graphicsContext2D.drawImage(characterImage, characterPositionColumn * cellHeight, characterPositionRow * cellWidth, cellHeight, cellWidth);
 
                 Image goalImage = new Image(new FileInputStream(ImageFileNameGoal.get()));
-                graphicsContext2D.drawImage(goalImage, goalPosition.getRowIndex() * cellHeight, goalPosition.getColumnIndex() * cellWidth, cellHeight, cellWidth);
+                graphicsContext2D.drawImage(goalImage, goalPosition.getColumnIndex() * cellHeight, goalPosition.getRowIndex() * cellWidth, cellHeight, cellWidth);
 
             } catch (FileNotFoundException e) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);

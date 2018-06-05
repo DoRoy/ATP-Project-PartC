@@ -85,7 +85,7 @@
     <center>
         <Pane BorderPane.alignment="CENTER">
             <children>
-                <MazeDisplayer fx:id="mazeDisplayer" height="600.0" imageFileNameCharacter="Resources/Characters/Crash_front.jpg" imageFileNameGoal="Resources/Characters/Crash_crystal.png" imageFileNameWall="Resources/Images/wall3.jpg" width="600.0" />
+                <MazeDisplayer fx:id="mazeDisplayer" height="600.0" imageFileNameCharacter="Resources/Characters/Crash_front.jpg" imageFileNameGoal="Resources/Characters/Crash_crystal.png" imageFileNameWall="Resources/Characters/Crash_box1.png" width="600.0" />
             </children>
             <padding>
                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
