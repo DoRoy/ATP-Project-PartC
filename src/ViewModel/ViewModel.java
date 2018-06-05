@@ -11,6 +11,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -28,6 +29,7 @@ public class ViewModel implements Initializable {
     public javafx.scene.control.TextField txtfld_columnsNum;
     public Label lbl_characterRow;
     public Label lbl_characterColumn;
+    public Button solve_btn;
 
 
     public Maze getNewMaze(int row, int col) {
@@ -40,7 +42,12 @@ public class ViewModel implements Initializable {
     public void generateMaze() {
         int rows = Integer.valueOf(txtfld_rowsNum.getText());
         int columns = Integer.valueOf(txtfld_columnsNum.getText());
-        this.mazeDisplayer.setMaze(getNewMaze(rows,columns),rows,columns);
+        Maze maze = getNewMaze(rows,columns);
+        CharacterRow.set(String.valueOf(maze.getStartPosition().getRowIndex()));
+        CharacterColumn.set(String.valueOf(maze.getStartPosition().getColumnIndex()));
+        this.mazeDisplayer.setMaze(maze,rows,columns);
+
+        solve_btn.setVisible(true);
     }
 
     private void showAlert(String alertMessage) {
@@ -59,21 +66,26 @@ public class ViewModel implements Initializable {
         int characterRowNewPosition = characterRow;
         int characterColumnNewPosition = characterColumn;
 
+
         if (keyEvent.getCode() == KeyCode.UP) {
             characterRowNewPosition = characterRow - 1;
             characterColumnNewPosition = characterColumn;
+            mazeDisplayer.setImageFileNameCharacter("Resources/Characters/Crash_back.jpg");
         }
         else if (keyEvent.getCode() == KeyCode.DOWN) {
             characterRowNewPosition = characterRow + 1;
             characterColumnNewPosition = characterColumn;
+            mazeDisplayer.setImageFileNameCharacter("Resources/Characters/Crash_front.jpg");
         }
         else if (keyEvent.getCode() == KeyCode.RIGHT) {
             characterRowNewPosition = characterRow;
             characterColumnNewPosition = characterColumn+1;
+            mazeDisplayer.setImageFileNameCharacter("Resources/Characters/Crash_right.jpg");
         }
         else if (keyEvent.getCode() == KeyCode.LEFT) {
             characterRowNewPosition = characterRow;
             characterColumnNewPosition = characterColumn -1;
+            mazeDisplayer.setImageFileNameCharacter("Resources/Characters/Crash_left.jpg");
         }
         else if (keyEvent.getCode() == KeyCode.HOME){
             characterRowNewPosition = 0;
