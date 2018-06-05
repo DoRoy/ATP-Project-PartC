@@ -19,9 +19,7 @@ import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-/**
- * Created by Aviadjo on 3/9/2017.
- */
+
 public class MazeDisplayer extends Canvas {
 
     private Maze maze;

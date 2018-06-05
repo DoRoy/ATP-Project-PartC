@@ -4,6 +4,7 @@ import View.MazeDisplayer;
 import algorithms.mazeGenerators.IMazeGenerator;
 import algorithms.mazeGenerators.Maze;
 import Server.*;
+import algorithms.mazeGenerators.MyMazeGenerator;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
@@ -30,6 +31,7 @@ public class ViewModel implements Initializable {
 
 
     public Maze getNewMaze(int row, int col) {
+        Configurations.run();
         IMazeGenerator mg = Configurations.getGenerators_mazeGenerator();
         Maze newMaze = mg.generate(col, row);
         return newMaze;
