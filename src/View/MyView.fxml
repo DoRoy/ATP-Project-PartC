@@ -38,7 +38,7 @@
                     <TextField fx:id="txtfld_rowsNum" disable="false" text="50" GridPane.columnIndex="1" GridPane.rowIndex="0" />
                     <TextField fx:id="txtfld_columnsNum" disable="false" prefHeight="31.0" prefWidth="74.0" text="50" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                     <Button onAction="#generateMaze" prefHeight="25.0" prefWidth="167.0" text="Generate Maze" textAlignment="CENTER" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="2" />
-                    <Button cancelButton="true" onAction="#solveMaze" prefHeight="25.0" prefWidth="167.0" text="Solve Maze" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+                    <Button fx:id="solve_btn" cancelButton="true" onAction="#solveMaze" prefHeight="25.0" prefWidth="167.0" text="Solve Maze" visible="false" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="3" />
                     <Label text="Char row:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
                     <Label text="Char column:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
                     <Label fx:id="lbl_characterRow" GridPane.columnIndex="1" GridPane.rowIndex="4" />
