@@ -69,6 +69,35 @@ public class MyModel extends Observable implements IModel {
                 if(isNotWall(characterPositionRow, characterPositionCol + 1))
                     characterPositionCol++;
                 break;
+            case NUMPAD7:
+                characterDirection = "left";
+                if(isNotWall(characterPositionRow - 1, characterPositionCol - 1) && (isNotWall(characterPositionRow, characterPositionCol - 1) || isNotWall(characterPositionRow - 1, characterPositionCol) )){
+                    characterPositionRow--;
+                    characterPositionCol--;
+                }
+                break;
+            case NUMPAD9:
+                characterDirection = "right";
+                if(isNotWall(characterPositionRow - 1, characterPositionCol + 1) && (isNotWall(characterPositionRow, characterPositionCol + 1) || isNotWall(characterPositionRow - 1, characterPositionCol) )){
+                    characterPositionRow--;
+                    characterPositionCol++;
+                }
+                break;
+            case NUMPAD1:
+                characterDirection = "left";
+                if(isNotWall(characterPositionRow + 1, characterPositionCol - 1) && (isNotWall(characterPositionRow, characterPositionCol - 1) || isNotWall(characterPositionRow + 1, characterPositionCol) )){
+                    characterPositionRow++;
+                    characterPositionCol--;
+                }
+                break;
+            case NUMPAD3:
+                characterDirection = "right";
+                if(isNotWall(characterPositionRow + 1, characterPositionCol + 1) && (isNotWall(characterPositionRow, characterPositionCol + 1) || isNotWall(characterPositionRow + 1, characterPositionCol) )){
+                    characterPositionRow++;
+                    characterPositionCol++;
+                }
+                break;
+
             default:
                 break;
         }
