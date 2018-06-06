@@ -30,25 +30,27 @@ public class ViewModel implements Initializable {
     public Label lbl_characterRow;
     public Label lbl_characterColumn;
     public Button solve_btn;
+    public Maze maze;
 
 
-    public Maze getNewMaze(int row, int col) {
+/*    public Maze getNewMaze(int row, int col) {
         Configurations.run();
         IMazeGenerator mg = Configurations.getGenerators_mazeGenerator();
         Maze newMaze = mg.generate(col, row);
         return newMaze;
-    }
+    }*/
 
-    public void generateMaze() {
+/*    public void generateMaze() {
         int rows = Integer.valueOf(txtfld_rowsNum.getText());
         int columns = Integer.valueOf(txtfld_columnsNum.getText());
-        Maze maze = getNewMaze(rows,columns);
+        //Maze maze = getNewMaze(rows,columns);
+        this.maze = maze;
         CharacterRow.set(String.valueOf(maze.getStartPosition().getRowIndex()));
         CharacterColumn.set(String.valueOf(maze.getStartPosition().getColumnIndex()));
         this.mazeDisplayer.setMaze(maze,rows,columns);
 
         solve_btn.setVisible(true);
-    }
+    }*/
 
     private void showAlert(String alertMessage) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -57,7 +59,27 @@ public class ViewModel implements Initializable {
     }
 
     public void solveMaze(ActionEvent actionEvent) {
-        showAlert("Solving maze..");
+        /*int charRow = mazeDisplayer.getCharacterPositionRow();
+        int charCol = mazeDisplayer.getCharacterPositionColumn();
+        String mazeString = maze.toString();
+        String[] mazeRowsArr = mazeString.split("\n");
+        char[][] mazeCharArray = new char[mazeRowsArr.length][mazeRowsArr[0].length()];
+        for (int i = 0; i < mazeRowsArr.length; i ++){
+            for(int j = 0; j <mazeRowsArr[0].length(); j++){
+                if (mazeRowsArr[i].charAt(j) == 'S' || mazeRowsArr[i].charAt(j) == '0')
+                    mazeCharArray[i][j] = '0';
+                else if(mazeRowsArr[i].charAt(j) == 'E')
+                    mazeCharArray[i][j] = 'E';
+                else
+                    mazeCharArray[i][j] = '1';
+            }
+        }
+        mazeCharArray[charRow][charCol] = 'S';
+        try{
+            Maze newMaze = new Maze(mazeCharArray,)
+        }catch (Exception e){
+
+        }*/
     }
 
     public void KeyPressed(KeyEvent keyEvent) {
@@ -69,18 +91,22 @@ public class ViewModel implements Initializable {
         if (keyEvent.getCode() == KeyCode.UP) {
             characterRowNewPosition = characterRow - 1;
             characterColumnNewPosition = characterColumn;
+            mazeDisplayer.setImageFileNameCharacter("Resources/Characters/Crash_back.jpg");
         }
         else if (keyEvent.getCode() == KeyCode.DOWN) {
             characterRowNewPosition = characterRow + 1;
             characterColumnNewPosition = characterColumn;
+            mazeDisplayer.setImageFileNameCharacter("Resources/Characters/Crash_front.jpg");
         }
         else if (keyEvent.getCode() == KeyCode.RIGHT) {
             characterRowNewPosition = characterRow;
             characterColumnNewPosition = characterColumn+1;
+            mazeDisplayer.setImageFileNameCharacter("Resources/Characters/Crash_right.jpg");
         }
         else if (keyEvent.getCode() == KeyCode.LEFT) {
             characterRowNewPosition = characterRow;
             characterColumnNewPosition = characterColumn -1;
+            mazeDisplayer.setImageFileNameCharacter("Resources/Characters/Crash_left.jpg");
         }
         else if (keyEvent.getCode() == KeyCode.HOME){
             characterRowNewPosition = 0;
