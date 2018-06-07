@@ -3,6 +3,7 @@ package ViewModel;
 import Model.IModel;
 import javafx.scene.input.KeyCode;
 
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -57,7 +58,16 @@ public class MyViewModel extends Observable implements Observer {
         return model.getCharacterPositionColumn();
     }
 
+    public int[][] getSolution(){
+        return model.getSolution();
+    }
 
+    public int[][] getMazeSolutionArr(){
+        return model.getMazeSolutionArr();
+    }
 
+    public void generateSolution(){
+        model.generateSolution();
+    }
 
 }

@@ -17,6 +17,7 @@ public class Main extends Application {
         MyViewModel myViewModel = new MyViewModel(model);
         model.addObserver(myViewModel);
 
+        //TODO check if can be changed to IMODEL
 
         primaryStage.setTitle("My Application!");
         FXMLLoader fxmlLoader = new FXMLLoader();

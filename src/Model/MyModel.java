@@ -3,8 +3,12 @@ package Model;
 import Server.*;
 import algorithms.mazeGenerators.IMazeGenerator;
 import algorithms.mazeGenerators.Maze;
+import algorithms.mazeGenerators.Position;
+import algorithms.search.*;
 import javafx.scene.input.KeyCode;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 
 public class MyModel extends Observable implements IModel {
@@ -14,6 +18,13 @@ public class MyModel extends Observable implements IModel {
     private String characterDirection = "front";
     private Maze maze;
     private boolean isAtTheEnd;
+    int[][] mazeSolutionArr;
+
+    public int[][] getMazeSolutionArr() {
+        return mazeSolutionArr;
+    }
+
+
 
 
     public MyModel(){
@@ -36,7 +47,7 @@ public class MyModel extends Observable implements IModel {
         characterPositionRow = maze.getStartPosition().getRowIndex();
         characterPositionCol = maze.getStartPosition().getColumnIndex();
         isAtTheEnd = false;
-
+        mazeSolutionArr = null;
 
         setChanged();
         notifyObservers();
@@ -44,6 +55,7 @@ public class MyModel extends Observable implements IModel {
 
     @Override
     public void moveCharacter(KeyCode movement) {
+        mazeSolutionArr = null;
         switch(movement){
             case UP:
             case NUMPAD8:
@@ -110,6 +122,13 @@ public class MyModel extends Observable implements IModel {
 
     }
 
+    @Override
+    public void generateSolution() {
+        getSolution();
+        setChanged();
+        notifyObservers();
+    }
+
     private boolean isNotWall(int row, int col){
         char c = maze.getCharAt(row, col);
         return (c == 'S' || c == '0' || c == 'E');
@@ -143,6 +162,34 @@ public class MyModel extends Observable implements IModel {
     @Override
     public String getCharacterDirection() {
         return characterDirection;
+    }
+
+
+
+    @Override
+    public int[][] getSolution() {
+        Maze currentMaze = null;
+        char[][] mazeCharArr = getMaze();
+        mazeCharArr[maze.getStartPosition().getRowIndex()][maze.getStartPosition().getColumnIndex()] = '0';
+        mazeCharArr[characterPositionRow][characterPositionCol] = 'S';
+
+        try {
+            currentMaze = new Maze(mazeCharArr, new Position(characterPositionRow, characterPositionCol),maze.getGoalPosition());
+
+            // TODO change this to server
+            ISearchable searchableMaze = new SearchableMaze(currentMaze);
+            Solution solution = Configurations.getAlgorithms_solveAlgorithm().solve(searchableMaze);
+            ArrayList<AState> solutionList = solution.getSolutionPath();
+            mazeSolutionArr = new int[solutionList.size()][2];
+            for(int i = 0; i < solutionList.size(); i++){
+                mazeSolutionArr[i][0] = ((MazeState)solutionList.get(i)).getPosition().getRowIndex();
+                mazeSolutionArr[i][1] = ((MazeState)solutionList.get(i)).getPosition().getColumnIndex();
+            }
+            return mazeSolutionArr;
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override

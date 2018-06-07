@@ -27,6 +27,7 @@ import java.util.ResourceBundle;
 public class MazeDisplayer extends Canvas {
 
     private char[][] mazeCharArr;
+    private int[][] mazeSolutionArr;
     private int characterPositionRow;
     private int characterPositionColumn;
     private int goalPositionRow;
@@ -77,6 +78,7 @@ public class MazeDisplayer extends Canvas {
                 GraphicsContext graphicsContext2D = getGraphicsContext2D();
                 graphicsContext2D.clearRect(0, 0, getWidth(), getHeight()); //Clears the canvas
                 Image wallImage = new Image(new FileInputStream(ImageFileNameWall.get()));
+                Image solutionImage = new Image(new FileInputStream(ImageFileNameSolution.get()));
 
                 //Draw Maze
                 for (int i = 0; i < rowMazeSize; i++) {
@@ -85,10 +87,16 @@ public class MazeDisplayer extends Canvas {
                             graphicsContext2D.drawImage(wallImage, j * cellHeight, i * cellWidth, cellHeight, cellWidth);
                         }
                         else if( mazeCharArr[i][j] == 'E'){
-                            setGoalPosition(i,j );
+                            setGoalPosition(i, j);
                         }
                     }
                 }
+
+                //draw solution
+                for(int i = 0; mazeSolutionArr != null && i < mazeSolutionArr.length ;i++){
+                    graphicsContext2D.drawImage(solutionImage, mazeSolutionArr[i][1] * cellHeight, mazeSolutionArr[i][0] * cellWidth, cellHeight, cellWidth);
+                }
+
 
                 //Draw Character
                 //gc.setFill(Color.RED);
@@ -111,6 +119,15 @@ public class MazeDisplayer extends Canvas {
     private StringProperty ImageFileNameWall = new SimpleStringProperty();
     private StringProperty ImageFileNameCharacter = new SimpleStringProperty();
     private StringProperty ImageFileNameGoal = new SimpleStringProperty();
+    private StringProperty ImageFileNameSolution = new SimpleStringProperty();
+
+    public String getImageFileNameSolution() {
+        return ImageFileNameSolution.get();
+    }
+
+    public void setImageFileNameSolution(String imageFileNameSolution) {
+        this.ImageFileNameSolution.set(imageFileNameSolution);
+    }
 
     public String getImageFileNameWall() {
         return ImageFileNameWall.get();
@@ -134,6 +151,10 @@ public class MazeDisplayer extends Canvas {
 
     public void setImageFileNameGoal(String imageFileNameGoal) {
         this.ImageFileNameGoal.set(imageFileNameGoal);
+    }
+
+    public void setMazeSolutionArr(int[][] mazeSolutionArr) {
+        this.mazeSolutionArr = mazeSolutionArr;
     }
 
     //endregion

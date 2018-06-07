@@ -15,6 +15,7 @@ import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
 
 import java.net.URL;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.ResourceBundle;
@@ -47,6 +48,10 @@ public class MyViewController implements IView, Observer, Initializable {
             mazeDisplayer.setCharacterDirection(myViewModel.getCharacterDirection());
             CharacterColumn.set(myViewModel.getCharacterPositionColumn() + "");
             CharacterRow.set(myViewModel.getCharacterPositionRow() + "");
+            if(myViewModel.getMazeSolutionArr() != null)
+                mazeDisplayer.setMazeSolutionArr(myViewModel.getSolution());
+            else
+                mazeDisplayer.setMazeSolutionArr(null);
             if(myViewModel.isAtTheEnd()){
                 // String musicFile = "StayTheNight.mp3";     // For example
 //
@@ -72,18 +77,23 @@ public class MyViewController implements IView, Observer, Initializable {
 
     public void KeyPressed(KeyEvent keyEvent){
         myViewModel.moveCharacter(keyEvent.getCode());
+        mazeDisplayer.setMazeSolutionArr(null);
         keyEvent.consume();
     }
 
     public void generateMaze(){
         int height = Integer.valueOf(txtfld_rowsNum.getText());
         int width = Integer.valueOf(txtfld_columnsNum.getText());
+        mazeDisplayer.setMazeSolutionArr(null);
         solve_btn.setVisible(true);
         myViewModel.generateMaze(height, width);
     }
 
     public void solveMaze(ActionEvent actionEvent){
         //TODO implement
+        myViewModel.generateSolution();
+        int[][] solutionArr = myViewModel.getSolution();
+        mazeDisplayer.setMazeSolutionArr(solutionArr);
     }
 
     public void showAlert(String alertMessage) {
