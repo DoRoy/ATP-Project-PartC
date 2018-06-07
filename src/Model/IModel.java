@@ -3,6 +3,7 @@ package Model;
 import algorithms.mazeGenerators.Maze;
 import javafx.scene.input.KeyCode;
 
+import java.io.File;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -20,4 +21,6 @@ public interface IModel {
     String getCharacterDirection();
     int[][] getSolution();
     int[][] getMazeSolutionArr();
+    void saveMaze(File file);
+    void loadMaze(File file);
 }

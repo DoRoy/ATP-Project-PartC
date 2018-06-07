@@ -2,6 +2,7 @@ package View;
 
 import Model.IModel;
 import Model.MyModel;
+import Server.*;
 import ViewModel.MyViewModel;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -10,7 +11,8 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-
+    private Server serverMazeGenerator;
+    private Server serverSolveMaze;
     @Override
     public void start(Stage primaryStage) throws Exception{
         MyModel model = new MyModel();
@@ -31,6 +33,14 @@ public class Main extends Application {
         myViewModel.addObserver(myViewController);
         primaryStage.show();
         //Rise Servers
+        startServers(); //TODO remove all server things
+
+    }
+    private void startServers(){
+        serverMazeGenerator = new Server(5400, 1000, new ServerStrategyGenerateMaze());
+        serverSolveMaze = new Server(5401, 1000, new ServerStrategySolveSearchProblem());
+        serverMazeGenerator.start();
+        serverSolveMaze.start();
     }
 
     public static void main(String[] args) {

@@ -3,6 +3,7 @@ package ViewModel;
 import Model.IModel;
 import javafx.scene.input.KeyCode;
 
+import java.io.File;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -68,6 +69,14 @@ public class MyViewModel extends Observable implements Observer {
 
     public void generateSolution(){
         model.generateSolution();
+    }
+
+    public void saveMaze(File file){
+        model.saveMaze(file);
+    }
+
+    public void loadFile(File file){
+        model.loadMaze(file);
     }
 
 }

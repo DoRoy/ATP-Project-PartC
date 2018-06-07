@@ -1,6 +1,7 @@
 package View;
 
 import ViewModel.*;
+import com.sun.javafx.stage.EmbeddedWindow;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
@@ -9,11 +10,15 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
+import javafx.stage.FileChooser;
+import javafx.stage.PopupWindow;
+import javafx.stage.Window;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.Observable;
@@ -115,6 +120,52 @@ public class MyViewController implements IView, Observer, Initializable {
 
             }
         });
+    }
 
+    public void exitButton(ActionEvent event){
+        System.out.println("Exit button");
+        ChoiceDialog exitDialog = new ChoiceDialog();
+        Button yesButton = new Button("Yes");
+        Button noButton = new Button("No");
+
+        exitDialog.setContentText("Are you sure you want to exit?");
+        exitDialog.setSelectedItem(yesButton);
+        exitDialog.setSelectedItem(noButton);
+        exitDialog.showAndWait();
+        event.consume();
+
+    }
+
+    public void saveFile(ActionEvent event){
+        System.out.println("saveFile");
+        FileChooser fileChooser = new FileChooser();
+
+        fileChooser.setTitle("Choose a directory to save the maze in");
+        fileChooser.setInitialDirectory(new File("./Mazes/"));
+        //Set extension filter
+        //FileChooser.ExtensionFilter extFilter = new FileChooser();
+        //fileChooser.getExtensionFilters().add(extFilter);
+
+        //Show save file dialog
+        File file = fileChooser.showSaveDialog(new PopupWindow() {
+        });
+
+        if(file != null) {
+            myViewModel.saveMaze( file);
+        }
+    }
+
+
+
+    public void loadFile(ActionEvent event){
+        System.out.println("loadFile");
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Choose a maze to load");
+        fileChooser.setInitialDirectory(new File("./Mazes/"));
+        File file = fileChooser.showOpenDialog(new PopupWindow() {
+        });
+        if(file != null){
+            myViewModel.loadFile(file);
+        }
     }
 }
