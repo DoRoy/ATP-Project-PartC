@@ -1,7 +1,10 @@
 package ViewModel;
 
 import Model.IModel;
+import View.MazeDisplayer;
 import javafx.scene.input.KeyCode;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 
 import java.io.File;
 import java.util.List;
@@ -11,6 +14,7 @@ import java.util.Observer;
 public class MyViewModel extends Observable implements Observer {
 
     private IModel model;
+    private MediaPlayer gameSoundTrack;
 
     public MyViewModel(IModel model) {
         this.model = model;
@@ -27,6 +31,10 @@ public class MyViewModel extends Observable implements Observer {
         notifyObservers();
     }
 
+
+    public void setCharacter(String character){
+        MazeDisplayer.setCharacterName(character);
+    }
 
     public void moveCharacter(KeyCode movement){
         model.moveCharacter(movement);
@@ -71,12 +79,34 @@ public class MyViewModel extends Observable implements Observer {
         model.generateSolution();
     }
 
-    public void saveMaze(File file){
-        model.saveMaze(file);
+    public void saveOriginalMaze(File file){
+        model.saveOriginalMaze(file);
+    }
+    public void saveCurrentMaze(File file){
+        model.saveCurrentMaze(file);
     }
 
     public void loadFile(File file){
         model.loadMaze(file);
+    }
+
+    public void closeModel(){
+        model.closeModel();
+    }
+
+    public void startSoundTrack(String character){
+        if (gameSoundTrack != null)
+            gameSoundTrack.stop();
+        String musicFile = "Resources/Music/" + character + "gameSoundTrack.mp3";
+        Media sound = new Media(new File(musicFile).toURI().toString());
+        gameSoundTrack = new MediaPlayer(sound);
+        gameSoundTrack.play();
+    }
+
+
+
+    public void setMultiPlayerMode(boolean setMode){
+        MazeDisplayer.setMultiPlayerMode(setMode);
     }
 
 }

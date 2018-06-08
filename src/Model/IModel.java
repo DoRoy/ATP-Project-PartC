@@ -21,6 +21,7 @@ public interface IModel {
     String getCharacterDirection();
     int[][] getSolution();
     int[][] getMazeSolutionArr();
-    void saveMaze(File file);
+    void saveCurrentMaze(File file);
+    void saveOriginalMaze(File file);
     void loadMaze(File file);
 }

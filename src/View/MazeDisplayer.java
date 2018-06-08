@@ -38,10 +38,8 @@ public class MazeDisplayer extends Canvas {
     private int rowMazeSize;
     private int colMazeSize;
     private String characterDirection;
-    private String characterName = "Crash_";
-
-
-
+    private static String characterName = "Crash_";
+    private static boolean multiPlayerMode = false;
 
     public int getCharacterPositionRow() {
         return characterPositionRow;
@@ -83,8 +81,8 @@ public class MazeDisplayer extends Canvas {
             try {
                 GraphicsContext graphicsContext2D = getGraphicsContext2D();
                 graphicsContext2D.clearRect(0, 0, getWidth(), getHeight()); //Clears the canvas
-                Image wallImage = new Image(new FileInputStream(ImageFileNameWall.get()));
-                Image solutionImage = new Image(new FileInputStream(ImageFileNameSolution.get()));
+                Image wallImage = new Image(new FileInputStream("Resources/Images/" + characterName + "wall.png"));
+                Image solutionImage = new Image(new FileInputStream("Resources/Images/" + characterName + "showSolution.png"));
 
                 //Draw Maze
                 for (int i = 0; i < rowMazeSize; i++) {
@@ -107,10 +105,10 @@ public class MazeDisplayer extends Canvas {
                 //Draw Character
                 //gc.setFill(Color.RED);
                 //gc.fillOval(characterPositionColumn * cellHeight, characterPositionRow * cellWidth, cellHeight, cellWidth);
-                Image characterImage = new Image(new FileInputStream(ImageFileNameCharacter.get() + characterName + characterDirection + ".png"));
+                Image characterImage = new Image(new FileInputStream("Resources/Characters/" + characterName + characterDirection + ".png"));
                 graphicsContext2D.drawImage(characterImage, characterPositionColumn * cellHeight, characterPositionRow * cellWidth, cellHeight, cellWidth);
 
-                Image goalImage = new Image(new FileInputStream(ImageFileNameGoal.get()));
+                Image goalImage = new Image(new FileInputStream("Resources/Characters/" + characterName + "goal.png"));
                 graphicsContext2D.drawImage(goalImage, goalPositionColumn * cellHeight, goalPositionRow * cellWidth, cellHeight, cellWidth);
 
             } catch (FileNotFoundException e) {
@@ -161,6 +159,14 @@ public class MazeDisplayer extends Canvas {
 
     public void setMazeSolutionArr(int[][] mazeSolutionArr) {
         this.mazeSolutionArr = mazeSolutionArr;
+    }
+
+    public static void setCharacterName(String name) {
+        characterName = name;
+    }
+
+    public static void setMultiPlayerMode(boolean setMode){
+        multiPlayerMode = setMode;
     }
 
     //endregion

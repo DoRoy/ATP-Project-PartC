@@ -33,7 +33,15 @@ public class MyModel extends Observable implements IModel {
         return mazeSolutionArr;
     }
 
+    @Override
+    public void saveCurrentMaze(File file) {
 
+    }
+
+    @Override
+    public void saveOriginalMaze(File file) {
+
+    }
 
 
     public MyModel(){
@@ -52,7 +60,7 @@ public class MyModel extends Observable implements IModel {
                         ObjectOutputStream toServer = new ObjectOutputStream(outToServer);
                         ObjectInputStream fromServer = new ObjectInputStream(inFromServer);
                         toServer.flush();
-                        int[] mazeDimensions = new int[]{10, 10};
+                        int[] mazeDimensions = new int[]{row, col};
                         toServer.writeObject(mazeDimensions); //send maze dimensions to server
                         toServer.flush();
                         byte[] compressedMaze = (byte[]) fromServer.readObject(); //read generated maze (compressed with MyCompressor) from server
@@ -225,7 +233,7 @@ public class MyModel extends Observable implements IModel {
 
     }
 
-    @Override
+
     public void saveMaze(File file){
         try {
             FileOutputStream fileWriter = null;

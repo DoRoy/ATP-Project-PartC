@@ -20,8 +20,6 @@ import java.io.File;
 public class Main extends Application {
     private Server serverMazeGenerator;
     private Server serverSolveMaze;
-
-
     @Override
     public void start(Stage primaryStage) throws Exception{
         MyModel model = new MyModel();
@@ -30,25 +28,23 @@ public class Main extends Application {
 
         //TODO check if can be changed to IMODEL
 
-        primaryStage.setTitle("My Application!");
+        primaryStage.setTitle("The Crash Maze!");
         FXMLLoader fxmlLoader = new FXMLLoader();
         Parent root = fxmlLoader.load(getClass().getResource("MyView.fxml").openStream());
-        Scene scene = new Scene(root,800,700);
+        Scene scene = new Scene(root,1000,800);
         scene.getStylesheets().add(getClass().getResource("ViewStyle.css").toExternalForm());
         primaryStage.setScene(scene);
 
-        String musicFile = "Resources/Music/Crash_gameSound.mp3";
-        Media sound = new Media(new File(musicFile).toURI().toString());
-        MediaPlayer mediaPlayer = new MediaPlayer(sound);
-        mediaPlayer.play();
+        primaryStage.resizableProperty();
+
+
+
 
         MyViewController myViewController = fxmlLoader.getController();
         myViewController.setViewModel(myViewModel);
         myViewModel.addObserver(myViewController);
 
-        //NewGameController gameController = fxmlLoader.getController();
-        //gameController.setViewModel(myViewModel);
-        //myViewModel.addObserver(gameController);
+
         primaryStage.show();
         //Rise Servers
         startServers(); //TODO remove all server things
@@ -64,6 +60,4 @@ public class Main extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-
-
 }
