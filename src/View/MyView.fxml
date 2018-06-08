@@ -16,7 +16,6 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-
 <BorderPane onKeyPressed="#KeyPressed" stylesheets="@ViewStyle.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MyViewController">
     <left>
         <VBox prefHeight="200.0" prefWidth="178.0" spacing="5.0" BorderPane.alignment="CENTER">
@@ -54,24 +53,27 @@
     <bottom>
         <HBox BorderPane.alignment="CENTER">
             <children>
-                <Label text="Status bar" />
+                <Label fx:id="lbl_statusBar" text="Status bar" />
             </children>
         </HBox>
     </bottom>
     <top>
         <VBox BorderPane.alignment="CENTER">
             <children>
-                <MenuBar prefWidth="796.0" >
+                <MenuBar prefWidth="796.0">
                     <menus>
                         <Menu mnemonicParsing="false" text="File">
                             <items>
-                                <MenuItem mnemonicParsing="false" text="New"  />
+                                <MenuItem mnemonicParsing="false" onAction="#newMaze" text="New" />
                             </items>
                             <items>
-                                <MenuItem mnemonicParsing="false" text="Save" onAction="#saveFile" />
+                                <MenuItem mnemonicParsing="false" onAction="#solveMaze" text="Solve" />
                             </items>
                             <items>
-                                <MenuItem mnemonicParsing="false" text="Load" onAction="#loadFile" />
+                                <MenuItem mnemonicParsing="false" onAction="#saveFile" text="Save" />
+                            </items>
+                            <items>
+                                <MenuItem mnemonicParsing="false" onAction="#loadFile" text="Load" />
                             </items>
                         </Menu>
                         <Menu mnemonicParsing="false" text="Options">
@@ -79,7 +81,11 @@
                                 <MenuItem mnemonicParsing="false" text="Properties" />
                             </items>
                         </Menu>
-                        <Menu mnemonicParsing="false" onAction="#exitButton" text="Exit" />
+                        <Menu mnemonicParsing="false" onAction="#exitButton" text="Exit">
+                            <items>
+                                <MenuItem mnemonicParsing="false" onAction="#exitButton" visible="false" />
+                            </items>
+                        </Menu>
                         <Menu mnemonicParsing="false" text="Help">
 
                         </Menu>
@@ -94,7 +100,7 @@
     <center>
         <Pane BorderPane.alignment="CENTER">
             <children>
-                <MazeDisplayer fx:id="mazeDisplayer" height="600.0" imageFileNameCharacter="Resources/Characters/" imageFileNameGoal="Resources/Characters/Crash_goal.jpg" imageFileNameSolution="Resources/Images/apple.jpg" imageFileNameWall="Resources/Images/crash_box_1.jpg" width="600.0" />
+                <MazeDisplayer fx:id="mazeDisplayer" height="600.0" imageFileNameCharacter="Resources/Characters/" imageFileNameGoal="Resources/Characters/Crash_goal.png" imageFileNameSolution="Resources/Images/Crash_showSolution.png" imageFileNameWall="Resources/Images/crash_box_1.png" width="600.0" />
             </children>
             <padding>
                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

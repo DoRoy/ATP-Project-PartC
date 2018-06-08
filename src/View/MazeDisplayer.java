@@ -1,5 +1,6 @@
 package View;
 
+import Model.MazeCharacter;
 import algorithms.mazeGenerators.Maze;
 import algorithms.mazeGenerators.Position;
 import javafx.beans.property.SimpleStringProperty;
@@ -26,6 +27,8 @@ import java.util.ResourceBundle;
 
 public class MazeDisplayer extends Canvas {
 
+
+    private MazeCharacter mainCharacter;
     private char[][] mazeCharArr;
     private int[][] mazeSolutionArr;
     private int characterPositionRow;
@@ -93,7 +96,7 @@ public class MazeDisplayer extends Canvas {
                 }
 
                 //draw solution
-                for(int i = 0; mazeSolutionArr != null && i < mazeSolutionArr.length ;i++){
+                for(int i = 1; mazeSolutionArr != null && i < mazeSolutionArr.length -1 ;i++){
                     graphicsContext2D.drawImage(solutionImage, mazeSolutionArr[i][1] * cellHeight, mazeSolutionArr[i][0] * cellWidth, cellHeight, cellWidth);
                 }
 
@@ -101,7 +104,7 @@ public class MazeDisplayer extends Canvas {
                 //Draw Character
                 //gc.setFill(Color.RED);
                 //gc.fillOval(characterPositionColumn * cellHeight, characterPositionRow * cellWidth, cellHeight, cellWidth);
-                Image characterImage = new Image(new FileInputStream(ImageFileNameCharacter.get() + characterName + characterDirection + ".jpg"));
+                Image characterImage = new Image(new FileInputStream(ImageFileNameCharacter.get() + characterName + characterDirection + ".png"));
                 graphicsContext2D.drawImage(characterImage, characterPositionColumn * cellHeight, characterPositionRow * cellWidth, cellHeight, cellWidth);
 
                 Image goalImage = new Image(new FileInputStream(ImageFileNameGoal.get()));

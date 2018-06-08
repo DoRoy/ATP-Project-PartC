@@ -11,23 +11,23 @@ import javafx.scene.input.KeyCode;
 
 import java.io.*;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 
 public class MyModel extends Observable implements IModel {
 
-    private int characterPositionRow;
-    private int characterPositionCol;
-    private String characterDirection = "front";
+    private MazeCharacter mainCharacter;
+    private MazeCharacter secondCharacter;
+    //private int characterPositionRow;
+    //private int characterPositionCol;
+    //private String characterDirection = "front";
     private Maze maze;
+    private Solution mazeSolution;
     private boolean isAtTheEnd;
     private int[][] mazeSolutionArr;
 
-
-
-    private Client clientMazeGenerator;
-    private Client clientSolveMaze;
 
     public int[][] getMazeSolutionArr() {
         return mazeSolutionArr;
@@ -39,67 +39,44 @@ public class MyModel extends Observable implements IModel {
     public MyModel(){
         Configurations.run(); // TODO should be removed
         isAtTheEnd = false;
-        startClient();
     }
 
 
-
-    private void startClient(){
+    @Override
+    public void generateMaze(int row, int col) {
         try {
-            clientMazeGenerator = new Client(InetAddress.getLocalHost(), 5400, new IClientStrategy() {
+            Client clientMazeGenerator = new Client(InetAddress.getLocalHost(), 5400, new IClientStrategy() {
                 @Override
                 public void clientStrategy(InputStream inFromServer, OutputStream outToServer) {
                     try {
                         ObjectOutputStream toServer = new ObjectOutputStream(outToServer);
                         ObjectInputStream fromServer = new ObjectInputStream(inFromServer);
                         toServer.flush();
-                        int[] mazeDimensions = new int[]{10, 10};
+                        int[] mazeDimensions = new int[]{row, col};
                         toServer.writeObject(mazeDimensions); //send maze dimensions to server
                         toServer.flush();
                         byte[] compressedMaze = (byte[]) fromServer.readObject(); //read generated maze (compressed with MyCompressor) from server
                         InputStream is = new MyDecompressorInputStream(new ByteArrayInputStream(compressedMaze));
                         byte[] decompressedMaze = new byte[mazeDimensions[0] * mazeDimensions[1] + 12 /*CHANGE SIZE ACCORDING TO YOU MAZE SIZE*/]; //allocating byte[] for the decompressed maze -
                         is.read(decompressedMaze); //Fill decompressedMaze with bytes
-                        Maze maze = new Maze(decompressedMaze);
-                        System.out.println("xxxxxxxxxxxxx");
+                        maze = new Maze(decompressedMaze);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
             });
-            clientSolveMaze = new Client(InetAddress.getLocalHost(), 5401, new IClientStrategy() {
-                @Override
-                public void clientStrategy(InputStream inFromServer, OutputStream outToServer) {
-                    try {
-                        BufferedReader fromServer = new BufferedReader(new InputStreamReader(inFromServer));
-                        PrintWriter toServer = new PrintWriter(outToServer);
 
-                        String message = "Client Message";
-                        String serverResponse;
-                        toServer.write(message + "\n");
-                        toServer.flush();
-                        serverResponse = fromServer.readLine();
-                        System.out.println(String.format("Server response: %s", serverResponse));
-                        toServer.flush();
-                        fromServer.close();
-                        toServer.close();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-        }catch (Exception e){
+            clientMazeGenerator.communicateWithServer();
+        } catch (UnknownHostException e) {
             e.printStackTrace();
         }
-    }
 
 
-    @Override
-    public void generateMaze(int row, int col) {
-        IMazeGenerator mg = Configurations.getGenerators_mazeGenerator();
-        maze = mg.generate(row, col);
-        characterPositionRow = maze.getStartPosition().getRowIndex();
-        characterPositionCol = maze.getStartPosition().getColumnIndex();
+        int mazeRow = maze.getStartPosition().getRowIndex();
+        int mazeCol = maze.getStartPosition().getColumnIndex();
+        mainCharacter = new MazeCharacter("Crash_",mazeRow,mazeCol);
+        secondCharacter = new MazeCharacter("Mask_", mazeRow,mazeCol);
+
         isAtTheEnd = false;
         mazeSolutionArr = null;
 
@@ -110,57 +87,59 @@ public class MyModel extends Observable implements IModel {
     @Override
     public void moveCharacter(KeyCode movement) {
         mazeSolutionArr = null;
+        int mainCharacterPositionRow = mainCharacter.getCharacterRow();
+        int mainCharacterPositionCol = mainCharacter.getCharacterCol();
         switch(movement){
             case UP:
             case NUMPAD8:
-                characterDirection = "back";
-                if(isNotWall(characterPositionRow - 1, characterPositionCol ))
-                    characterPositionRow--;
+                mainCharacter.setCharacterDirection("back");
+                if(isNotWall(mainCharacterPositionRow - 1, mainCharacterPositionCol ))
+                    mainCharacter.setCharacterRow(mainCharacterPositionRow - 1);
                 break;
             case DOWN:
             case NUMPAD2:
-                characterDirection = "front";
-                if(isNotWall(characterPositionRow + 1, characterPositionCol))
-                    characterPositionRow++;
+                mainCharacter.setCharacterDirection("front");
+                if(isNotWall(mainCharacterPositionRow + 1, mainCharacterPositionCol))
+                    mainCharacter.setCharacterRow(mainCharacterPositionRow + 1);
                 break;
             case LEFT:
             case NUMPAD4:
-                characterDirection = "left";
-                if(isNotWall(characterPositionRow, characterPositionCol - 1))
-                    characterPositionCol--;
+                mainCharacter.setCharacterDirection("left");
+                if(isNotWall(mainCharacterPositionRow, mainCharacterPositionCol - 1))
+                    mainCharacter.setCharacterCol(mainCharacterPositionCol - 1);
                 break;
             case RIGHT:
             case NUMPAD6:
-                characterDirection = "right";
-                if(isNotWall(characterPositionRow, characterPositionCol + 1))
-                    characterPositionCol++;
+                mainCharacter.setCharacterDirection("right");
+                if(isNotWall(mainCharacterPositionRow, mainCharacterPositionCol + 1))
+                    mainCharacter.setCharacterCol(mainCharacterPositionCol + 1);
                 break;
             case NUMPAD7:
-                characterDirection = "left";
-                if(isNotWall(characterPositionRow - 1, characterPositionCol - 1) && (isNotWall(characterPositionRow, characterPositionCol - 1) || isNotWall(characterPositionRow - 1, characterPositionCol) )){
-                    characterPositionRow--;
-                    characterPositionCol--;
+                mainCharacter.setCharacterDirection("left");
+                if(isNotWall(mainCharacterPositionRow - 1, mainCharacterPositionCol - 1) && (isNotWall(mainCharacterPositionRow, mainCharacterPositionCol - 1) || isNotWall(mainCharacterPositionRow - 1, mainCharacterPositionCol) )){
+                    mainCharacter.setCharacterRow(mainCharacterPositionRow - 1);
+                    mainCharacter.setCharacterCol(mainCharacterPositionCol - 1);
                 }
                 break;
             case NUMPAD9:
-                characterDirection = "right";
-                if(isNotWall(characterPositionRow - 1, characterPositionCol + 1) && (isNotWall(characterPositionRow, characterPositionCol + 1) || isNotWall(characterPositionRow - 1, characterPositionCol) )){
-                    characterPositionRow--;
-                    characterPositionCol++;
+                mainCharacter.setCharacterDirection("right");
+                if(isNotWall(mainCharacterPositionRow - 1, mainCharacterPositionCol + 1) && (isNotWall(mainCharacterPositionRow, mainCharacterPositionCol + 1) || isNotWall(mainCharacterPositionRow - 1, mainCharacterPositionCol) )){
+                    mainCharacter.setCharacterRow(mainCharacterPositionRow - 1);
+                    mainCharacter.setCharacterCol(mainCharacterPositionCol + 1);
                 }
                 break;
             case NUMPAD1:
-                characterDirection = "left";
-                if(isNotWall(characterPositionRow + 1, characterPositionCol - 1) && (isNotWall(characterPositionRow, characterPositionCol - 1) || isNotWall(characterPositionRow + 1, characterPositionCol) )){
-                    characterPositionRow++;
-                    characterPositionCol--;
+                mainCharacter.setCharacterDirection("left");
+                if(isNotWall(mainCharacterPositionRow + 1, mainCharacterPositionCol - 1) && (isNotWall(mainCharacterPositionRow, mainCharacterPositionCol - 1) || isNotWall(mainCharacterPositionRow + 1, mainCharacterPositionCol) )){
+                    mainCharacter.setCharacterRow(mainCharacterPositionRow + 1);
+                    mainCharacter.setCharacterCol(mainCharacterPositionCol - 1);
                 }
                 break;
             case NUMPAD3:
-                characterDirection = "right";
-                if(isNotWall(characterPositionRow + 1, characterPositionCol + 1) && (isNotWall(characterPositionRow, characterPositionCol + 1) || isNotWall(characterPositionRow + 1, characterPositionCol) )){
-                    characterPositionRow++;
-                    characterPositionCol++;
+                mainCharacter.setCharacterDirection("right");
+                if(isNotWall(mainCharacterPositionRow + 1, mainCharacterPositionCol + 1) && (isNotWall(mainCharacterPositionRow, mainCharacterPositionCol + 1) || isNotWall(mainCharacterPositionRow + 1, mainCharacterPositionCol) )){
+                    mainCharacter.setCharacterRow(mainCharacterPositionRow + 1);
+                    mainCharacter.setCharacterCol(mainCharacterPositionCol + 1);
                 }
                 break;
 
@@ -168,7 +147,7 @@ public class MyModel extends Observable implements IModel {
                 break;
         }
 
-        if(maze.getCharAt(characterPositionRow, characterPositionCol) == 'E')
+        if(maze.getCharAt(mainCharacterPositionRow, mainCharacterPositionCol) == 'E')
             isAtTheEnd = true;
 
         setChanged();
@@ -178,7 +157,28 @@ public class MyModel extends Observable implements IModel {
 
     @Override
     public void generateSolution() {
-        getSolution();
+        try {
+            Client clientSolveMaze = new Client(InetAddress.getLocalHost(), 5401, new IClientStrategy() {
+                @Override
+                public void clientStrategy(InputStream inFromServer, OutputStream outToServer) {
+                    try {
+                        ObjectOutputStream toServer = new ObjectOutputStream(outToServer);
+                        ObjectInputStream fromServer = new ObjectInputStream(inFromServer);
+                        toServer.flush();
+                        toServer.writeObject(new Maze(maze, mainCharacter.getCharacterRow(), mainCharacter.getCharacterCol())); //send maze to server
+                        toServer.flush();
+                        mazeSolution = (Solution) fromServer.readObject(); //read generated maze (compressed with MyCompressor) from server
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            });
+            clientSolveMaze.communicateWithServer();
+        }catch (Exception e){
+
+        }
+        mazeSolutionArr = mazeSolution.getSolution();
         setChanged();
         notifyObservers();
     }
@@ -190,59 +190,23 @@ public class MyModel extends Observable implements IModel {
 
     @Override
     public char[][] getMaze() {
-        //TODO Implement
-        String mazeString = maze.toString();
-        String[] mazeRowsArr = mazeString.split("\n");
-        char[][] mazeCharArray = new char[mazeRowsArr.length][mazeRowsArr[0].length()];
-        for (int i = 0; i < mazeRowsArr.length; i ++){
-            for(int j = 0; j <mazeRowsArr[0].length(); j++){
-                if (mazeRowsArr[i].charAt(j) == 'S' || mazeRowsArr[i].charAt(j) == '0')
-                    mazeCharArray[i][j] = '0';
-                else if(mazeRowsArr[i].charAt(j) == 'E')
-                    mazeCharArray[i][j] = 'E';
-                else
-                    mazeCharArray[i][j] = '1';
-            }
-        }
-        mazeCharArray[maze.getStartPosition().getRowIndex()][maze.getStartPosition().getColumnIndex()] = 'S';
-        return mazeCharArray;
+        return maze.getMaze();
     }
 
     @Override
     public int getCharacterPositionRow() {
-        return characterPositionRow;
+        return mainCharacter.getCharacterRow();
     }
 
     @Override
     public String getCharacterDirection() {
-        return characterDirection;
+        return mainCharacter.getCharacterDirection();
     }
 
 
     @Override
     public int[][] getSolution() {
-        Maze currentMaze = null;
-        char[][] mazeCharArr = getMaze();
-        mazeCharArr[maze.getStartPosition().getRowIndex()][maze.getStartPosition().getColumnIndex()] = '0';
-        mazeCharArr[characterPositionRow][characterPositionCol] = 'S';
-
-        try {
-            currentMaze = new Maze(mazeCharArr, new Position(characterPositionRow, characterPositionCol),maze.getGoalPosition());
-
-            // TODO change this to server
-            ISearchable searchableMaze = new SearchableMaze(currentMaze);
-            Solution solution = Configurations.getAlgorithms_solveAlgorithm().solve(searchableMaze);
-            ArrayList<AState> solutionList = solution.getSolutionPath();
-            mazeSolutionArr = new int[solutionList.size()][2];
-            for(int i = 0; i < solutionList.size(); i++){
-                mazeSolutionArr[i][0] = ((MazeState)solutionList.get(i)).getPosition().getRowIndex();
-                mazeSolutionArr[i][1] = ((MazeState)solutionList.get(i)).getPosition().getColumnIndex();
-            }
-            return mazeSolutionArr;
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-        return null;
+       return mazeSolution.getSolution();
     }
 
     @Override
@@ -252,17 +216,17 @@ public class MyModel extends Observable implements IModel {
 
     @Override
     public int getCharacterPositionColumn() {
-        return characterPositionCol;
+        return mainCharacter.getCharacterCol();
     }
 
     @Override
     public void closeModel() {
         //TODO implement
-
+        System.out.println("Close Model");
     }
 
     @Override
-    public void saveMaze(File file){
+    public void saveOriginalMaze(File file){
         try {
             FileOutputStream fileWriter = null;
             fileWriter = new FileOutputStream(file);
@@ -276,6 +240,33 @@ public class MyModel extends Observable implements IModel {
         }
     }
 
+    @Override
+    public void saveCurrentMaze(File file){
+        try {
+            FileOutputStream fileWriter = null;
+            fileWriter = new FileOutputStream(file);
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileWriter);
+            Maze currentMaze = getCurrentMaze();
+            objectOutputStream.writeObject(currentMaze);
+            objectOutputStream.flush();
+            objectOutputStream.close();
+            fileWriter.close();
+        } catch (IOException ex) {
+
+        }
+    }
+
+    private Maze getCurrentMaze() {
+        try{
+            Maze currentMaze = new Maze(maze,mainCharacter.getCharacterRow(),mainCharacter.getCharacterCol());
+            return currentMaze;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+
+    }
+
     public void loadMaze(File file){
         try{
             FileInputStream fin = new FileInputStream(file);
@@ -283,6 +274,9 @@ public class MyModel extends Observable implements IModel {
             Maze loadedMaze = (Maze) oin.readObject();
             if(loadedMaze != null) {
                 maze = loadedMaze;
+                mainCharacter.setCharacterRow(maze.getStartPosition().getRowIndex());
+                mainCharacter.setCharacterCol(maze.getStartPosition().getColumnIndex());
+                mainCharacter.setCharacterDirection("front");
                 setChanged();
                 notifyObservers();
             }

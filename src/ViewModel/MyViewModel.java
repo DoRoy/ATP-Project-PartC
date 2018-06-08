@@ -71,12 +71,19 @@ public class MyViewModel extends Observable implements Observer {
         model.generateSolution();
     }
 
-    public void saveMaze(File file){
-        model.saveMaze(file);
+    public void saveOriginalMaze(File file){
+        model.saveOriginalMaze(file);
+    }
+    public void saveCurrentMaze(File file){
+        model.saveCurrentMaze(file);
     }
 
     public void loadFile(File file){
         model.loadMaze(file);
+    }
+
+    public void closeModel(){
+        model.closeModel();
     }
 
 }
