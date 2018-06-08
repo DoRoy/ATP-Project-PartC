@@ -3,17 +3,16 @@
 <?import View.MazeDisplayer?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane onKeyPressed="#KeyPressed" stylesheets="@ViewStyle.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MyViewController">
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuItem?>
+<BorderPane onKeyPressed="#moveCharacter" stylesheets="@ViewStyle.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MyViewController">
     <top>
         <VBox BorderPane.alignment="CENTER">
             <children>
@@ -60,12 +59,21 @@
 
             <HBox>
 
-                <ImageView fx:id="icon_sound" fitHeight="30.0" fitWidth="30.0" onTouchPressed="#setSound">
-                    <Image url="@../../Resources/Icons/icon_soundOn.png" />
+
+                <ImageView fx:id="icon_sound" fitHeight="30.0" fitWidth="30.0">
+               <HBox.margin>
+                  <Insets bottom="5.0" left="10.0" right="5.0" top="5.0" />
+               </HBox.margin></ImageView>
+
+                <ImageView fx:id="icon_partSolution" fitHeight="30.0" fitWidth="30.0">
                     <HBox.margin>
-                        <Insets left="10.0" />
-                    </HBox.margin>
-                </ImageView>
+                        <Insets bottom="5.0" left="10.0" right="5.0" top="5.0" />
+                    </HBox.margin></ImageView>
+
+                <ImageView fx:id="icon_fullSolution" fitHeight="30.0" fitWidth="30.0">
+                    <HBox.margin>
+                        <Insets bottom="5.0" left="10.0" right="5.0" top="5.0" />
+                    </HBox.margin></ImageView>
 
             </HBox>
 
@@ -75,7 +83,7 @@
     <center>
         <Pane BorderPane.alignment="CENTER">
             <children>
-                <MazeDisplayer fx:id="mazeDisplayer" height="600.0" imageFileNameCharacter="Resources/Characters/" imageFileNameGoal="Resources/Characters/Crash_goal.png" imageFileNameSolution="Resources/Images/Crash_showSolution.png" imageFileNameWall="Resources/Images/crash_box_1.png" width="600.0" />
+                <MazeDisplayer fx:id="mazeDisplayer" height="600.0" imageFileNameCharacter="Resources/Characters/" imageFileNameGoal="Resources/Characters/Crash_goal.png" imageFileNameSolution="Resources/Images/Crash_showSolution.png" imageFileNameWall="Resources/Images/crash_box_1.png" onKeyPressed="#KeyPressed" width="600.0" />
             </children>
             <padding>
                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -121,4 +129,7 @@
          </children>
       </VBox>
    </bottom>
+   <left>
+      <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+   </left>
 </BorderPane>

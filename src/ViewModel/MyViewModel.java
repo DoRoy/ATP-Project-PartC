@@ -1,13 +1,12 @@
 package ViewModel;
 
 import Model.IModel;
-import View.MazeDisplayer;
+import Model.MyModel;
 import javafx.scene.input.KeyCode;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
 import java.io.File;
-import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -15,6 +14,7 @@ public class MyViewModel extends Observable implements Observer {
 
     private IModel model;
     private MediaPlayer gameSoundTrack;
+    private boolean isPlayed;
 
     public MyViewModel(IModel model) {
         this.model = model;
@@ -23,9 +23,7 @@ public class MyViewModel extends Observable implements Observer {
     @Override
     public void update(Observable o, Object arg) {
         if(o == model){
-
         }
-
 
         setChanged();
         notifyObservers();
@@ -33,7 +31,7 @@ public class MyViewModel extends Observable implements Observer {
 
 
     public void setCharacter(String character){
-        MazeDisplayer.setCharacterName(character);
+        MyModel.setMainCharacterName(character);
     }
 
     public void moveCharacter(KeyCode movement){
@@ -101,12 +99,25 @@ public class MyViewModel extends Observable implements Observer {
         Media sound = new Media(new File(musicFile).toURI().toString());
         gameSoundTrack = new MediaPlayer(sound);
         gameSoundTrack.play();
+        isPlayed = true;
     }
 
-
+    public boolean setSound(){
+        if (gameSoundTrack == null)
+            return false;
+        if (isPlayed) {
+            gameSoundTrack.stop();
+            isPlayed = false;
+        }
+        else{
+            gameSoundTrack.play();
+            isPlayed = true;
+        }
+        return isPlayed;
+    }
 
     public void setMultiPlayerMode(boolean setMode){
-        MazeDisplayer.setMultiPlayerMode(setMode);
+        MyModel.setMultiPlayerMode(setMode);
     }
 
 }

@@ -1,7 +1,6 @@
 package View;
 
 import ViewModel.*;
-import com.sun.javafx.stage.EmbeddedWindow;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
@@ -14,18 +13,13 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.StackPane;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaView;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.*;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
-import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.ResourceBundle;
@@ -40,8 +34,13 @@ public class MyViewController implements IView, Observer, Initializable {
     public Label lbl_characterRow;
     public Label lbl_characterColumn;
     public Label lbl_statusBar;
-    public Button solve_btn;
-    private  static Stage tempStage;
+    private String soundOnOff;
+    public javafx.scene.image.ImageView icon_sound;
+    public javafx.scene.image.ImageView icon_partSolution;
+    public javafx.scene.image.ImageView icon_fullSolution;
+    private static Stage tempStage;
+    private static Scene mainScene;
+
 
     //region String Property for Binding
     public StringProperty CharacterRow = new SimpleStringProperty();
@@ -52,12 +51,16 @@ public class MyViewController implements IView, Observer, Initializable {
     public void setViewModel(MyViewModel myViewModel){
         this.myViewModel = myViewModel;
     }
+    public static void setMainScene(Scene scene){
+        mainScene = scene;
+    }
+    public static Scene getMainScene(){return mainScene;}
     @Override
     public void update(Observable o, Object arg) {
         if(o == myViewModel) {
             mazeDisplayer.setMaze(myViewModel.getMaze());
             mazeDisplayer.setCharacterPosition(myViewModel.getCharacterPositionRow(), myViewModel.getCharacterPositionColumn());
-            mazeDisplayer.setCharacterDirection(myViewModel.getCharacterDirection());
+            mazeDisplayer.setMainCharacterDirection(myViewModel.getCharacterDirection());
             CharacterColumn.set(myViewModel.getCharacterPositionColumn() + "");
             CharacterRow.set(myViewModel.getCharacterPositionRow() + "");
             if(myViewModel.getMazeSolutionArr() != null)
@@ -65,7 +68,6 @@ public class MyViewController implements IView, Observer, Initializable {
             else
                 mazeDisplayer.setMazeSolutionArr(null);
             if(myViewModel.isAtTheEnd()){
-                solve_btn.setVisible(false);
                 Alert alert = new Alert(Alert.AlertType.NONE);
                 alert.setContentText(String.format("Congratulations!!"));
                 alert.show();
@@ -80,7 +82,26 @@ public class MyViewController implements IView, Observer, Initializable {
         //Set Binding for Properties
         lbl_characterRow.textProperty().bind(CharacterRow);
         lbl_characterColumn.textProperty().bind(CharacterColumn);
+        initImages();
+    }
 
+    private void initImages(){
+        // Set soundBtn
+        soundOnOff = "On";
+        File file = new File("Resources/Icons/icon_sound" + soundOnOff + ".png");
+        Image image = new Image(file.toURI().toString());
+        icon_sound.setImage(image);
+        setSound();
+
+        //Set Solution Buttons
+        file = new File("Resources/Icons/icon_partSolution.png");
+        image = new Image(file.toURI().toString());
+        icon_partSolution.setImage(image);
+
+        file = new File("Resources/Icons/icon_fullSolution.png");
+        image = new Image(file.toURI().toString());
+        icon_fullSolution.setImage(image);
+        setFullSolution();
     }
 
     public void KeyPressed(KeyEvent keyEvent){
@@ -94,13 +115,16 @@ public class MyViewController implements IView, Observer, Initializable {
         int height = Integer.valueOf(txtfld_rowsNum.getText());
         int width = Integer.valueOf(txtfld_columnsNum.getText());
         mazeDisplayer.setMazeSolutionArr(null);
-        solve_btn.setVisible(true);
         myViewModel.generateMaze(height, width);
         lbl_statusBar.setText("Lets see if you solve this!");
     }
 
     public void solveMaze(ActionEvent actionEvent){
         //TODO implement
+        solveMaze();
+    }
+
+    private void solveMaze(){
         myViewModel.generateSolution();
         int[][] solutionArr = myViewModel.getSolution();
         mazeDisplayer.setMazeSolutionArr(solutionArr);
@@ -193,7 +217,6 @@ public class MyViewController implements IView, Observer, Initializable {
     }
 
 
-
     public void loadFile(ActionEvent event){
         System.out.println("loadFile");
         FileChooser fileChooser = new FileChooser();
@@ -236,6 +259,35 @@ public class MyViewController implements IView, Observer, Initializable {
     }
 
     public void setSound(){
+        icon_sound.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
 
+            @Override
+            public void handle(MouseEvent event) {
+                if(myViewModel.setSound())
+                    soundOnOff = "On";
+                else
+                    soundOnOff = "Off";
+
+                File file = new File("Resources/Icons/icon_sound" + soundOnOff + ".png");
+                Image image = new Image(file.toURI().toString());
+                icon_sound.setImage(image);
+                event.consume();
+            }
+        });
+    }
+
+    public void setFullSolution(){
+        icon_fullSolution.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                solveMaze();
+                event.consume();
+            }
+        });
+    }
+
+
+    public void moveCharacter(KeyEvent keyEvent) {
+        KeyPressed(keyEvent);
     }
 }

@@ -1,51 +1,40 @@
 package View;
 
 import Model.MazeCharacter;
-import algorithms.mazeGenerators.Maze;
-import algorithms.mazeGenerators.Position;
+import Model.MyModel;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.event.EventHandler;
-import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.scene.paint.Color;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.net.URL;
-import java.util.ResourceBundle;
 
 
 public class MazeDisplayer extends Canvas {
 
 
     private MazeCharacter mainCharacter;
+    private MazeCharacter secondCharacter;
     private char[][] mazeCharArr;
     private int[][] mazeSolutionArr;
-    private int characterPositionRow;
-    private int characterPositionColumn;
+    //private int characterPositionRow;
+    //private int characterPositionColumn;
     private int goalPositionRow;
     private int goalPositionColumn;
     private int rowMazeSize;
     private int colMazeSize;
-    private String characterDirection;
-    private static String characterName = "Crash_";
-    private static boolean multiPlayerMode = false;
+    //private String characterDirection;
 
-    public int getCharacterPositionRow() {
-        return characterPositionRow;
+
+
+    public int getMainCharacterRow() {
+        return mainCharacter.getCharacterRow();
     }
-    public int getCharacterPositionColumn() {
-        return characterPositionColumn;
+    public int getMainCharacterColumn() {
+        return mainCharacter.getCharacterCol();
     }
 
 
@@ -54,6 +43,8 @@ public class MazeDisplayer extends Canvas {
         mazeCharArr = maze;
         rowMazeSize = maze.length;
         colMazeSize = maze[0].length;
+        mainCharacter = new MazeCharacter(MyModel.getMainCharacterName(),0,0);
+        secondCharacter = new MazeCharacter(MyModel.getSecondCharacterName(),0,0);
     }
 
     public void setGoalPosition(int row, int column){
@@ -61,13 +52,13 @@ public class MazeDisplayer extends Canvas {
         goalPositionColumn = column;
     }
 
-    public void setCharacterDirection(String direction){
-        characterDirection = direction;
+    public void setMainCharacterDirection(String direction){
+        mainCharacter.setCharacterDirection(direction);
     }
 
     public void setCharacterPosition(int row, int column) {
-        characterPositionRow = row;
-        characterPositionColumn = column;
+        mainCharacter.setCharacterRow(row);
+        mainCharacter.setCharacterCol(column);
     }
 
 
@@ -79,6 +70,7 @@ public class MazeDisplayer extends Canvas {
             double cellWidth = canvasWidth / colMazeSize;
 
             try {
+                String characterName = MyModel.getMainCharacterName();
                 GraphicsContext graphicsContext2D = getGraphicsContext2D();
                 graphicsContext2D.clearRect(0, 0, getWidth(), getHeight()); //Clears the canvas
                 Image wallImage = new Image(new FileInputStream("Resources/Images/" + characterName + "wall.png"));
@@ -105,8 +97,8 @@ public class MazeDisplayer extends Canvas {
                 //Draw Character
                 //gc.setFill(Color.RED);
                 //gc.fillOval(characterPositionColumn * cellHeight, characterPositionRow * cellWidth, cellHeight, cellWidth);
-                Image characterImage = new Image(new FileInputStream("Resources/Characters/" + characterName + characterDirection + ".png"));
-                graphicsContext2D.drawImage(characterImage, characterPositionColumn * cellHeight, characterPositionRow * cellWidth, cellHeight, cellWidth);
+                Image characterImage = new Image(new FileInputStream("Resources/Characters/" + characterName + mainCharacter.getCharacterDirection() + ".png"));
+                graphicsContext2D.drawImage(characterImage, getMainCharacterColumn() * cellHeight, getMainCharacterRow() * cellWidth, cellHeight, cellWidth);
 
                 Image goalImage = new Image(new FileInputStream("Resources/Characters/" + characterName + "goal.png"));
                 graphicsContext2D.drawImage(goalImage, goalPositionColumn * cellHeight, goalPositionRow * cellWidth, cellHeight, cellWidth);
@@ -161,14 +153,8 @@ public class MazeDisplayer extends Canvas {
         this.mazeSolutionArr = mazeSolutionArr;
     }
 
-    public static void setCharacterName(String name) {
-        characterName = name;
-    }
 
-    public static void setMultiPlayerMode(boolean setMode){
-        multiPlayerMode = setMode;
-    }
 
-    //endregion
+
 
 }

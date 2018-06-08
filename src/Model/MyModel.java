@@ -3,30 +3,26 @@ package Model;
 import Client.*;
 import IO.MyDecompressorInputStream;
 import Server.*;
-import algorithms.mazeGenerators.IMazeGenerator;
 import algorithms.mazeGenerators.Maze;
-import algorithms.mazeGenerators.Position;
 import algorithms.search.*;
 import javafx.scene.input.KeyCode;
 
 import java.io.*;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Observable;
 
 public class MyModel extends Observable implements IModel {
 
     private MazeCharacter mainCharacter;
     private MazeCharacter secondCharacter;
-    //private int characterPositionRow;
-    //private int characterPositionCol;
-    //private String characterDirection = "front";
     private Maze maze;
     private Solution mazeSolution;
     private boolean isAtTheEnd;
     private int[][] mazeSolutionArr;
+    private static boolean multiPlayerMode = false;
+    private static String mainCharacterName = "Crash_";
+    private static String secondCharacterName = "Mask_";
 
 
     public int[][] getMazeSolutionArr() {
@@ -101,32 +97,57 @@ public class MyModel extends Observable implements IModel {
             case UP:
             case NUMPAD8:
                 mainCharacter.setCharacterDirection("back");
-                if(isNotWall(mainCharacterPositionRow - 1, mainCharacterPositionCol ))
+                if(isNotWall(mainCharacterPositionRow - 1, mainCharacterPositionCol )) {
                     mainCharacter.setCharacterRow(mainCharacterPositionRow - 1);
+                    if(!multiPlayerMode){
+                        secondCharacter.setCharacterRow(mainCharacterPositionRow);
+                        secondCharacter.setCharacterCol(mainCharacterPositionCol);
+                    }
+                }
                 break;
             case DOWN:
             case NUMPAD2:
                 mainCharacter.setCharacterDirection("front");
-                if(isNotWall(mainCharacterPositionRow + 1, mainCharacterPositionCol))
+                if(isNotWall(mainCharacterPositionRow + 1, mainCharacterPositionCol)) {
                     mainCharacter.setCharacterRow(mainCharacterPositionRow + 1);
+                    if(!multiPlayerMode){
+                        secondCharacter.setCharacterRow(mainCharacterPositionRow);
+                        secondCharacter.setCharacterCol(mainCharacterPositionCol);
+                    }
+                }
                 break;
             case LEFT:
             case NUMPAD4:
                 mainCharacter.setCharacterDirection("left");
-                if(isNotWall(mainCharacterPositionRow, mainCharacterPositionCol - 1))
+                if(isNotWall(mainCharacterPositionRow, mainCharacterPositionCol - 1)) {
                     mainCharacter.setCharacterCol(mainCharacterPositionCol - 1);
+                    if(!multiPlayerMode){
+                        secondCharacter.setCharacterRow(mainCharacterPositionRow);
+                        secondCharacter.setCharacterCol(mainCharacterPositionCol);
+                    }
+                }
                 break;
             case RIGHT:
             case NUMPAD6:
                 mainCharacter.setCharacterDirection("right");
-                if(isNotWall(mainCharacterPositionRow, mainCharacterPositionCol + 1))
+                if(isNotWall(mainCharacterPositionRow, mainCharacterPositionCol + 1)) {
                     mainCharacter.setCharacterCol(mainCharacterPositionCol + 1);
+                    if(!multiPlayerMode){
+                        secondCharacter.setCharacterRow(mainCharacterPositionRow);
+                        secondCharacter.setCharacterCol(mainCharacterPositionCol);
+                    }
+                }
                 break;
             case NUMPAD7:
                 mainCharacter.setCharacterDirection("left");
                 if(isNotWall(mainCharacterPositionRow - 1, mainCharacterPositionCol - 1) && (isNotWall(mainCharacterPositionRow, mainCharacterPositionCol - 1) || isNotWall(mainCharacterPositionRow - 1, mainCharacterPositionCol) )){
                     mainCharacter.setCharacterRow(mainCharacterPositionRow - 1);
                     mainCharacter.setCharacterCol(mainCharacterPositionCol - 1);
+                    if(!multiPlayerMode){
+                        secondCharacter.setCharacterRow(mainCharacterPositionRow);
+                        secondCharacter.setCharacterCol(mainCharacterPositionCol);
+                    }
+
                 }
                 break;
             case NUMPAD9:
@@ -134,6 +155,10 @@ public class MyModel extends Observable implements IModel {
                 if(isNotWall(mainCharacterPositionRow - 1, mainCharacterPositionCol + 1) && (isNotWall(mainCharacterPositionRow, mainCharacterPositionCol + 1) || isNotWall(mainCharacterPositionRow - 1, mainCharacterPositionCol) )){
                     mainCharacter.setCharacterRow(mainCharacterPositionRow - 1);
                     mainCharacter.setCharacterCol(mainCharacterPositionCol + 1);
+                    if(!multiPlayerMode){
+                        secondCharacter.setCharacterRow(mainCharacterPositionRow);
+                        secondCharacter.setCharacterCol(mainCharacterPositionCol);
+                    }
                 }
                 break;
             case NUMPAD1:
@@ -141,6 +166,10 @@ public class MyModel extends Observable implements IModel {
                 if(isNotWall(mainCharacterPositionRow + 1, mainCharacterPositionCol - 1) && (isNotWall(mainCharacterPositionRow, mainCharacterPositionCol - 1) || isNotWall(mainCharacterPositionRow + 1, mainCharacterPositionCol) )){
                     mainCharacter.setCharacterRow(mainCharacterPositionRow + 1);
                     mainCharacter.setCharacterCol(mainCharacterPositionCol - 1);
+                    if(!multiPlayerMode){
+                        secondCharacter.setCharacterRow(mainCharacterPositionRow);
+                        secondCharacter.setCharacterCol(mainCharacterPositionCol);
+                    }
                 }
                 break;
             case NUMPAD3:
@@ -148,6 +177,10 @@ public class MyModel extends Observable implements IModel {
                 if(isNotWall(mainCharacterPositionRow + 1, mainCharacterPositionCol + 1) && (isNotWall(mainCharacterPositionRow, mainCharacterPositionCol + 1) || isNotWall(mainCharacterPositionRow + 1, mainCharacterPositionCol) )){
                     mainCharacter.setCharacterRow(mainCharacterPositionRow + 1);
                     mainCharacter.setCharacterCol(mainCharacterPositionCol + 1);
+                    if(!multiPlayerMode){
+                        secondCharacter.setCharacterRow(mainCharacterPositionRow);
+                        secondCharacter.setCharacterCol(mainCharacterPositionCol);
+                    }
                 }
                 break;
 
@@ -270,5 +303,20 @@ public class MyModel extends Observable implements IModel {
         }
     }
 
+    public static void setMultiPlayerMode(boolean setMode){
+        multiPlayerMode = setMode;
+    }
+
+    public static void setMainCharacterName(String name) {
+        mainCharacterName = name;
+    }
+
+    public static String getMainCharacterName(){
+        return mainCharacterName;
+    }
+
+    public static String getSecondCharacterName(){
+        return secondCharacterName;
+    }
 
 }

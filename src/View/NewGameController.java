@@ -56,6 +56,7 @@ public class NewGameController implements IView, Observer, Initializable {
         myViewModel.startSoundTrack(mainCharacter);
         myViewModel.setMultiPlayerMode(newGame_multiPlayer_checkBox.isSelected());
         MyViewController.closeTempStage();
+        MyViewController.getMainScene().getFocusOwner().requestFocus();
 
     }
 

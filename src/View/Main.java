@@ -42,6 +42,7 @@ public class Main extends Application {
 
         MyViewController myViewController = fxmlLoader.getController();
         myViewController.setViewModel(myViewModel);
+        myViewController.setMainScene(scene);
         myViewModel.addObserver(myViewController);
 
 
