@@ -16,7 +16,12 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane onKeyPressed="#KeyPressed" stylesheets="@ViewStyle.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ViewModel.ViewModel">
+
+<BorderPane onKeyPressed="#KeyPressed"
+            stylesheets="@ViewStyle.css"
+            xmlns="http://javafx.com/javafx/8.0.121"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="View.MyViewController">
     <left>
         <VBox prefHeight="200.0" prefWidth="178.0" spacing="5.0" BorderPane.alignment="CENTER">
             <children>
@@ -35,8 +40,8 @@
                     </rowConstraints>
                     <Label text="Maze rows:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                     <Label text="Maze columns:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-                    <TextField fx:id="txtfld_rowsNum" disable="false" text="50" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-                    <TextField fx:id="txtfld_columnsNum" disable="false" prefHeight="31.0" prefWidth="74.0" text="50" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                    <TextField fx:id="txtfld_rowsNum" disable="false" text="10" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                    <TextField fx:id="txtfld_columnsNum" disable="false" prefHeight="31.0" prefWidth="74.0" text="10" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                     <Button onAction="#generateMaze" prefHeight="25.0" prefWidth="167.0" text="Generate Maze" textAlignment="CENTER" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="2" />
                     <Button fx:id="solve_btn" cancelButton="true" onAction="#solveMaze" prefHeight="25.0" prefWidth="167.0" text="Solve Maze" visible="false" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="3" />
                     <Label text="Char row:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
@@ -60,22 +65,30 @@
     <top>
         <VBox BorderPane.alignment="CENTER">
             <children>
-                <MenuBar>
+                <MenuBar prefWidth="796.0" >
                     <menus>
                         <Menu mnemonicParsing="false" text="File">
                             <items>
-                                <MenuItem mnemonicParsing="false" text="Close" />
+                                <MenuItem mnemonicParsing="false" text="New"  />
                             </items>
-                        </Menu>
-                        <Menu mnemonicParsing="false" text="Edit">
                             <items>
-                                <MenuItem mnemonicParsing="false" text="Delete" />
+                                <MenuItem mnemonicParsing="false" text="Save" onAction="#saveFile" />
+                            </items>
+                            <items>
+                                <MenuItem mnemonicParsing="false" text="Load" onAction="#loadFile" />
                             </items>
                         </Menu>
+                        <Menu mnemonicParsing="false" text="Options">
+                            <items>
+                                <MenuItem mnemonicParsing="false" text="Properties" />
+                            </items>
+                        </Menu>
+                        <Menu mnemonicParsing="false" onAction="#exitButton" text="Exit" />
                         <Menu mnemonicParsing="false" text="Help">
-                            <items>
-                                <MenuItem mnemonicParsing="false" text="About" />
-                            </items>
+
+                        </Menu>
+                        <Menu mnemonicParsing="false" text="About">
+
                         </Menu>
                     </menus>
                 </MenuBar>
@@ -85,7 +98,7 @@
     <center>
         <Pane BorderPane.alignment="CENTER">
             <children>
-                <MazeDisplayer fx:id="mazeDisplayer" height="600.0" imageFileNameCharacter="Resources/Characters/Crash_front.jpg" imageFileNameGoal="Resources/Characters/Crash_crystal.png" imageFileNameWall="Resources/Characters/Crash_box1.png" width="600.0" />
+                <MazeDisplayer fx:id="mazeDisplayer" height="600.0" imageFileNameCharacter="Resources/Characters/" imageFileNameGoal="Resources/Characters/Crash_goal.png" imageFileNameSolution="Resources/Images/Crash_showSolution.png" imageFileNameWall="Resources/Images/crash_box_1.png" width="600.0" />
             </children>
             <padding>
                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

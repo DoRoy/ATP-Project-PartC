@@ -6,7 +6,10 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
 
-public class PlayVideo extends Application{
+import java.io.File;
+
+public class PlayVideo extends Application {
+
 
     public static void main(String[] args) {
         Application.launch(args);
@@ -17,10 +20,10 @@ public class PlayVideo extends Application{
 
         StackPane root = new StackPane();
 
-        MediaPlayer player = new MediaPlayer( new Media(getClass().getResource("Resources/Characters/Crash_Dance.mp4").toExternalForm()));
+        MediaPlayer player = new MediaPlayer(new Media(new File("Resources/Music/Crash_dance.mp4").toURI().toString()));
         MediaView mediaView = new MediaView(player);
 
-        root.getChildren().add( mediaView);
+        root.getChildren().add(mediaView);
 
         Scene scene = new Scene(root, 1024, 768);
 
@@ -31,4 +34,5 @@ public class PlayVideo extends Application{
         player.play();
 
     }
+
 }
