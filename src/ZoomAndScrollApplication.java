@@ -1,4 +1,3 @@
-package View;
 
 import javafx.application.Application;
 import javafx.beans.property.DoubleProperty;
@@ -10,7 +9,6 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;

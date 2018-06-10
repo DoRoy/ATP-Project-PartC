@@ -8,9 +8,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -29,6 +27,7 @@ public class MyViewController implements IView, Observer, Initializable {
     @FXML
     private MyViewModel myViewModel;
     public MazeDisplayer mazeDisplayer;
+    private NewGameController gameController;
     public javafx.scene.control.TextField txtfld_rowsNum;
     public javafx.scene.control.TextField txtfld_columnsNum;
     public Label lbl_characterRow;
@@ -38,8 +37,9 @@ public class MyViewController implements IView, Observer, Initializable {
     public javafx.scene.image.ImageView icon_sound;
     public javafx.scene.image.ImageView icon_partSolution;
     public javafx.scene.image.ImageView icon_fullSolution;
-    private static Stage tempStage;
-    private static Scene mainScene;
+    //private static Stage tempStage;
+    private Scene newGameScene;
+    private Scene mainScene;
 
 
     //region String Property for Binding
@@ -51,18 +51,22 @@ public class MyViewController implements IView, Observer, Initializable {
     public void setViewModel(MyViewModel myViewModel){
         this.myViewModel = myViewModel;
     }
-    public static void setMainScene(Scene scene){
+    public void setNewGameScene(Scene scene){
+        newGameScene = scene;
+    }
+    public void setMainScene(Scene scene){
         mainScene = scene;
     }
-    public static Scene getMainScene(){return mainScene;}
     @Override
     public void update(Observable o, Object arg) {
         if(o == myViewModel) {
             mazeDisplayer.setMaze(myViewModel.getMaze());
-            mazeDisplayer.setCharacterPosition(myViewModel.getCharacterPositionRow(), myViewModel.getCharacterPositionColumn());
-            mazeDisplayer.setMainCharacterDirection(myViewModel.getCharacterDirection());
-            CharacterColumn.set(myViewModel.getCharacterPositionColumn() + "");
-            CharacterRow.set(myViewModel.getCharacterPositionRow() + "");
+            mazeDisplayer.setMainCharacterPosition(myViewModel.getMainCharacterPositionRow(), myViewModel.getMainCharacterPositionColumn());
+            mazeDisplayer.setMainCharacterDirection(myViewModel.getMainCharacterDirection());
+            mazeDisplayer.setMainCharacterName(myViewModel.getMainCharacterName());
+            mazeDisplayer.setSecondCharacterName(myViewModel.getSecondCharacterName());
+            CharacterColumn.set(myViewModel.getMainCharacterPositionColumn() + "");
+            CharacterRow.set(myViewModel.getMainCharacterPositionRow() + "");
             if(myViewModel.getMazeSolutionArr() != null)
                 mazeDisplayer.setMazeSolutionArr(myViewModel.getSolution());
             else
@@ -73,6 +77,13 @@ public class MyViewController implements IView, Observer, Initializable {
                 alert.show();
             }
             mazeDisplayer.redraw();
+
+            if (!myViewModel.isPlayed()){
+                soundOnOff = "On";
+                File file = new File("Resources/Icons/icon_sound" + soundOnOff + ".png");
+                Image image = new Image(file.toURI().toString());
+                icon_sound.setImage(image);
+            }
         }
 
     }
@@ -105,19 +116,21 @@ public class MyViewController implements IView, Observer, Initializable {
     }
 
     public void KeyPressed(KeyEvent keyEvent){
+        System.out.println("MyViewController: KeyPressed");
         myViewModel.moveCharacter(keyEvent.getCode());
         mazeDisplayer.setMazeSolutionArr(null);
         lbl_statusBar.setText("");
         keyEvent.consume();
     }
 
-    public void generateMaze(){
-        int height = Integer.valueOf(txtfld_rowsNum.getText());
-        int width = Integer.valueOf(txtfld_columnsNum.getText());
-        mazeDisplayer.setMazeSolutionArr(null);
-        myViewModel.generateMaze(height, width);
-        lbl_statusBar.setText("Lets see if you solve this!");
-    }
+    //public void generateMaze(){
+    //    int height = Integer.valueOf(txtfld_rowsNum.getText());
+    //    int width = Integer.valueOf(txtfld_columnsNum.getText());
+    //    mazeDisplayer.setMazeSolutionArr(null);
+    //    myViewModel.generateMaze(height, width);
+    //    lbl_statusBar.setText("Lets see if you solve this!");
+    //
+    //}
 
     public void solveMaze(ActionEvent actionEvent){
         //TODO implement
@@ -152,6 +165,8 @@ public class MyViewController implements IView, Observer, Initializable {
         });
     }
 
+
+
     public void exitButton(ActionEvent event){
         //TODO implement currectly
         System.out.println("Exit button");
@@ -172,7 +187,7 @@ public class MyViewController implements IView, Observer, Initializable {
 
     public void saveFile(ActionEvent event){
         System.out.println("saveFile");
-        final int[] choose = {0};
+        int[] choose = {0};
         Alert alert = new Alert(Alert.AlertType.NONE);
         alert.setTitle("Save Maze");
         alert.setContentText("What maze do you want to save?");
@@ -231,26 +246,29 @@ public class MyViewController implements IView, Observer, Initializable {
         event.consume();
     }
 
-    public void newMaze(){
+    public void newMaze(ActionEvent event){
         try {
-            tempStage = new Stage();
+            Stage tempStage = new Stage();
             tempStage.setTitle("Create a new game");
-            FXMLLoader fxmlLoader = new FXMLLoader();
-            Parent root = fxmlLoader.load(getClass().getResource("NewGame.fxml").openStream());
-            Scene scene = new Scene(root, 600, 500);
-            NewGameController gameController = fxmlLoader.getController();
-            gameController.setViewModel(myViewModel);
-            myViewModel.addObserver(gameController);
-            tempStage.setScene(scene);
+            //FXMLLoader fxmlLoader = new FXMLLoader();
+            //Parent root = fxmlLoader.load(getClass().getResource("NewGame.fxml").openStream());
+            //Scene scene = new Scene(root, 600, 500);
+            //NewGameController gameController = fxmlLoader.getController();
+            //gameController.setViewModel(myViewModel);
+            //myViewModel.addObserver(gameController);
+            tempStage.setScene(newGameScene);
             tempStage.initModality(Modality.APPLICATION_MODAL); //Lock the window until it closes
             tempStage.showAndWait();
+            System.out.println(event.getEventType().toString());
+            event.consume();
+            tempStage.close();
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
     }
 
     public static void closeTempStage(){
-        tempStage.close();
+   //     tempStage.close();
     }
 
 

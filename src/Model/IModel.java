@@ -14,11 +14,14 @@ public interface IModel {
     void moveCharacter(KeyCode movement);
     void generateSolution();
     char[][] getMaze();
-    int getCharacterPositionRow();
-    int getCharacterPositionColumn();
+    int getMainCharacterPositionRow();
+    int getMainCharacterPositionColumn();
+    int getSecondCharacterPositionRow();
+    int getSecondCharacterPositionColumn();
+    String getMainCharacterDirection();
+    String getSecondCharacterDirection();
     void closeModel();
     boolean isAtTheEnd();
-    String getCharacterDirection();
     int[][] getSolution();
     int[][] getMazeSolutionArr();
     void saveCurrentMaze(File file);

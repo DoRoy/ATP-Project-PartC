@@ -1,3 +1,6 @@
+import View.MazeDisplayer;
+import algorithms.mazeGenerators.Maze;
+import algorithms.mazeGenerators.MyMazeGenerator;
 import javafx.application.Application;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -16,12 +19,20 @@ import javafx.stage.Stage;
 
 public class ZoomClass extends Application{
     public void start(Stage primaryStage) throws Exception {
-        WebView webView = new WebView();
+        MazeDisplayer mazeDisplayer = new MazeDisplayer();
+        MyMazeGenerator mg = new MyMazeGenerator();
+        Maze maze = mg.generate(10,10);
+
+        mazeDisplayer.setMaze(maze.getMaze());
+        mazeDisplayer.redraw();
+        //WebView webView = new WebView();
         Slider slider = new Slider(0.5,2,1);
-        ZoomingPane zoomingPane = new ZoomingPane(webView);
+        //ZoomingPane zoomingPane = new ZoomingPane(webView);
+        ZoomingPane zoomingPane = new ZoomingPane(mazeDisplayer);
         zoomingPane.zoomFactorProperty().bind(slider.valueProperty());
         primaryStage.setScene(new Scene(new BorderPane(zoomingPane, null, null, slider, null)));
-        webView.getEngine().load("http://www.google.com");
+        //webView.getEngine().load("http://www.google.com");
+
         primaryStage.setWidth(800);
         primaryStage.setHeight(600);
         primaryStage.show();

@@ -59,18 +59,17 @@
 
             <HBox>
 
-
-                <ImageView fx:id="icon_sound" fitHeight="30.0" fitWidth="30.0">
+                <ImageView fx:id="icon_sound" fitHeight="50.0" fitWidth="50.0">
                <HBox.margin>
                   <Insets bottom="5.0" left="10.0" right="5.0" top="5.0" />
                </HBox.margin></ImageView>
 
-                <ImageView fx:id="icon_partSolution" fitHeight="30.0" fitWidth="30.0">
+                <ImageView fx:id="icon_partSolution" fitHeight="50.0" fitWidth="50.0">
                     <HBox.margin>
                         <Insets bottom="5.0" left="10.0" right="5.0" top="5.0" />
                     </HBox.margin></ImageView>
 
-                <ImageView fx:id="icon_fullSolution" fitHeight="30.0" fitWidth="30.0">
+                <ImageView fx:id="icon_fullSolution" fitHeight="50.0" fitWidth="50.0">
                     <HBox.margin>
                         <Insets bottom="5.0" left="10.0" right="5.0" top="5.0" />
                     </HBox.margin></ImageView>
@@ -83,7 +82,7 @@
     <center>
         <Pane BorderPane.alignment="CENTER">
             <children>
-                <MazeDisplayer fx:id="mazeDisplayer" height="600.0" imageFileNameCharacter="Resources/Characters/" imageFileNameGoal="Resources/Characters/Crash_goal.png" imageFileNameSolution="Resources/Images/Crash_showSolution.png" imageFileNameWall="Resources/Images/crash_box_1.png" onKeyPressed="#KeyPressed" width="600.0" />
+                <MazeDisplayer fx:id="mazeDisplayer" height="700.0"  onKeyPressed="#KeyPressed" width="700.0" />
             </children>
             <padding>
                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

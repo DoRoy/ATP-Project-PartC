@@ -20,9 +20,9 @@ public class MyModel extends Observable implements IModel {
     private Solution mazeSolution;
     private boolean isAtTheEnd;
     private int[][] mazeSolutionArr;
-    private static boolean multiPlayerMode = false;
-    private static String mainCharacterName = "Crash_";
-    private static String secondCharacterName = "Mask_";
+    private boolean multiPlayerMode = false;
+    private String mainCharacterName = "Crash_";
+    private String secondCharacterName = "Mask_";
 
 
     public int[][] getMazeSolutionArr() {
@@ -235,13 +235,32 @@ public class MyModel extends Observable implements IModel {
     }
 
     @Override
-    public int getCharacterPositionRow() {
+    public int getMainCharacterPositionRow() {
         return mainCharacter.getCharacterRow();
     }
 
     @Override
-    public String getCharacterDirection() {
+    public int getMainCharacterPositionColumn() {
+        return mainCharacter.getCharacterCol();
+    }
+
+    @Override
+    public String getMainCharacterDirection() {
         return mainCharacter.getCharacterDirection();
+    }
+
+
+
+    public int getSecondCharacterPositionRow() {
+        return secondCharacter.getCharacterRow();
+    }
+
+    public int getSecondCharacterPositionColumn() {
+        return secondCharacter.getCharacterCol();
+    }
+
+    public String getSecondCharacterDirection() {
+        return secondCharacter.getCharacterDirection();
     }
 
 
@@ -255,10 +274,6 @@ public class MyModel extends Observable implements IModel {
         return isAtTheEnd;
     }
 
-    @Override
-    public int getCharacterPositionColumn() {
-        return mainCharacter.getCharacterCol();
-    }
 
     @Override
     public void closeModel() {
@@ -303,19 +318,22 @@ public class MyModel extends Observable implements IModel {
         }
     }
 
-    public static void setMultiPlayerMode(boolean setMode){
+    public void setMultiPlayerMode(boolean setMode){
         multiPlayerMode = setMode;
     }
 
-    public static void setMainCharacterName(String name) {
+    public void setMainCharacterName(String name) {
         mainCharacterName = name;
     }
+    public void setSecondCharacterName(String name) {
+        secondCharacterName = name;
+    }
 
-    public static String getMainCharacterName(){
+    public String getMainCharacterName(){
         return mainCharacterName;
     }
 
-    public static String getSecondCharacterName(){
+    public String getSecondCharacterName(){
         return secondCharacterName;
     }
 
