@@ -41,6 +41,7 @@ public class PropertiesViewController extends Dialog implements Initializable {
     }
 
 
+
     public void closeButton(){
         System.out.println("Properties: closeButton");
         stage.close();
