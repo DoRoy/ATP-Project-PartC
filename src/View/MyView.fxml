@@ -81,9 +81,9 @@
                                 <MenuItem mnemonicParsing="false" text="Properties" />
                             </items>
                         </Menu>
-                        <Menu mnemonicParsing="false" onAction="#exitButton" text="Exit">
+                        <Menu  mnemonicParsing="false" text="Exit">
                             <items>
-                                <MenuItem mnemonicParsing="false" onAction="#exitButton" visible="false" />
+                                <MenuItem mnemonicParsing="false" onAction="#exitButton" visible="true" text="Exit"/>
                             </items>
                         </Menu>
                         <Menu mnemonicParsing="false" text="Help">

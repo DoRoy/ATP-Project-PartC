@@ -15,6 +15,9 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Executors.*;
 
 public class MyModel extends Observable implements IModel {
 
@@ -27,6 +30,10 @@ public class MyModel extends Observable implements IModel {
     private Solution mazeSolution;
     private boolean isAtTheEnd;
     private int[][] mazeSolutionArr;
+    private Server serverMazeGenerator;
+    private Server serverSolveMaze;
+
+    private ExecutorService threadPool = Executors.newCachedThreadPool();;
 
 
     public int[][] getMazeSolutionArr() {
@@ -39,6 +46,20 @@ public class MyModel extends Observable implements IModel {
     public MyModel(){
         Configurations.run(); // TODO should be removed
         isAtTheEnd = false;
+        startServers(); //TODO remove all server things
+
+    }
+
+    private void startServers(){
+        serverMazeGenerator = new Server(5400, 1000, new ServerStrategyGenerateMaze());
+        serverSolveMaze = new Server(5401, 1000, new ServerStrategySolveSearchProblem());
+        serverMazeGenerator.start();
+        serverSolveMaze.start();
+    }
+
+    private void closeServers(){
+        serverMazeGenerator.stop();
+        serverSolveMaze.stop();
     }
 
 
@@ -60,19 +81,32 @@ public class MyModel extends Observable implements IModel {
                         byte[] decompressedMaze = new byte[mazeDimensions[0] * mazeDimensions[1] + 12 /*CHANGE SIZE ACCORDING TO YOU MAZE SIZE*/]; //allocating byte[] for the decompressed maze -
                         is.read(decompressedMaze); //Fill decompressedMaze with bytes
                         maze = new Maze(decompressedMaze);
+                        toServer.close();
+                        fromServer.close();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
             });
+            threadPool.execute(() ->{
+                clientMazeGenerator.communicateWithServer();
+                int mazeRow = maze.getStartPosition().getRowIndex();
+                int mazeCol = maze.getStartPosition().getColumnIndex();
+                mainCharacter = new MazeCharacter("Crash_",mazeRow,mazeCol);
+                secondCharacter = new MazeCharacter("Mask_", mazeRow,mazeCol);
 
-            clientMazeGenerator.communicateWithServer();
+                isAtTheEnd = false;
+                mazeSolutionArr = null;
+                setChanged();
+                notifyObservers();
+            });
+            //clientMazeGenerator.communicateWithServer();
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
 
 
-        int mazeRow = maze.getStartPosition().getRowIndex();
+/*        int mazeRow = maze.getStartPosition().getRowIndex();
         int mazeCol = maze.getStartPosition().getColumnIndex();
         mainCharacter = new MazeCharacter("Crash_",mazeRow,mazeCol);
         secondCharacter = new MazeCharacter("Mask_", mazeRow,mazeCol);
@@ -81,7 +115,7 @@ public class MyModel extends Observable implements IModel {
         mazeSolutionArr = null;
 
         setChanged();
-        notifyObservers();
+        notifyObservers();*/
     }
 
     @Override
@@ -168,19 +202,27 @@ public class MyModel extends Observable implements IModel {
                         toServer.writeObject(new Maze(maze, mainCharacter.getCharacterRow(), mainCharacter.getCharacterCol())); //send maze to server
                         toServer.flush();
                         mazeSolution = (Solution) fromServer.readObject(); //read generated maze (compressed with MyCompressor) from server
+                        toServer.close();
+                        fromServer.close();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
 
             });
-            clientSolveMaze.communicateWithServer();
+            threadPool.execute(()->{
+                clientSolveMaze.communicateWithServer();
+                mazeSolutionArr = mazeSolution.getSolution();
+                setChanged();
+                notifyObservers();
+            });
+            //clientSolveMaze.communicateWithServer();
         }catch (Exception e){
-
+            e.printStackTrace();
         }
-        mazeSolutionArr = mazeSolution.getSolution();
+        /*mazeSolutionArr = mazeSolution.getSolution();
         setChanged();
-        notifyObservers();
+        notifyObservers();*/
     }
 
     private boolean isNotWall(int row, int col){
@@ -222,7 +264,10 @@ public class MyModel extends Observable implements IModel {
     @Override
     public void closeModel() {
         //TODO implement
+
         System.out.println("Close Model");
+        closeServers();
+        threadPool.shutdown();
     }
 
     @Override

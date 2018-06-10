@@ -4,7 +4,6 @@ import Model.IModel;
 import javafx.scene.input.KeyCode;
 
 import java.io.File;
-import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -43,7 +42,6 @@ public class MyViewModel extends Observable implements Observer {
     public int getCharacterPositionRow() {
         return model.getCharacterPositionRow();
     }
-
 
     public String getCharacterDirection() {
         return model.getCharacterDirection();

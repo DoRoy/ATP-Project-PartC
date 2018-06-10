@@ -5,17 +5,25 @@ import Server.*;
 import ViewModel.MyViewModel;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import javafx.stage.WindowEvent;
+import javafx.util.Duration;
 
 import java.io.File;
+import java.util.Optional;
 
 public class Main extends Application {
     private Server serverMazeGenerator;
@@ -26,8 +34,6 @@ public class Main extends Application {
         MyViewModel myViewModel = new MyViewModel(model);
         model.addObserver(myViewModel);
 
-        //TODO check if can be changed to IMODEL
-
         primaryStage.setTitle("The Crash Maze!");
         FXMLLoader fxmlLoader = new FXMLLoader();
         Parent root = fxmlLoader.load(getClass().getResource("MyView.fxml").openStream());
@@ -35,15 +41,20 @@ public class Main extends Application {
         scene.getStylesheets().add(getClass().getResource("ViewStyle.css").toExternalForm());
         primaryStage.setScene(scene);
 
-        primaryStage.resizableProperty();
-
 
         String musicFile = "Resources/Music/Crash_gameSound.mp3";
         Media sound = new Media(new File(musicFile).toURI().toString());
         MediaPlayer mediaPlayer = new MediaPlayer(sound);
+        mediaPlayer.setOnEndOfMedia(new Runnable() {
+            @Override
+            public void run() {
+                mediaPlayer.seek(Duration.ZERO);
+            }
+        });
         mediaPlayer.play();
 
         MyViewController myViewController = fxmlLoader.getController();
+        myViewController.setResizeEvent(scene);
         myViewController.setViewModel(myViewModel);
         myViewModel.addObserver(myViewController);
 
@@ -51,17 +62,22 @@ public class Main extends Application {
         //NewGameController gameController = fxmlLoader.getController();
         //gameController.setViewModel(myViewModel);
         //myViewModel.addObserver(gameController);
+        SetStageCloseEvent(primaryStage, myViewController);
         primaryStage.show();
+
         //Rise Servers
-        startServers(); //TODO remove all server things
 
     }
-    private void startServers(){
-        serverMazeGenerator = new Server(5400, 1000, new ServerStrategyGenerateMaze());
-        serverSolveMaze = new Server(5401, 1000, new ServerStrategySolveSearchProblem());
-        serverMazeGenerator.start();
-        serverSolveMaze.start();
+
+    private void SetStageCloseEvent(Stage primaryStage, MyViewController myViewController) {
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            public void handle(WindowEvent windowEvent) {
+                myViewController.exitCorrectly();
+                windowEvent.consume();
+            }
+        });
     }
+
 
     public static void main(String[] args) {
         launch(args);
