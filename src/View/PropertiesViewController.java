@@ -1,18 +1,10 @@
 package View;
 
 import Server.Configurations;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.StringProperty;
-import javafx.collections.ListChangeListener;
-import javafx.event.ActionEvent;
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
-import javax.security.auth.login.Configuration;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -20,7 +12,7 @@ public class PropertiesViewController extends Dialog implements Initializable {
 
     private String algorithmString;
     private String generatorString;
-    private int threadNumString;
+    private int threadNum;
      public ChoiceBox algorithmChoiceBox;
      public ChoiceBox mazeGeneratorChoiceBox;
      public Spinner spinner;
@@ -32,10 +24,12 @@ public class PropertiesViewController extends Dialog implements Initializable {
          System.out.println("Properties: saveChanges");
          algorithmString = (String)algorithmChoiceBox.getValue();
          generatorString = (String)mazeGeneratorChoiceBox.getValue();
+        threadNum = (Integer)spinner.getValue();
         System.out.println(generatorString);
         System.out.println(algorithmString);
         System.out.println(spinner.getValue());
-        Configurations.setProperties((Integer)spinner.getValue(),(String)algorithmChoiceBox.getValue(), (String)mazeGeneratorChoiceBox.getValue());
+        Configurations.setProperties(threadNum,algorithmString, generatorString);
+
         stage.close();
      }
 
