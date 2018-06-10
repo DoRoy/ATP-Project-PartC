@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Observable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Executors.*;
+
 
 public class MyModel extends Observable implements IModel {
 
@@ -35,13 +35,9 @@ public class MyModel extends Observable implements IModel {
 
     private ExecutorService threadPool = Executors.newCachedThreadPool();;
 
-
     public int[][] getMazeSolutionArr() {
         return mazeSolutionArr;
     }
-
-
-
 
     public MyModel(){
         Configurations.run(); // TODO should be removed
@@ -61,7 +57,6 @@ public class MyModel extends Observable implements IModel {
         serverMazeGenerator.stop();
         serverSolveMaze.stop();
     }
-
 
     @Override
     public void generateMaze(int row, int col) {
@@ -106,16 +101,6 @@ public class MyModel extends Observable implements IModel {
         }
 
 
-/*        int mazeRow = maze.getStartPosition().getRowIndex();
-        int mazeCol = maze.getStartPosition().getColumnIndex();
-        mainCharacter = new MazeCharacter("Crash_",mazeRow,mazeCol);
-        secondCharacter = new MazeCharacter("Mask_", mazeRow,mazeCol);
-
-        isAtTheEnd = false;
-        mazeSolutionArr = null;
-
-        setChanged();
-        notifyObservers();*/
     }
 
     @Override
@@ -245,7 +230,6 @@ public class MyModel extends Observable implements IModel {
         return mainCharacter.getCharacterDirection();
     }
 
-
     @Override
     public int[][] getSolution() {
        return mazeSolution.getSolution();
@@ -281,7 +265,7 @@ public class MyModel extends Observable implements IModel {
             objectOutputStream.close();
             fileWriter.close();
         } catch (IOException ex) {
-
+            ex.printStackTrace();
         }
     }
 
@@ -297,7 +281,7 @@ public class MyModel extends Observable implements IModel {
             objectOutputStream.close();
             fileWriter.close();
         } catch (IOException ex) {
-
+            ex.printStackTrace();
         }
     }
 

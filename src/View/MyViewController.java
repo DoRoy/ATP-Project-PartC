@@ -11,7 +11,9 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
@@ -38,6 +40,8 @@ public class MyViewController implements IView, Observer, Initializable {
     public Label lbl_characterColumn;
     public Label lbl_statusBar;
     public Button solve_btn;
+    public MenuItem save_MenuItem;
+    public MenuItem solve_MenuItem;
 
 
     //region String Property for Binding
@@ -63,6 +67,8 @@ public class MyViewController implements IView, Observer, Initializable {
                 mazeDisplayer.setMazeSolutionArr(null);
             if(myViewModel.isAtTheEnd()){
                 solve_btn.setVisible(false);
+                save_MenuItem.setDisable(true);
+                solve_MenuItem.setDisable(true);
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setContentText(String.format("Congratulations!!"));
                 alert.show();
@@ -93,6 +99,8 @@ public class MyViewController implements IView, Observer, Initializable {
         mazeDisplayer.setMazeSolutionArr(null);
         solve_btn.setVisible(true);
         myViewModel.generateMaze(height, width);
+        save_MenuItem.setDisable(false);
+        solve_MenuItem.setDisable(false);
         lbl_statusBar.setText("Lets see if you solve this!");
     }
 
@@ -135,7 +143,6 @@ public class MyViewController implements IView, Observer, Initializable {
 
 
     public void exitCorrectly(){
-        //TODO check how exit button in menu will send this a close request window event
         System.out.println("Exit Correctly");
         Alert alert = new Alert(Alert.AlertType.NONE    );
         ButtonType leaveButton = new ButtonType("Leave", ButtonBar.ButtonData.NO);
@@ -182,7 +189,6 @@ public class MyViewController implements IView, Observer, Initializable {
             return;
         }
         FileChooser fileChooser = new FileChooser();
-
         fileChooser.setTitle("Choose a directory to save the maze in");
         fileChooser.setInitialDirectory(new File("./Mazes/"));
 
@@ -204,8 +210,6 @@ public class MyViewController implements IView, Observer, Initializable {
         event.consume();
     }
 
-
-
     public void loadFile(ActionEvent event){
         System.out.println("loadFile");
         FileChooser fileChooser = new FileChooser();
@@ -221,6 +225,25 @@ public class MyViewController implements IView, Observer, Initializable {
     }
 
     public void newMaze(){
+
+    }
+
+    public void onAction_Property(){
+        try {
+            Stage stage = new Stage();
+            stage.setTitle("Properties");
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            Parent root = fxmlLoader.load(getClass().getResource("Properties.fxml").openStream());
+            Scene scene = new Scene(root,400,350);
+            stage.setScene(scene);
+            PropertiesViewController propertiesViewController = fxmlLoader.getController();
+            propertiesViewController.setStage(stage);
+
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.show();
+        }catch (Exception e){
+
+        }
 
     }
 }

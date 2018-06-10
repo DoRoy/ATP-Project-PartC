@@ -72,10 +72,10 @@ public class MazeDisplayer extends Canvas {
 
     public void redraw() {
         if (mazeCharArr != null) {
-            double canvasHeight = getHeight();
-            double canvasWidth = getWidth();
-            double cellHeight = canvasHeight / rowMazeSize;
-            double cellWidth = canvasWidth / colMazeSize;
+            this.setHeight(this.getScene().getHeight() * 6/8);
+            this.setWidth(this.getScene().getWidth() * 6/8);
+            double cellHeight = this.getHeight() / rowMazeSize;
+            double cellWidth = this.getWidth() / colMazeSize;
 
             try {
                 GraphicsContext graphicsContext2D = getGraphicsContext2D();
@@ -87,7 +87,7 @@ public class MazeDisplayer extends Canvas {
                 for (int i = 0; i < rowMazeSize; i++) {
                     for (int j = 0; j < colMazeSize; j++) {
                         if (mazeCharArr[i][j] == '1') {
-                            graphicsContext2D.drawImage(wallImage, j * cellHeight, i * cellWidth, cellHeight, cellWidth);
+                            graphicsContext2D.drawImage(wallImage, j * cellWidth, i * cellHeight, cellWidth, cellHeight);
                         }
                         else if( mazeCharArr[i][j] == 'E'){
                             setGoalPosition(i, j);
@@ -97,7 +97,7 @@ public class MazeDisplayer extends Canvas {
 
                 //draw solution
                 for(int i = 1; mazeSolutionArr != null && i < mazeSolutionArr.length -1 ;i++){
-                    graphicsContext2D.drawImage(solutionImage, mazeSolutionArr[i][1] * cellHeight, mazeSolutionArr[i][0] * cellWidth, cellHeight, cellWidth);
+                    graphicsContext2D.drawImage(solutionImage, mazeSolutionArr[i][1] * cellWidth, mazeSolutionArr[i][0] * cellHeight, cellWidth, cellHeight);
                 }
 
 
@@ -105,10 +105,10 @@ public class MazeDisplayer extends Canvas {
                 //gc.setFill(Color.RED);
                 //gc.fillOval(characterPositionColumn * cellHeight, characterPositionRow * cellWidth, cellHeight, cellWidth);
                 Image characterImage = new Image(new FileInputStream(ImageFileNameCharacter.get() + characterName + characterDirection + ".png"));
-                graphicsContext2D.drawImage(characterImage, characterPositionColumn * cellHeight, characterPositionRow * cellWidth, cellHeight, cellWidth);
+                graphicsContext2D.drawImage(characterImage, characterPositionColumn * cellWidth, characterPositionRow * cellHeight, cellWidth, cellHeight);
 
                 Image goalImage = new Image(new FileInputStream(ImageFileNameGoal.get()));
-                graphicsContext2D.drawImage(goalImage, goalPositionColumn * cellHeight, goalPositionRow * cellWidth, cellHeight, cellWidth);
+                graphicsContext2D.drawImage(goalImage, goalPositionColumn * cellWidth, goalPositionRow * cellHeight, cellWidth, cellHeight);
 
             } catch (FileNotFoundException e) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);

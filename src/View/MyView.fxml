@@ -67,10 +67,10 @@
                                 <MenuItem mnemonicParsing="false" onAction="#newMaze" text="New" />
                             </items>
                             <items>
-                                <MenuItem mnemonicParsing="false" onAction="#solveMaze" text="Solve" />
+                                <MenuItem fx:id="solve_MenuItem" mnemonicParsing="false" onAction="#solveMaze" text="Solve" disable="true"/>
                             </items>
                             <items>
-                                <MenuItem mnemonicParsing="false" onAction="#saveFile" text="Save" />
+                                <MenuItem fx:id="save_MenuItem" mnemonicParsing="false" onAction="#saveFile" text="Save" disable="true" />
                             </items>
                             <items>
                                 <MenuItem mnemonicParsing="false" onAction="#loadFile" text="Load" />
@@ -78,7 +78,7 @@
                         </Menu>
                         <Menu mnemonicParsing="false" text="Options">
                             <items>
-                                <MenuItem mnemonicParsing="false" text="Properties" />
+                                <MenuItem onAction="#onAction_Property" mnemonicParsing="false" text="Properties" />
                             </items>
                         </Menu>
                         <Menu  mnemonicParsing="false" text="Exit">
