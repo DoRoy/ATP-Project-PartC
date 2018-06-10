@@ -35,9 +35,10 @@ public class NewGameController implements IView, Observer, Initializable {
     public CheckBox newGame_multiPlayer_checkBox;
 
     private MyViewModel myViewModel;
+    private Stage stage;
 
 
-
+    public void setStage(Stage stage){ this.stage = stage;}
     public void setViewModel(MyViewModel myViewModel){
         this.myViewModel = myViewModel;
     }
@@ -68,7 +69,7 @@ public class NewGameController implements IView, Observer, Initializable {
         //myViewModel.setMultiPlayerMode(newGame_multiPlayer_checkBox.isSelected());
         event.consume();
 
-        MyViewController.closeTempStage();
+        stage.close();
 
     }
 

@@ -9,6 +9,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 
+import javax.swing.text.Position;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
@@ -24,6 +25,7 @@ public class MazeDisplayer extends Canvas {
     private int goalPositionColumn;
     private int rowMazeSize;
     private int colMazeSize;
+    private boolean hint;
 
 
 
@@ -80,6 +82,8 @@ public class MazeDisplayer extends Canvas {
 
     public void redraw() {
         if (mazeCharArr != null) {
+            this.setHeight( this.getScene().getHeight() * 6/8);
+            this.setWidth( this.getScene().getWidth() * 6/8);
             double canvasHeight = getHeight();
             double canvasWidth = getWidth();
             double minSize = Math.max(colMazeSize,rowMazeSize);
@@ -100,7 +104,7 @@ public class MazeDisplayer extends Canvas {
                 for (int i = 0; i < rowMazeSize; i++) {
                     for (int j = 0; j < colMazeSize; j++) {
                         if (mazeCharArr[i][j] == '1') {
-                            graphicsContext2D.drawImage(wallImage, (startCol + j) * cellHeight, (startRow + i) * cellWidth, cellHeight, cellWidth);
+                            graphicsContext2D.drawImage(wallImage, (startCol + j) * cellWidth, (startRow + i) * cellHeight, cellWidth, cellHeight);
                         }
                         else if( mazeCharArr[i][j] == 'E'){
                             setGoalPosition(i, j);
@@ -110,17 +114,18 @@ public class MazeDisplayer extends Canvas {
 
                 //draw solution
                 for(int i = 1; mazeSolutionArr != null && i < mazeSolutionArr.length -1 ;i++){
-                    graphicsContext2D.drawImage(solutionImage, (startCol + mazeSolutionArr[i][1]) * cellHeight, (startRow + mazeSolutionArr[i][0]) * cellWidth, cellHeight, cellWidth);
+                    graphicsContext2D.drawImage(solutionImage, (startCol + mazeSolutionArr[i][1]) * cellWidth, (startRow + mazeSolutionArr[i][0]) * cellHeight, cellWidth, cellHeight);
                 }
 
+
                 Image mainCharacterImage = new Image(new FileInputStream("Resources/Characters/" + mainCharacterName + mainCharacter.getCharacterDirection() + ".png"));
-                graphicsContext2D.drawImage(mainCharacterImage, (startCol + getMainCharacterColumn()) * cellHeight, (startRow + getMainCharacterRow()) * cellWidth, cellHeight, cellWidth);
+                graphicsContext2D.drawImage(mainCharacterImage, (startCol + getMainCharacterColumn()) * cellWidth, (startRow + getMainCharacterRow()) * cellHeight, cellWidth, cellHeight);
 
                 Image secondCharacterImage = new Image(new FileInputStream("Resources/Characters/" + secondCharacterName + secondCharacter.getCharacterDirection() + ".png"));
-                graphicsContext2D.drawImage(secondCharacterImage, (startCol + getSecondCharacterColumn()) * cellHeight, (startRow + getSecondCharacterRow()) * cellWidth, cellHeight, cellWidth);
+                graphicsContext2D.drawImage(secondCharacterImage, (startCol + getSecondCharacterColumn()) * cellWidth, (startRow + getSecondCharacterRow()) * cellHeight, cellWidth, cellHeight);
 
                 Image goalImage = new Image(new FileInputStream("Resources/Characters/" + mainCharacterName + "goal.png"));
-                graphicsContext2D.drawImage(goalImage, (startCol + goalPositionColumn) * cellHeight, (startRow + goalPositionRow) * cellWidth, cellHeight, cellWidth);
+                graphicsContext2D.drawImage(goalImage, (startCol + goalPositionColumn) * cellWidth, (startRow + goalPositionRow) * cellHeight, cellWidth, cellHeight);
 
             } catch (FileNotFoundException e) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);

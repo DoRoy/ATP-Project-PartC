@@ -11,6 +11,8 @@ import java.io.*;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Observable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MyModel extends Observable implements IModel {
 
@@ -24,25 +26,34 @@ public class MyModel extends Observable implements IModel {
     private String mainCharacterName = "Crash_";
     private String secondCharacterName = "Mask_";
 
+    private Server serverMazeGenerator;
+    private Server serverSolveMaze;
+
+    private ExecutorService threadPool = Executors.newCachedThreadPool();;
+
 
     public int[][] getMazeSolutionArr() {
         return mazeSolutionArr;
-    }
-
-    @Override
-    public void saveCurrentMaze(File file) {
-
-    }
-
-    @Override
-    public void saveOriginalMaze(File file) {
-
     }
 
 
     public MyModel(){
         Configurations.run(); // TODO should be removed
         isAtTheEnd = false;
+        startServers(); //TODO remove all server things
+
+    }
+
+    private void startServers(){
+        serverMazeGenerator = new Server(5400, 1000, new ServerStrategyGenerateMaze());
+        serverSolveMaze = new Server(5401, 1000, new ServerStrategySolveSearchProblem());
+        serverMazeGenerator.start();
+        serverSolveMaze.start();
+    }
+
+    private void closeServers(){
+        serverMazeGenerator.stop();
+        serverSolveMaze.stop();
     }
 
 
@@ -64,28 +75,30 @@ public class MyModel extends Observable implements IModel {
                         byte[] decompressedMaze = new byte[mazeDimensions[0] * mazeDimensions[1] + 12 /*CHANGE SIZE ACCORDING TO YOU MAZE SIZE*/]; //allocating byte[] for the decompressed maze -
                         is.read(decompressedMaze); //Fill decompressedMaze with bytes
                         maze = new Maze(decompressedMaze);
+                        toServer.close();
+                        fromServer.close();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
             });
+            threadPool.execute(() ->{
+                clientMazeGenerator.communicateWithServer();
+                int mazeRow = maze.getStartPosition().getRowIndex();
+                int mazeCol = maze.getStartPosition().getColumnIndex();
+                mainCharacter = new MazeCharacter("Crash_",mazeRow,mazeCol);
+                secondCharacter = new MazeCharacter("Mask_", mazeRow,mazeCol);
 
-            clientMazeGenerator.communicateWithServer();
+                isAtTheEnd = false;
+                mazeSolutionArr = null;
+                setChanged();
+                notifyObservers();
+            });
+            //clientMazeGenerator.communicateWithServer();
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
 
-
-        int mazeRow = maze.getStartPosition().getRowIndex();
-        int mazeCol = maze.getStartPosition().getColumnIndex();
-        mainCharacter = new MazeCharacter("Crash_",mazeRow,mazeCol);
-        secondCharacter = new MazeCharacter("Mask_", mazeRow,mazeCol);
-
-        isAtTheEnd = false;
-        mazeSolutionArr = null;
-
-        setChanged();
-        notifyObservers();
     }
 
     @Override
@@ -209,19 +222,27 @@ public class MyModel extends Observable implements IModel {
                         toServer.writeObject(new Maze(maze, mainCharacter.getCharacterRow(), mainCharacter.getCharacterCol())); //send maze to server
                         toServer.flush();
                         mazeSolution = (Solution) fromServer.readObject(); //read generated maze (compressed with MyCompressor) from server
+                        toServer.close();
+                        fromServer.close();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
 
             });
-            clientSolveMaze.communicateWithServer();
+            threadPool.execute(()->{
+                clientSolveMaze.communicateWithServer();
+                mazeSolutionArr = mazeSolution.getSolution();
+                setChanged();
+                notifyObservers();
+            });
+            //clientSolveMaze.communicateWithServer();
         }catch (Exception e){
-
+            e.printStackTrace();
         }
-        mazeSolutionArr = mazeSolution.getSolution();
+        /*mazeSolutionArr = mazeSolution.getSolution();
         setChanged();
-        notifyObservers();
+        notifyObservers();*/
     }
 
     private boolean isNotWall(int row, int col){
@@ -278,11 +299,13 @@ public class MyModel extends Observable implements IModel {
     @Override
     public void closeModel() {
         //TODO implement
-
+        System.out.println("Close Model");
+        closeServers();
+        threadPool.shutdown();
     }
 
-
-    public void saveMaze(File file){
+    @Override
+    public void saveOriginalMaze(File file){
         try {
             FileOutputStream fileWriter = null;
             fileWriter = new FileOutputStream(file);
@@ -292,8 +315,35 @@ public class MyModel extends Observable implements IModel {
             objectOutputStream.close();
             fileWriter.close();
         } catch (IOException ex) {
-
+            ex.printStackTrace();
         }
+    }
+
+    @Override
+    public void saveCurrentMaze(File file){
+        try {
+            FileOutputStream fileWriter = null;
+            fileWriter = new FileOutputStream(file);
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileWriter);
+            Maze currentMaze = getCurrentMaze();
+            objectOutputStream.writeObject(currentMaze);
+            objectOutputStream.flush();
+            objectOutputStream.close();
+            fileWriter.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private Maze getCurrentMaze() {
+        try{
+            Maze currentMaze = new Maze(maze,mainCharacter.getCharacterRow(),mainCharacter.getCharacterCol());
+            return currentMaze;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+
     }
 
     public void loadMaze(File file){
@@ -303,6 +353,9 @@ public class MyModel extends Observable implements IModel {
             Maze loadedMaze = (Maze) oin.readObject();
             if(loadedMaze != null) {
                 maze = loadedMaze;
+                mainCharacter.setCharacterRow(maze.getStartPosition().getRowIndex());
+                mainCharacter.setCharacterCol(maze.getStartPosition().getColumnIndex());
+                mainCharacter.setCharacterDirection("front");
                 setChanged();
                 notifyObservers();
             }

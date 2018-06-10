@@ -4,10 +4,12 @@ import Model.MyModel;
 import Server.*;
 import ViewModel.MyViewModel;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 public class Main extends Application {
     private Server serverMazeGenerator;
@@ -23,7 +25,7 @@ public class Main extends Application {
         primaryStage.setTitle("The Crash Maze!");
         FXMLLoader fxmlLoader = new FXMLLoader();
         Parent root = fxmlLoader.load(getClass().getResource("MyView.fxml").openStream());
-        Scene scene = new Scene(root,1500,1500);
+        Scene scene = new Scene(root,800,800);
         scene.getStylesheets().add(getClass().getResource("ViewStyle.css").toExternalForm());
         primaryStage.setScene(scene);
 
@@ -40,21 +42,26 @@ public class Main extends Application {
         myViewController.setNewGameScene(gameScene);
         myViewController.setViewModel(myViewModel);
         myViewController.setMainScene(scene);
+        myViewController.setResizeEvent(scene);
         myViewModel.addObserver(myViewController);
         myViewModel.addObserver(gameController);
 
-
+        SetStageCloseEvent(primaryStage, myViewController);
         primaryStage.show();
+
         //Rise Servers
-        startServers(); //TODO remove all server things
 
     }
-    private void startServers(){
-        serverMazeGenerator = new Server(5400, 1000, new ServerStrategyGenerateMaze());
-        serverSolveMaze = new Server(5401, 1000, new ServerStrategySolveSearchProblem());
-        serverMazeGenerator.start();
-        serverSolveMaze.start();
+
+    private void SetStageCloseEvent(Stage primaryStage, MyViewController myViewController) {
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            public void handle(WindowEvent windowEvent) {
+                myViewController.exitCorrectly();
+                windowEvent.consume();
+            }
+        });
     }
+
 
     public static void main(String[] args) {
         launch(args);
