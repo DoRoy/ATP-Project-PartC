@@ -8,7 +8,7 @@ public class MazeCharacter {
     private int characterCol;
     private String characterDirection;
 
-    MazeCharacter(String name ,int row, int col){
+    public MazeCharacter(String name, int row, int col){
         characterName = name;
         characterRow = row;
         characterCol = col;

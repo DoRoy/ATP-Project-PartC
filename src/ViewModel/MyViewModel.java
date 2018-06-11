@@ -1,7 +1,11 @@
 package ViewModel;
 
 import Model.IModel;
+import Model.MazeCharacter;
 import javafx.scene.input.KeyCode;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.util.Duration;
 
 import java.io.File;
 import java.util.Observable;
@@ -10,6 +14,10 @@ import java.util.Observer;
 public class MyViewModel extends Observable implements Observer {
 
     private IModel model;
+    private MediaPlayer gameSoundTrack;
+    private boolean isPlayed = true;
+    private MazeCharacter mainCharacter = new MazeCharacter("Crash_",0,0);
+    private MazeCharacter secondCharacter = new MazeCharacter("Mask_",0,0);
 
     public MyViewModel(IModel model) {
         this.model = model;
@@ -18,13 +26,19 @@ public class MyViewModel extends Observable implements Observer {
     @Override
     public void update(Observable o, Object arg) {
         if(o == model){
-
+            setChanged();
+            notifyObservers(arg);
         }
-
-
-        setChanged();
-        notifyObservers();
     }
+
+    public boolean isPlayed(){
+        return isPlayed;
+    }
+
+    public void setMainCharacterName(String character){
+        mainCharacter.setCharacterName(character);
+    }
+
 
 
     public void moveCharacter(KeyCode movement){
@@ -38,6 +52,17 @@ public class MyViewModel extends Observable implements Observer {
     public char[][] getMaze() {
         return model.getMaze();
     }
+
+    public int getMainCharacterPositionRow() {
+        return model.getMainCharacterPositionRow();
+    }
+    public int getMainCharacterPositionColumn() {
+        return model.getMainCharacterPositionColumn();
+    }
+    public String getMainCharacterDirection() {
+        return model.getMainCharacterDirection();
+    }
+    public String getMainCharacterName(){ return mainCharacter.getCharacterName();}
 
     public int getCharacterPositionRow() {
         return model.getCharacterPositionRow();
@@ -72,6 +97,7 @@ public class MyViewModel extends Observable implements Observer {
     public void saveOriginalMaze(File file){
         model.saveOriginalMaze(file);
     }
+
     public void saveCurrentMaze(File file){
         model.saveCurrentMaze(file);
     }
@@ -82,6 +108,40 @@ public class MyViewModel extends Observable implements Observer {
 
     public void closeModel(){
         model.closeModel();
+    }
+
+    public void startSoundTrack(String character){
+        if (gameSoundTrack != null)
+            gameSoundTrack.stop();
+        String musicFile = "Resources/Music/" + character + "gameSoundTrack.mp3";
+        Media sound = new Media(new File(musicFile).toURI().toString());
+        gameSoundTrack = new MediaPlayer(sound);
+        gameSoundTrack.setOnEndOfMedia(new Runnable() {
+            @Override
+            public void run() {
+                gameSoundTrack.seek(Duration.ZERO);
+            }
+        });
+        if(isPlayed){
+            gameSoundTrack.play();
+        }
+        /*gameSoundTrack.play();
+        isPlayed = true;*/
+
+    }
+
+    public boolean setSound(){
+        if (gameSoundTrack == null)
+            return true;
+        if (isPlayed) {
+            gameSoundTrack.stop();
+            isPlayed = false;
+        }
+        else{
+            gameSoundTrack.play();
+            isPlayed = true;
+        }
+        return isPlayed;
     }
 
 }

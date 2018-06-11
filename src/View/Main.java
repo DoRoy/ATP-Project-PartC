@@ -15,6 +15,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
@@ -39,26 +40,17 @@ public class Main extends Application {
         Parent root = fxmlLoader.load(getClass().getResource("MyView.fxml").openStream());
         Scene scene = new Scene(root,800,700);
         scene.getStylesheets().add(getClass().getResource("ViewStyle.css").toExternalForm());
-        primaryStage.setScene(scene);
 
 
-        String musicFile = "Resources/Music/Crash_gameSound.mp3";
-        Media sound = new Media(new File(musicFile).toURI().toString());
-        MediaPlayer mediaPlayer = new MediaPlayer(sound);
-        mediaPlayer.setOnEndOfMedia(new Runnable() {
-            @Override
-            public void run() {
-                mediaPlayer.seek(Duration.ZERO);
-            }
-        });
-        mediaPlayer.play();
 
         MyViewController myViewController = fxmlLoader.getController();
         myViewController.setResizeEvent(scene);
         myViewController.setViewModel(myViewModel);
         myViewModel.addObserver(myViewController);
 
+        scene.addEventFilter(KeyEvent.KEY_PRESSED, event -> myViewController.KeyPressed(event));
 
+        primaryStage.setScene(scene);
         //NewGameController gameController = fxmlLoader.getController();
         //gameController.setViewModel(myViewModel);
         //myViewModel.addObserver(gameController);

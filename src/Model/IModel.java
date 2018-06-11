@@ -24,4 +24,14 @@ public interface IModel {
     void saveCurrentMaze(File file);
     void saveOriginalMaze(File file);
     void loadMaze(File file);
+
+
+
+    int getMainCharacterPositionRow();
+
+
+    int getMainCharacterPositionColumn();
+
+
+    String getMainCharacterDirection();
 }

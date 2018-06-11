@@ -25,7 +25,7 @@
          <font>
             <Font name="System Bold" size="15.0" />
          </font></Label>
-      <Label text="Choose maze Generator:" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+      <Label text="Choose Maze Generator:" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
          <font>
             <Font name="System Bold" size="15.0" />
          </font></Label>
@@ -41,9 +41,9 @@
        </Spinner>
       <Button mnemonicParsing="false" onAction="#saveChanges" prefHeight="35.0" prefWidth="126.0" text="Save Changes" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
       <Button mnemonicParsing="false" onAction="#closeButton" prefHeight="35.0" prefWidth="76.0" text="Cancel" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
-      <ChoiceBox fx:id="algorithmChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+      <ChoiceBox fx:id="algorithmChoiceBox" prefWidth="190.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
 
-      <ChoiceBox fx:id="mazeGeneratorChoiceBox" layoutX="245.0" layoutY="28.0" prefWidth="150.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+      <ChoiceBox fx:id="mazeGeneratorChoiceBox" layoutX="245.0" layoutY="28.0" prefWidth="190.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
 
 
    </children>

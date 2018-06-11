@@ -10,13 +10,18 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseDragEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -24,7 +29,6 @@ import javafx.scene.media.MediaView;
 import javafx.stage.*;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
@@ -39,9 +43,13 @@ public class MyViewController implements IView, Observer, Initializable {
     public Label lbl_characterRow;
     public Label lbl_characterColumn;
     public Label lbl_statusBar;
-    public Button solve_btn;
+    //public Button solve_btn;
     public MenuItem save_MenuItem;
     public MenuItem solve_MenuItem;
+    private String soundOnOff = "On";
+    public javafx.scene.image.ImageView icon_sound;
+    public javafx.scene.image.ImageView icon_partSolution;
+    public javafx.scene.image.ImageView icon_fullSolution;
 
 
     //region String Property for Binding
@@ -56,22 +64,70 @@ public class MyViewController implements IView, Observer, Initializable {
     @Override
     public void update(Observable o, Object arg) {
         if(o == myViewModel) {
-            mazeDisplayer.setMaze(myViewModel.getMaze());
+            if(arg != null){
+                String argument = (String)arg;
+                switch (argument){
+                    case "Maze":
+                        mazeDisplayer.setMaze(myViewModel.getMaze());
+                        mazeDisplayer.setMainCharacterPosition(myViewModel.getMainCharacterPositionRow(), myViewModel.getMainCharacterPositionColumn());
+                        mazeDisplayer.setMainCharacterDirection(myViewModel.getMainCharacterDirection());
+                        mazeDisplayer.setMainCharacterName(myViewModel.getMainCharacterName());
+                        mazeDisplayer.setCharacterPosition(myViewModel.getCharacterPositionRow(), myViewModel.getCharacterPositionColumn());
+                        mazeDisplayer.setCharacterDirection(myViewModel.getCharacterDirection());
+                        mazeDisplayer.setMazeSolutionArr(null);
+                        Platform.runLater(()->{
+                            CharacterColumn.set(myViewModel.getCharacterPositionColumn() + "");
+                            CharacterRow.set(myViewModel.getCharacterPositionRow() + "");
+                            lbl_statusBar.setText("Lets see you solve this!");
+                            solve_MenuItem.setDisable(false);
+                            icon_fullSolution.setVisible(true);
+                        });
+
+
+                        break;
+                    case "Character":
+                        mazeDisplayer.setMainCharacterPosition(myViewModel.getMainCharacterPositionRow(), myViewModel.getMainCharacterPositionColumn());
+                        mazeDisplayer.setMainCharacterDirection(myViewModel.getMainCharacterDirection());
+                        mazeDisplayer.setMazeSolutionArr(null);
+                        Platform.runLater(() -> {
+                            CharacterColumn.set(myViewModel.getMainCharacterPositionColumn() + "");
+                            CharacterRow.set(myViewModel.getMainCharacterPositionRow() + "");
+                        });
+                        break;
+                    case "Solution":
+                        mazeDisplayer.setMazeSolutionArr(myViewModel.getSolution());
+                        Platform.runLater(() -> {
+                            lbl_statusBar.setText("Here's the solution");
+                            solve_MenuItem.setDisable(false);
+                            icon_fullSolution.setVisible(true);
+                        });
+
+                        break;
+                }
+            }
+/*            mazeDisplayer.setMaze(myViewModel.getMaze());
             mazeDisplayer.setCharacterPosition(myViewModel.getCharacterPositionRow(), myViewModel.getCharacterPositionColumn());
             mazeDisplayer.setCharacterDirection(myViewModel.getCharacterDirection());
             CharacterColumn.set(myViewModel.getCharacterPositionColumn() + "");
             CharacterRow.set(myViewModel.getCharacterPositionRow() + "");
-            if(myViewModel.getMazeSolutionArr() != null)
+            if(myViewModel.getMazeSolutionArr() != null) {
                 mazeDisplayer.setMazeSolutionArr(myViewModel.getSolution());
+                lbl_statusBar.setText("Here's the solution");
+            }
             else
-                mazeDisplayer.setMazeSolutionArr(null);
+                mazeDisplayer.setMazeSolutionArr(null);*/
+
+
             if(myViewModel.isAtTheEnd()){
-                solve_btn.setVisible(false);
-                save_MenuItem.setDisable(true);
-                solve_MenuItem.setDisable(true);
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setContentText(String.format("Congratulations!!"));
-                alert.show();
+                Platform.runLater(() -> {
+                    save_MenuItem.setDisable(true);
+                    solve_MenuItem.setDisable(true);
+                    icon_fullSolution.setVisible(false);
+                    alert.show();
+                });
+
             }
             mazeDisplayer.redraw();
         }
@@ -83,33 +139,62 @@ public class MyViewController implements IView, Observer, Initializable {
         //Set Binding for Properties
         lbl_characterRow.textProperty().bind(CharacterRow);
         lbl_characterColumn.textProperty().bind(CharacterColumn);
+        initImages();
+    }
+
+    private void initImages(){
+        // Set soundBtn
+        soundOnOff = "On";
+        File file = new File("Resources/Icons/icon_sound" + soundOnOff + ".png");
+        Image image = new Image(file.toURI().toString());
+        icon_sound.setImage(image);
+        setSound();
+
+        //Set Solution Buttons
+        file = new File("Resources/Icons/icon_partSolution.png");
+        image = new Image(file.toURI().toString());
+        icon_partSolution.setImage(image);
+        //setHint();
+
+        file = new File("Resources/Icons/icon_fullSolution.png");
+        image = new Image(file.toURI().toString());
+        icon_fullSolution.setImage(image);
+        setFullSolution();
 
     }
 
     public void KeyPressed(KeyEvent keyEvent){
+        System.out.println("MyViewController: KeyPressed");
+        if(myViewModel.isAtTheEnd()){
+            //TODO make it not able to move the character
+        }
         myViewModel.moveCharacter(keyEvent.getCode());
         mazeDisplayer.setMazeSolutionArr(null);
         lbl_statusBar.setText("");
         keyEvent.consume();
     }
 
-    public void generateMaze(){
+/*    public void generateMaze(){
+        lbl_statusBar.setText("Generating maze, please wait.");
         int height = Integer.valueOf(txtfld_rowsNum.getText());
         int width = Integer.valueOf(txtfld_columnsNum.getText());
         mazeDisplayer.setMazeSolutionArr(null);
-        solve_btn.setVisible(true);
         myViewModel.generateMaze(height, width);
         save_MenuItem.setDisable(false);
         solve_MenuItem.setDisable(false);
-        lbl_statusBar.setText("Lets see if you solve this!");
-    }
+        icon_fullSolution.setVisible(false);
+    }*/
 
-    public void solveMaze(ActionEvent actionEvent){
-        //TODO implement
+    public void solveMaze(Event event){
+        Platform.runLater(() ->{
+            lbl_statusBar.setText("Computing solution, please wait.");
+            solve_MenuItem.setDisable(true);
+            icon_fullSolution.setVisible(false);
+        });
+
         myViewModel.generateSolution();
-        int[][] solutionArr = myViewModel.getSolution();
-        mazeDisplayer.setMazeSolutionArr(solutionArr);
-        lbl_statusBar.setText("Here's the solution");
+
+
     }
 
     public void showAlert(String alertMessage) {
@@ -119,8 +204,6 @@ public class MyViewController implements IView, Observer, Initializable {
     }
 
     public void setResizeEvent(Scene scene){
-        //mazeDisplayer.widthProperty().bind(scene.widthProperty().multiply(6/8));
-        //mazeDisplayer.heightProperty().bind(scene.heightProperty().multiply(7/8));
         scene.widthProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
@@ -133,7 +216,6 @@ public class MyViewController implements IView, Observer, Initializable {
                 mazeDisplayer.redraw();
             }
         });
-        mazeDisplayer.redraw();
     }
 
     public void exitButton(){
@@ -198,10 +280,10 @@ public class MyViewController implements IView, Observer, Initializable {
 
         if(file != null) {
             if(choose[0] == 1) {//Current
-                myViewModel.saveOriginalMaze(file);
+                myViewModel.saveCurrentMaze(file);
                 lbl_statusBar.setText("Saved current maze");
             }
-            else {//Original
+            else if(choose[0] == 2) {//Original
                 myViewModel.saveOriginalMaze(file);
                 lbl_statusBar.setText("Saved original maze");
             }
@@ -225,7 +307,23 @@ public class MyViewController implements IView, Observer, Initializable {
     }
 
     public void newMaze(){
+        System.out.println("New Maze");
+        try{
+            Stage stage = new Stage();
+            stage.setTitle("New Maze Window");
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            Parent root = fxmlLoader.load(getClass().getResource("NewGame.fxml").openStream());
+            Scene scene = new Scene(root,600,600);
+            scene.getStylesheets().add(getClass().getResource("ViewStyle.css").toExternalForm());
+            stage.setScene(scene);
+            NewGameController newGameController = fxmlLoader.getController();
+            newGameController.setStage(stage);
+            newGameController.setViewModel(myViewModel);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.show();
+        }catch (Exception e){
 
+        }
     }
 
     public void onAction_Property(){
@@ -234,7 +332,8 @@ public class MyViewController implements IView, Observer, Initializable {
             stage.setTitle("Properties");
             FXMLLoader fxmlLoader = new FXMLLoader();
             Parent root = fxmlLoader.load(getClass().getResource("Properties.fxml").openStream());
-            Scene scene = new Scene(root,400,350);
+            Scene scene = new Scene(root,400,370);
+            scene.getStylesheets().add(getClass().getResource("ViewStyle.css").toExternalForm());
             stage.setScene(scene);
             PropertiesViewController propertiesViewController = fxmlLoader.getController();
             propertiesViewController.setStage(stage);
@@ -246,4 +345,128 @@ public class MyViewController implements IView, Observer, Initializable {
         }
 
     }
+
+    public void help()
+    {
+        Stage helpStage = new Stage();
+        helpStage.setAlwaysOnTop(true);
+        helpStage.setResizable(false);
+        helpStage.setTitle("Help Window");
+
+        Parent root=null;
+        try
+        {
+            //change MyView.fxml to help.fxml after designed
+            root = FXMLLoader.load(getClass().getResource("../View/help.fxml"));
+        }
+        catch(IOException e)
+        {
+            showAlert("Exception!");
+        }
+        helpStage.setTitle("Help");
+        Scene scene = new Scene(root,500,550);
+        scene.getStylesheets().add(getClass().getResource("viewStyle.css").toExternalForm());
+        helpStage.setScene(scene);
+        helpStage.initModality(Modality.APPLICATION_MODAL);
+        helpStage.show();
+    }
+
+
+    public void About()
+    {
+        Stage aboutStage = new Stage();
+        aboutStage.setAlwaysOnTop(true);
+        aboutStage.setResizable(false);
+        aboutStage.setTitle("About Window");
+
+        Parent root=null;
+        try
+        {
+            //change MyView.fxml to help.fxml after designed
+            root = FXMLLoader.load(getClass().getResource("../View/About.fxml"));
+        }
+        catch(IOException e)
+        {
+            showAlert("Exception!");
+        }
+        aboutStage.setTitle("About");
+        Scene scene = new Scene(root,700,400);
+        scene.getStylesheets().add(getClass().getResource("ViewStyle.css").toExternalForm());
+        aboutStage.setScene(scene);
+        aboutStage.initModality(Modality.APPLICATION_MODAL);
+        aboutStage.show();
+    }
+
+    public void setSound(){
+        icon_sound.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+
+            @Override
+            public void handle(MouseEvent event) {
+                if(myViewModel.setSound())
+                    soundOnOff = "On";
+                else
+                    soundOnOff = "Off";
+
+                File file = new File("Resources/Icons/icon_sound" + soundOnOff + ".png");
+                Image image = new Image(file.toURI().toString());
+                icon_sound.setImage(image);
+                event.consume();
+            }
+        });
+    }
+
+    public void setFullSolution(){
+        icon_fullSolution.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                solveMaze(event);
+                event.consume();
+            }
+        });
+    }
+
+    public void dragDetected(MouseEvent mouseEvent){
+        System.out.println("dragDetected");
+        double sceneX = mouseEvent.getSceneX();
+
+        double sceneY = mouseEvent.getSceneY();
+
+
+        System.out.println("\tsceneX: " + sceneX);
+        System.out.println("\tsceneY: " + sceneY);
+        double buttomX = myViewModel.getCharacterPositionColumn() * mazeDisplayer.getWidth() / Integer.valueOf(txtfld_columnsNum.getText()) ;
+        double topX = myViewModel.getCharacterPositionColumn() * mazeDisplayer.getWidth() / Integer.valueOf(txtfld_columnsNum.getText()) + (mazeDisplayer.getWidth() / Integer.valueOf(txtfld_columnsNum.getText()));
+        System.out.println(buttomX);
+        System.out.println(topX);
+        if(sceneX >= buttomX && sceneX <= topX){
+            System.out.println("got the X right");
+        }
+
+
+    }
+
+    public void mouseReleased(MouseEvent mouseEvent){
+        System.out.println("mouseReleased");
+    }
+
+    public void mouseDragOver(MouseEvent mouseEvent){
+        System.out.println("mouseDragOver");
+    }
+
+    public void mouseDragExited(MouseEvent mouseEvent){
+        System.out.println("mouseDragExited");
+    }
+
+    public void dragDropped(){
+        System.out.println("dragDropped");
+    }
+
+    public void dragExited(){
+        System.out.println("dragExited");
+    }
+
+    public void dragOver(){
+        System.out.println("dragOver");
+    }
+
 }

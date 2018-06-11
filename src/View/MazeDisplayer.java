@@ -27,8 +27,7 @@ import java.util.ResourceBundle;
 
 public class MazeDisplayer extends Canvas {
 
-
-    private MazeCharacter mainCharacter;
+    private MazeCharacter mainCharacter = new MazeCharacter("Crash_",0,0);;
     private char[][] mazeCharArr;
     private int[][] mazeSolutionArr;
     private int characterPositionRow;
@@ -45,6 +44,13 @@ public class MazeDisplayer extends Canvas {
     }
     public int getCharacterPositionColumn() {
         return characterPositionColumn;
+    }
+
+    public int getMainCharacterRow() {
+        return mainCharacter.getCharacterRow();
+    }
+    public int getMainCharacterColumn() {
+        return mainCharacter.getCharacterCol();
     }
 
 
@@ -69,6 +75,19 @@ public class MazeDisplayer extends Canvas {
         characterPositionColumn = column;
     }
 
+    public void setMainCharacterDirection(String direction){
+        mainCharacter.setCharacterDirection(direction);
+    }
+
+    public void setMainCharacterPosition(int row, int column) {
+        mainCharacter.setCharacterRow(row);
+        mainCharacter.setCharacterCol(column);
+    }
+
+    public void setMainCharacterName(String name){
+        mainCharacter.setCharacterName(name);
+    }
+
 
     public void redraw() {
         if (mazeCharArr != null) {
@@ -78,10 +97,11 @@ public class MazeDisplayer extends Canvas {
             double cellWidth = this.getWidth() / colMazeSize;
 
             try {
+                String mainCharacterName = mainCharacter.getCharacterName();
                 GraphicsContext graphicsContext2D = getGraphicsContext2D();
                 graphicsContext2D.clearRect(0, 0, getWidth(), getHeight()); //Clears the canvas
-                Image wallImage = new Image(new FileInputStream(ImageFileNameWall.get()));
-                Image solutionImage = new Image(new FileInputStream(ImageFileNameSolution.get()));
+                Image wallImage = new Image(new FileInputStream("Resources/Images/" + mainCharacterName + "wall.png"));
+                Image solutionImage = new Image(new FileInputStream("Resources/Images/" + mainCharacterName + "showSolution.png"));
 
                 //Draw Maze
                 for (int i = 0; i < rowMazeSize; i++) {
@@ -102,14 +122,15 @@ public class MazeDisplayer extends Canvas {
 
 
                 //Draw Character
-                //gc.setFill(Color.RED);
-                //gc.fillOval(characterPositionColumn * cellHeight, characterPositionRow * cellWidth, cellHeight, cellWidth);
-                Image characterImage = new Image(new FileInputStream(ImageFileNameCharacter.get() + characterName + characterDirection + ".png"));
-                graphicsContext2D.drawImage(characterImage, characterPositionColumn * cellWidth, characterPositionRow * cellHeight, cellWidth, cellHeight);
 
-                Image goalImage = new Image(new FileInputStream(ImageFileNameGoal.get()));
-                graphicsContext2D.drawImage(goalImage, goalPositionColumn * cellWidth, goalPositionRow * cellHeight, cellWidth, cellHeight);
+                 Image mainCharacterImage = new Image(new FileInputStream("Resources/Characters/" + mainCharacterName + mainCharacter.getCharacterDirection() + ".png"));
+                 graphicsContext2D.drawImage(mainCharacterImage, (getMainCharacterColumn()) * cellWidth, (getMainCharacterRow()) * cellHeight, cellWidth, cellHeight);
 
+                 if(!(getMainCharacterRow() == goalPositionRow && getMainCharacterColumn() == goalPositionColumn)) {
+
+                    Image goalImage = new Image(new FileInputStream("Resources/Characters/" + mainCharacterName + "goal.png"));
+                    graphicsContext2D.drawImage(goalImage, goalPositionColumn * cellWidth, goalPositionRow * cellHeight, cellWidth, cellHeight);
+                 }
             } catch (FileNotFoundException e) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setContentText(String.format("Image doesn't exist: %s",e.getMessage()));

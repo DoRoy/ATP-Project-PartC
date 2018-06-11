@@ -3,17 +3,13 @@ package Model;
 import Client.*;
 import IO.MyDecompressorInputStream;
 import Server.*;
-import algorithms.mazeGenerators.IMazeGenerator;
 import algorithms.mazeGenerators.Maze;
-import algorithms.mazeGenerators.Position;
 import algorithms.search.*;
 import javafx.scene.input.KeyCode;
 
 import java.io.*;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Observable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -32,6 +28,7 @@ public class MyModel extends Observable implements IModel {
     private int[][] mazeSolutionArr;
     private Server serverMazeGenerator;
     private Server serverSolveMaze;
+    private String mainCharacterName = "Crash_";
 
     private ExecutorService threadPool = Executors.newCachedThreadPool();;
 
@@ -93,7 +90,7 @@ public class MyModel extends Observable implements IModel {
                 isAtTheEnd = false;
                 mazeSolutionArr = null;
                 setChanged();
-                notifyObservers();
+                notifyObservers("Maze");
             });
             //clientMazeGenerator.communicateWithServer();
         } catch (UnknownHostException e) {
@@ -166,11 +163,11 @@ public class MyModel extends Observable implements IModel {
                 break;
         }
 
-        if(maze.getCharAt(mainCharacterPositionRow, mainCharacterPositionCol) == 'E')
+        if(maze.getCharAt(mainCharacter.getCharacterRow(), mainCharacter.getCharacterCol()) == 'E')
             isAtTheEnd = true;
 
         setChanged();
-        notifyObservers();
+        notifyObservers("Character");
 
     }
 
@@ -199,15 +196,12 @@ public class MyModel extends Observable implements IModel {
                 clientSolveMaze.communicateWithServer();
                 mazeSolutionArr = mazeSolution.getSolution();
                 setChanged();
-                notifyObservers();
+                notifyObservers("Solution");
             });
             //clientSolveMaze.communicateWithServer();
         }catch (Exception e){
             e.printStackTrace();
         }
-        /*mazeSolutionArr = mazeSolution.getSolution();
-        setChanged();
-        notifyObservers();*/
     }
 
     private boolean isNotWall(int row, int col){
@@ -218,6 +212,21 @@ public class MyModel extends Observable implements IModel {
     @Override
     public char[][] getMaze() {
         return maze.getMaze();
+    }
+
+    @Override
+    public int getMainCharacterPositionRow() {
+        return mainCharacter.getCharacterRow();
+    }
+
+    @Override
+    public int getMainCharacterPositionColumn() {
+        return mainCharacter.getCharacterCol();
+    }
+
+    @Override
+    public String getMainCharacterDirection() {
+        return mainCharacter.getCharacterDirection();
     }
 
     @Override
@@ -307,7 +316,7 @@ public class MyModel extends Observable implements IModel {
                 mainCharacter.setCharacterCol(maze.getStartPosition().getColumnIndex());
                 mainCharacter.setCharacterDirection("front");
                 setChanged();
-                notifyObservers();
+                notifyObservers("Maze");
             }
             else{
                 //TODO maybe add something here
@@ -320,6 +329,13 @@ public class MyModel extends Observable implements IModel {
             e.printStackTrace();
         }
     }
+
+
+
+    public String getMainCharacterName(){
+        return mainCharacterName;
+    }
+
 
 
 }

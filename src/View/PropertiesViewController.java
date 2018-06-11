@@ -30,6 +30,7 @@ public class PropertiesViewController extends Dialog implements Initializable {
         System.out.println(spinner.getValue());
         Configurations.setProperties(threadNum,algorithmString, generatorString);
 
+        Configurations.run();
         stage.close();
      }
 
@@ -47,10 +48,14 @@ public class PropertiesViewController extends Dialog implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        valueFactory.setValue(Configurations.getServer_threadPoolSize());
         spinner.setValueFactory(valueFactory);
         algorithmChoiceBox.getItems().addAll("BestFirstSearch","DepthFirstSearch","BreadthFirstSearch");
-        mazeGeneratorChoiceBox.getItems().addAll("MyMazeGenerator","SimpleMazeGenerator");
-
+        String searchValue = Configurations.getValue("algorithms_solveAlgorithm");
+        algorithmChoiceBox.setValue(searchValue);
+        mazeGeneratorChoiceBox.getItems().addAll("myMazeGenerator","simpleMazeGenerator");
+        String generateValue = Configurations.getValue("algorithms_mazeGenerateAlgorithm");
+        mazeGeneratorChoiceBox.setValue(generateValue);
 
     }
 }
