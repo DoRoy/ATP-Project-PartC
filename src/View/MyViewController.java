@@ -35,6 +35,14 @@ import java.util.*;
 
 public class MyViewController implements IView, Observer, Initializable {
 
+    //TODO add generate button to secondary menu
+
+    //TODO- Configurations: fix the string he expect regarding the algorithms.
+
+    //TODO - set background
+
+    //TODO - add shadow character
+
     @FXML
     private MyViewModel myViewModel;
     public MazeDisplayer mazeDisplayer;
@@ -80,6 +88,7 @@ public class MyViewController implements IView, Observer, Initializable {
                             CharacterRow.set(myViewModel.getCharacterPositionRow() + "");
                             lbl_statusBar.setText("Lets see you solve this!");
                             solve_MenuItem.setDisable(false);
+                            save_MenuItem.setDisable(false);
                             icon_fullSolution.setVisible(true);
                         });
 
@@ -119,6 +128,7 @@ public class MyViewController implements IView, Observer, Initializable {
 
 
             if(myViewModel.isAtTheEnd()){
+                //TODO-The End: make a cool winning GIF/Video/Pic
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setContentText(String.format("Congratulations!!"));
                 Platform.runLater(() -> {
@@ -166,7 +176,7 @@ public class MyViewController implements IView, Observer, Initializable {
     public void KeyPressed(KeyEvent keyEvent){
         System.out.println("MyViewController: KeyPressed");
         if(myViewModel.isAtTheEnd()){
-            //TODO make it not able to move the character
+            //TODO-KeyPressed at the end: make it not able to move the character
         }
         myViewModel.moveCharacter(keyEvent.getCode());
         mazeDisplayer.setMazeSolutionArr(null);
@@ -186,6 +196,7 @@ public class MyViewController implements IView, Observer, Initializable {
     }*/
 
     public void solveMaze(Event event){
+        //TODO - solev: check why it fails over 200
         Platform.runLater(() ->{
             lbl_statusBar.setText("Computing solution, please wait.");
             solve_MenuItem.setDisable(true);
@@ -293,6 +304,7 @@ public class MyViewController implements IView, Observer, Initializable {
     }
 
     public void loadFile(ActionEvent event){
+        //TODO-Load: fix load, check maybe create game state and save it, or maybe ask user for character
         System.out.println("loadFile");
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choose a maze to load");
@@ -348,6 +360,7 @@ public class MyViewController implements IView, Observer, Initializable {
 
     public void help()
     {
+        //TODO-Help: fill content and make sure it looks good
         Stage helpStage = new Stage();
         helpStage.setAlwaysOnTop(true);
         helpStage.setResizable(false);
@@ -374,6 +387,7 @@ public class MyViewController implements IView, Observer, Initializable {
 
     public void About()
     {
+        //TODO-About: fill content and make sure it looks good
         Stage aboutStage = new Stage();
         aboutStage.setAlwaysOnTop(true);
         aboutStage.setResizable(false);
@@ -434,15 +448,6 @@ public class MyViewController implements IView, Observer, Initializable {
 
         System.out.println("\tsceneX: " + sceneX);
         System.out.println("\tsceneY: " + sceneY);
-        double buttomX = myViewModel.getCharacterPositionColumn() * mazeDisplayer.getWidth() / Integer.valueOf(txtfld_columnsNum.getText()) ;
-        double topX = myViewModel.getCharacterPositionColumn() * mazeDisplayer.getWidth() / Integer.valueOf(txtfld_columnsNum.getText()) + (mazeDisplayer.getWidth() / Integer.valueOf(txtfld_columnsNum.getText()));
-        System.out.println(buttomX);
-        System.out.println(topX);
-        if(sceneX >= buttomX && sceneX <= topX){
-            System.out.println("got the X right");
-        }
-
-
     }
 
     public void mouseReleased(MouseEvent mouseEvent){

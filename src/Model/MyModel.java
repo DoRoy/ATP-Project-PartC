@@ -17,6 +17,13 @@ import java.util.concurrent.Executors;
 
 public class MyModel extends Observable implements IModel {
 
+    //TODO-Add Scroll with the mouse - 5 points
+    //TODO-Drag the character with the mouse - 10 points
+
+
+
+
+
     private MazeCharacter mainCharacter;
     private MazeCharacter secondCharacter;
     //private int characterPositionRow;
@@ -326,6 +333,7 @@ public class MyModel extends Observable implements IModel {
         }catch (IOException e){
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
+            //TODO-LoadMaze: add alert
             e.printStackTrace();
         }
     }
