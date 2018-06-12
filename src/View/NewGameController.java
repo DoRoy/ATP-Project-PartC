@@ -9,17 +9,17 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
-import java.awt.event.KeyEvent;
 import java.io.File;
 import java.net.URL;
 import java.util.*;
 
-public class NewGameController implements IView, Observer, Initializable {
+public class NewGameController implements IView, Initializable {
 
     ArrayList<String> mainCharacterList = new ArrayList( Arrays.asList( new String[]{"Crash_", "Ash_"}));
     String[] secondCharacterList = {"Mask_","Pikachu_"};
@@ -34,7 +34,7 @@ public class NewGameController implements IView, Observer, Initializable {
     public Button newGame_Button;
     public CheckBox newGame_multiPlayer_checkBox;
 
-    private MyViewModel myViewModel;
+    private  MyViewModel myViewModel;
     private Stage stage;
 
 
@@ -43,13 +43,6 @@ public class NewGameController implements IView, Observer, Initializable {
         this.myViewModel = myViewModel;
     }
 
-
-    @Override
-    public void update(Observable o, Object arg) {
-        if(o == myViewModel)
-            System.out.println("NewGameController: update");
-
-    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -73,7 +66,6 @@ public class NewGameController implements IView, Observer, Initializable {
 
     }
 
-
     public void getNextMainCharacter(){
         int curIndex = mainCharacterList.indexOf(mainCharacter);
         String nextCharacter = mainCharacterList.get((curIndex + 1) % mainCharacterList.size());
@@ -86,14 +78,22 @@ public class NewGameController implements IView, Observer, Initializable {
 
     public void getPrevMainCharacter(){
         int curIndex = mainCharacterList.indexOf(mainCharacter);
-        if(curIndex == 0)
-            curIndex = mainCharacterList.size();
-        String prevCharacter = mainCharacterList.get((curIndex - 1) % mainCharacterList.size());
+        String prevCharacter = "";
+        if(curIndex == 0){
+            curIndex = mainCharacterList.size() - 1;
+            prevCharacter = mainCharacterList.get((curIndex) % mainCharacterList.size());
+            secondCharacter = secondCharacterList[(curIndex) % mainCharacterList.size()];
+
+        }else {
+            prevCharacter = mainCharacterList.get((curIndex - 1) % mainCharacterList.size());
+            secondCharacter = secondCharacterList[(curIndex - 1) % mainCharacterList.size()];
+
+        }
+
         File file = new File("Resources/Characters/" + prevCharacter + "character.png");
         Image image = new Image(file.toURI().toString());
         newGame_mainCharacter_imageView.setImage(image);
         mainCharacter = prevCharacter;
-        secondCharacter = secondCharacterList[curIndex];
     }
 
 

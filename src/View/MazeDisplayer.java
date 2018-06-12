@@ -99,10 +99,12 @@ public class MazeDisplayer extends Canvas {
                 graphicsContext2D.clearRect(0, 0, getWidth(), getHeight()); //Clears the canvas
                 Image wallImage = new Image(new FileInputStream("Resources/Images/" + mainCharacterName + "wall.png"));
                 Image solutionImage = new Image(new FileInputStream("Resources/Images/" + mainCharacterName + "showSolution.png"));
+                Image backGroundImage = new Image(new FileInputStream("Resources/Images/" + mainCharacterName + "backGround.png"));
 
                 //Draw Maze
                 for (int i = 0; i < rowMazeSize; i++) {
                     for (int j = 0; j < colMazeSize; j++) {
+                        graphicsContext2D.drawImage(backGroundImage, (startCol + j) * cellWidth, (startRow + i) * cellHeight, cellWidth, cellHeight);
                         if (mazeCharArr[i][j] == '1') {
                             graphicsContext2D.drawImage(wallImage, (startCol + j) * cellWidth, (startRow + i) * cellHeight, cellWidth, cellHeight);
                         }
@@ -116,6 +118,7 @@ public class MazeDisplayer extends Canvas {
                 for(int i = 1; mazeSolutionArr != null && i < mazeSolutionArr.length -1 ;i++){
                     graphicsContext2D.drawImage(solutionImage, (startCol + mazeSolutionArr[i][1]) * cellWidth, (startRow + mazeSolutionArr[i][0]) * cellHeight, cellWidth, cellHeight);
                 }
+
 
 
                 Image mainCharacterImage = new Image(new FileInputStream("Resources/Characters/" + mainCharacterName + mainCharacter.getCharacterDirection() + ".png"));
@@ -140,5 +143,7 @@ public class MazeDisplayer extends Canvas {
         this.mazeSolutionArr = mazeSolutionArr;
     }
 
-
+    public void requestFocus(){
+        this.requestFocus();
+    }
 }

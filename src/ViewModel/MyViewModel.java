@@ -2,7 +2,6 @@ package ViewModel;
 
 import Model.IModel;
 import Model.MazeCharacter;
-import Model.MyModel;
 import javafx.scene.input.KeyCode;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -16,7 +15,7 @@ public class MyViewModel extends Observable implements Observer {
 
     private IModel model;
     private MediaPlayer gameSoundTrack;
-    private boolean isPlayed;
+    private boolean isPlayed = true;
     private MazeCharacter mainCharacter = new MazeCharacter("Crash_",0,0);
     private MazeCharacter secondCharacter = new MazeCharacter("Mask_",0,0);
 
@@ -27,22 +26,20 @@ public class MyViewModel extends Observable implements Observer {
     @Override
     public void update(Observable o, Object arg) {
         if(o == model){
-
+            setChanged();
+            notifyObservers(arg);
         }
-
-        setChanged();
-        notifyObservers();
     }
 
     public boolean isPlayed(){
         return isPlayed;
     }
+
     public void setMainCharacterName(String character){
         mainCharacter.setCharacterName(character);
     }
-    public void setSecondCharacterName(String character){
-        secondCharacter.setCharacterName(character);
-    }
+
+
 
     public void moveCharacter(KeyCode movement){
         model.moveCharacter(movement);
@@ -98,6 +95,7 @@ public class MyViewModel extends Observable implements Observer {
     public void saveOriginalMaze(File file){
         model.saveOriginalMaze(file);
     }
+
     public void saveCurrentMaze(File file){
         model.saveCurrentMaze(file);
     }
@@ -122,8 +120,11 @@ public class MyViewModel extends Observable implements Observer {
                 gameSoundTrack.seek(Duration.ZERO);
             }
         });
-        gameSoundTrack.play();
-        isPlayed = true;
+        if(isPlayed){
+            gameSoundTrack.play();
+        }
+        /*gameSoundTrack.play();
+        isPlayed = true;*/
 
     }
 
@@ -141,9 +142,14 @@ public class MyViewModel extends Observable implements Observer {
         return isPlayed;
     }
 
+    public void setSecondCharacterName(String secondCharacterName) {
+        this.secondCharacter.setCharacterName(secondCharacterName);
+    }
+
     //public void setMultiPlayerMode(boolean setMode){
      //   MyModel.setMultiPlayerMode(setMode);
     //}
+
 
 
 }

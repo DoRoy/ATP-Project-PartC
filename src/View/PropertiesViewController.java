@@ -13,33 +13,30 @@ public class PropertiesViewController extends Dialog implements Initializable {
     private String algorithmString;
     private String generatorString;
     private int threadNum;
-    public ChoiceBox algorithmChoiceBox;
-    public ChoiceBox mazeGeneratorChoiceBox;
-    public Spinner spinner;
-    public SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100);
+     public ChoiceBox algorithmChoiceBox;
+     public ChoiceBox mazeGeneratorChoiceBox;
+     public Spinner spinner;
+     public SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100);
     private Stage stage;
 
 
     public void saveChanges(){
-        System.out.println("Properties: saveChanges");
-        algorithmString = (String)algorithmChoiceBox.getValue();
-        generatorString = (String)mazeGeneratorChoiceBox.getValue();
+         System.out.println("Properties: saveChanges");
+         algorithmString = (String)algorithmChoiceBox.getValue();
+         generatorString = (String)mazeGeneratorChoiceBox.getValue();
         threadNum = (Integer)spinner.getValue();
         System.out.println(generatorString);
         System.out.println(algorithmString);
         System.out.println(spinner.getValue());
         Configurations.setProperties(threadNum,algorithmString, generatorString);
-        System.out.println("From Config - algorithms_solveAlgorithm:" + Configurations.getValue("algorithms_solveAlgorithm"));
-        System.out.println("From Config - algorithms_mazeGenerateAlgorithm" + Configurations.getValue("algorithms_mazeGenerateAlgorithm"));
 
         Configurations.run();
         stage.close();
-    }
+     }
 
-    public void setStage(Stage stage){
-        this.stage = stage;
-    }
-
+     public void setStage(Stage stage){
+         this.stage = stage;
+     }
 
 
     public void closeButton(){
@@ -51,8 +48,8 @@ public class PropertiesViewController extends Dialog implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        valueFactory.setValue(Configurations.getServer_threadPoolSize());
         spinner.setValueFactory(valueFactory);
-
         algorithmChoiceBox.getItems().addAll("BestFirstSearch","DepthFirstSearch","BreadthFirstSearch");
         String searchValue = Configurations.getValue("algorithms_solveAlgorithm");
         algorithmChoiceBox.setValue(searchValue);

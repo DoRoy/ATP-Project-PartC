@@ -1,12 +1,6 @@
 .root{
     -fx-background-color: white;
-
 }
-
-Canvas {
-    -fx-background-image: "Resources/Images/Ash_backGround";
-}
-
 
 Button {
     -fx-text-fill: white;
@@ -15,8 +9,6 @@ Button {
     -fx-background-color: linear-gradient(#61a2b1, #2A5058);
     -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
 }
-
-
 
 Button:hover{
     -fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;

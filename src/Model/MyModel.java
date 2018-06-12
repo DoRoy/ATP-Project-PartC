@@ -14,7 +14,15 @@ import java.util.Observable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+
 public class MyModel extends Observable implements IModel {
+
+    //TODO-Add Scroll with the mouse - 5 points
+    //TODO-Drag the character with the mouse - 10 points
+
+
+
+
 
     private MazeCharacter mainCharacter;
     private MazeCharacter secondCharacter;
@@ -31,11 +39,9 @@ public class MyModel extends Observable implements IModel {
 
     private ExecutorService threadPool = Executors.newCachedThreadPool();;
 
-
     public int[][] getMazeSolutionArr() {
         return mazeSolutionArr;
     }
-
 
     public MyModel(){
         Configurations.run(); // TODO should be removed
@@ -55,7 +61,6 @@ public class MyModel extends Observable implements IModel {
         serverMazeGenerator.stop();
         serverSolveMaze.stop();
     }
-
 
     @Override
     public void generateMaze(int row, int col) {
@@ -92,12 +97,13 @@ public class MyModel extends Observable implements IModel {
                 isAtTheEnd = false;
                 mazeSolutionArr = null;
                 setChanged();
-                notifyObservers();
+                notifyObservers("Maze");
             });
             //clientMazeGenerator.communicateWithServer();
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
+
 
     }
 
@@ -110,90 +116,98 @@ public class MyModel extends Observable implements IModel {
             case UP:
             case NUMPAD8:
                 mainCharacter.setCharacterDirection("back");
-                if(isNotWall(mainCharacterPositionRow - 1, mainCharacterPositionCol )) {
-                    mainCharacter.setCharacterRow(mainCharacterPositionRow - 1);
+                secondCharacter.setCharacterDirection(mainCharacter.getCharacterDirection());
+                if(isNotWall(mainCharacterPositionRow - 1, mainCharacterPositionCol )){
                     if(!multiPlayerMode){
                         secondCharacter.setCharacterRow(mainCharacterPositionRow);
                         secondCharacter.setCharacterCol(mainCharacterPositionCol);
                     }
+                    mainCharacter.setCharacterRow(mainCharacterPositionRow - 1);
+
                 }
                 break;
             case DOWN:
             case NUMPAD2:
                 mainCharacter.setCharacterDirection("front");
+                secondCharacter.setCharacterDirection(mainCharacter.getCharacterDirection());
                 if(isNotWall(mainCharacterPositionRow + 1, mainCharacterPositionCol)) {
-                    mainCharacter.setCharacterRow(mainCharacterPositionRow + 1);
                     if(!multiPlayerMode){
                         secondCharacter.setCharacterRow(mainCharacterPositionRow);
                         secondCharacter.setCharacterCol(mainCharacterPositionCol);
                     }
+                    mainCharacter.setCharacterRow(mainCharacterPositionRow + 1);
                 }
                 break;
             case LEFT:
             case NUMPAD4:
                 mainCharacter.setCharacterDirection("left");
+                secondCharacter.setCharacterDirection(mainCharacter.getCharacterDirection());
                 if(isNotWall(mainCharacterPositionRow, mainCharacterPositionCol - 1)) {
-                    mainCharacter.setCharacterCol(mainCharacterPositionCol - 1);
                     if(!multiPlayerMode){
                         secondCharacter.setCharacterRow(mainCharacterPositionRow);
                         secondCharacter.setCharacterCol(mainCharacterPositionCol);
                     }
+                    mainCharacter.setCharacterCol(mainCharacterPositionCol - 1);
                 }
                 break;
             case RIGHT:
             case NUMPAD6:
                 mainCharacter.setCharacterDirection("right");
+                secondCharacter.setCharacterDirection(mainCharacter.getCharacterDirection());
                 if(isNotWall(mainCharacterPositionRow, mainCharacterPositionCol + 1)) {
-                    mainCharacter.setCharacterCol(mainCharacterPositionCol + 1);
                     if(!multiPlayerMode){
                         secondCharacter.setCharacterRow(mainCharacterPositionRow);
                         secondCharacter.setCharacterCol(mainCharacterPositionCol);
                     }
+                    mainCharacter.setCharacterCol(mainCharacterPositionCol + 1);
                 }
                 break;
             case NUMPAD7:
                 mainCharacter.setCharacterDirection("left");
+                secondCharacter.setCharacterDirection(mainCharacter.getCharacterDirection());
                 if(isNotWall(mainCharacterPositionRow - 1, mainCharacterPositionCol - 1) && (isNotWall(mainCharacterPositionRow, mainCharacterPositionCol - 1) || isNotWall(mainCharacterPositionRow - 1, mainCharacterPositionCol) )){
-                    mainCharacter.setCharacterRow(mainCharacterPositionRow - 1);
-                    mainCharacter.setCharacterCol(mainCharacterPositionCol - 1);
                     if(!multiPlayerMode){
                         secondCharacter.setCharacterRow(mainCharacterPositionRow);
                         secondCharacter.setCharacterCol(mainCharacterPositionCol);
                     }
-
+                    mainCharacter.setCharacterRow(mainCharacterPositionRow - 1);
+                    mainCharacter.setCharacterCol(mainCharacterPositionCol - 1);
                 }
                 break;
             case NUMPAD9:
                 mainCharacter.setCharacterDirection("right");
+                secondCharacter.setCharacterDirection(mainCharacter.getCharacterDirection());
                 if(isNotWall(mainCharacterPositionRow - 1, mainCharacterPositionCol + 1) && (isNotWall(mainCharacterPositionRow, mainCharacterPositionCol + 1) || isNotWall(mainCharacterPositionRow - 1, mainCharacterPositionCol) )){
-                    mainCharacter.setCharacterRow(mainCharacterPositionRow - 1);
-                    mainCharacter.setCharacterCol(mainCharacterPositionCol + 1);
                     if(!multiPlayerMode){
                         secondCharacter.setCharacterRow(mainCharacterPositionRow);
                         secondCharacter.setCharacterCol(mainCharacterPositionCol);
                     }
+                    mainCharacter.setCharacterRow(mainCharacterPositionRow - 1);
+                    mainCharacter.setCharacterCol(mainCharacterPositionCol + 1);
                 }
                 break;
             case NUMPAD1:
                 mainCharacter.setCharacterDirection("left");
+                secondCharacter.setCharacterDirection(mainCharacter.getCharacterDirection());
                 if(isNotWall(mainCharacterPositionRow + 1, mainCharacterPositionCol - 1) && (isNotWall(mainCharacterPositionRow, mainCharacterPositionCol - 1) || isNotWall(mainCharacterPositionRow + 1, mainCharacterPositionCol) )){
-                    mainCharacter.setCharacterRow(mainCharacterPositionRow + 1);
-                    mainCharacter.setCharacterCol(mainCharacterPositionCol - 1);
                     if(!multiPlayerMode){
                         secondCharacter.setCharacterRow(mainCharacterPositionRow);
                         secondCharacter.setCharacterCol(mainCharacterPositionCol);
                     }
+                    mainCharacter.setCharacterRow(mainCharacterPositionRow + 1);
+                    mainCharacter.setCharacterCol(mainCharacterPositionCol - 1);
                 }
                 break;
             case NUMPAD3:
                 mainCharacter.setCharacterDirection("right");
+                secondCharacter.setCharacterDirection(mainCharacter.getCharacterDirection());
                 if(isNotWall(mainCharacterPositionRow + 1, mainCharacterPositionCol + 1) && (isNotWall(mainCharacterPositionRow, mainCharacterPositionCol + 1) || isNotWall(mainCharacterPositionRow + 1, mainCharacterPositionCol) )){
-                    mainCharacter.setCharacterRow(mainCharacterPositionRow + 1);
-                    mainCharacter.setCharacterCol(mainCharacterPositionCol + 1);
                     if(!multiPlayerMode){
                         secondCharacter.setCharacterRow(mainCharacterPositionRow);
                         secondCharacter.setCharacterCol(mainCharacterPositionCol);
                     }
+                    mainCharacter.setCharacterRow(mainCharacterPositionRow + 1);
+                    mainCharacter.setCharacterCol(mainCharacterPositionCol + 1);
                 }
                 break;
 
@@ -201,11 +215,11 @@ public class MyModel extends Observable implements IModel {
                 break;
         }
 
-        if(maze.getCharAt(mainCharacterPositionRow, mainCharacterPositionCol) == 'E')
+        if(maze.getCharAt(mainCharacter.getCharacterRow(), mainCharacter.getCharacterCol()) == 'E')
             isAtTheEnd = true;
 
         setChanged();
-        notifyObservers();
+        notifyObservers("Character");
 
     }
 
@@ -234,15 +248,12 @@ public class MyModel extends Observable implements IModel {
                 clientSolveMaze.communicateWithServer();
                 mazeSolutionArr = mazeSolution.getSolution();
                 setChanged();
-                notifyObservers();
+                notifyObservers("Solution");
             });
             //clientSolveMaze.communicateWithServer();
         }catch (Exception e){
             e.printStackTrace();
         }
-        /*mazeSolutionArr = mazeSolution.getSolution();
-        setChanged();
-        notifyObservers();*/
     }
 
     private boolean isNotWall(int row, int col){
@@ -269,8 +280,6 @@ public class MyModel extends Observable implements IModel {
     public String getMainCharacterDirection() {
         return mainCharacter.getCharacterDirection();
     }
-
-
 
     public int getSecondCharacterPositionRow() {
         return secondCharacter.getCharacterRow();
@@ -357,7 +366,7 @@ public class MyModel extends Observable implements IModel {
                 mainCharacter.setCharacterCol(maze.getStartPosition().getColumnIndex());
                 mainCharacter.setCharacterDirection("front");
                 setChanged();
-                notifyObservers();
+                notifyObservers("Maze");
             }
             else{
                 //TODO maybe add something here
