@@ -1,5 +1,6 @@
 package View;
 
+import Server.Configurations;
 import ViewModel.MyViewModel;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -22,9 +23,9 @@ import java.util.*;
 public class NewGameController implements IView, Initializable {
 
     ArrayList<String> mainCharacterList = new ArrayList( Arrays.asList( new String[]{"Crash_", "Ash_"}));
-    String[] secondCharacterList = {"Mask_","Pikachu_"};
+    String[] secondCharacterList = {"Crash_Second_","Ash_Second_"};
     String mainCharacter = "Crash_";
-    String secondCharacter = "Mask_";
+    String secondCharacter = "Crash_Second_";
     @FXML
     public javafx.scene.image.ImageView newGame_mainCharacter_imageView;
     public TextField newGame_rowsInput;
@@ -57,6 +58,7 @@ public class NewGameController implements IView, Initializable {
         int cols = Integer.valueOf(newGame_colsInput.getText());
         myViewModel.setMainCharacterName(mainCharacter);
         myViewModel.setSecondCharacterName(secondCharacter);
+        Configurations.setCharacterName(mainCharacter);
         myViewModel.generateMaze(rows, cols);
         myViewModel.startSoundTrack(mainCharacter);
         //myViewModel.setMultiPlayerMode(newGame_multiPlayer_checkBox.isSelected());
@@ -73,7 +75,8 @@ public class NewGameController implements IView, Initializable {
         Image image = new Image(file.toURI().toString());
         newGame_mainCharacter_imageView.setImage(image);
         mainCharacter = nextCharacter;
-        secondCharacter = secondCharacterList[(curIndex + 1)% secondCharacterList.length];
+        secondCharacter = nextCharacter + "Second_";
+        //secondCharacter = secondCharacterList[(curIndex + 1)% secondCharacterList.length];
     }
 
     public void getPrevMainCharacter(){
@@ -82,13 +85,13 @@ public class NewGameController implements IView, Initializable {
         if(curIndex == 0){
             curIndex = mainCharacterList.size() - 1;
             prevCharacter = mainCharacterList.get((curIndex) % mainCharacterList.size());
-            secondCharacter = secondCharacterList[(curIndex) % mainCharacterList.size()];
-
+            //secondCharacter = secondCharacterList[(curIndex) % mainCharacterList.size()];
         }else {
             prevCharacter = mainCharacterList.get((curIndex - 1) % mainCharacterList.size());
-            secondCharacter = secondCharacterList[(curIndex - 1) % mainCharacterList.size()];
-
+            //secondCharacter = secondCharacterList[(curIndex - 1) % mainCharacterList.size()];
         }
+        secondCharacter = prevCharacter + "Second_";
+
 
         File file = new File("Resources/Characters/" + prevCharacter + "character.png");
         Image image = new Image(file.toURI().toString());

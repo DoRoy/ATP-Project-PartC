@@ -1,15 +1,11 @@
 package View;
 
 import Model.MazeCharacter;
-import Model.MyModel;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 
-import javax.swing.text.Position;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
@@ -83,7 +79,7 @@ public class MazeDisplayer extends Canvas {
     public void redraw() {
         if (mazeCharArr != null) {
             this.setHeight( this.getScene().getHeight() * 6/8);
-            this.setWidth( this.getScene().getWidth() * 6/8);
+            this.setWidth( this.getScene().getWidth() * 19/20);
             double canvasHeight = getHeight();
             double canvasWidth = getWidth();
             double minSize = Math.max(colMazeSize,rowMazeSize);
@@ -120,13 +116,15 @@ public class MazeDisplayer extends Canvas {
                 }
 
 
+                //Draw Character
 
                 Image mainCharacterImage = new Image(new FileInputStream("Resources/Characters/" + mainCharacterName + mainCharacter.getCharacterDirection() + ".png"));
                 graphicsContext2D.drawImage(mainCharacterImage, (startCol + getMainCharacterColumn()) * cellWidth, (startRow + getMainCharacterRow()) * cellHeight, cellWidth, cellHeight);
 
-                Image secondCharacterImage = new Image(new FileInputStream("Resources/Characters/" + secondCharacterName + secondCharacter.getCharacterDirection() + ".png"));
-                graphicsContext2D.drawImage(secondCharacterImage, (startCol + getSecondCharacterColumn()) * cellWidth, (startRow + getSecondCharacterRow()) * cellHeight, cellWidth, cellHeight);
-
+                if (!(secondCharacter.getCharacterRow() == mainCharacter.getCharacterRow() && secondCharacter.getCharacterCol() == mainCharacter.getCharacterCol())) {
+                    Image secondCharacterImage = new Image(new FileInputStream("Resources/Characters/" + secondCharacterName + secondCharacter.getCharacterDirection() + ".png"));
+                    graphicsContext2D.drawImage(secondCharacterImage, (startCol + getSecondCharacterColumn()) * cellWidth, (startRow + getSecondCharacterRow()) * cellHeight, cellWidth, cellHeight);
+                }
                 Image goalImage = new Image(new FileInputStream("Resources/Characters/" + mainCharacterName + "goal.png"));
                 graphicsContext2D.drawImage(goalImage, (startCol + goalPositionColumn) * cellWidth, (startRow + goalPositionRow) * cellHeight, cellWidth, cellHeight);
 
