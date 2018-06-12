@@ -4,27 +4,13 @@ import Model.MyModel;
 import Server.*;
 import ViewModel.MyViewModel;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 import javafx.stage.WindowEvent;
-import javafx.util.Duration;
-
-import java.io.File;
-import java.util.Optional;
 
 public class Main extends Application {
     private Server serverMazeGenerator;
@@ -35,13 +21,13 @@ public class Main extends Application {
         MyViewModel myViewModel = new MyViewModel(model);
         model.addObserver(myViewModel);
 
+        //TODO check if can be changed to IMODEL
+
         primaryStage.setTitle("The Crash Maze!");
         FXMLLoader fxmlLoader = new FXMLLoader();
         Parent root = fxmlLoader.load(getClass().getResource("MyView.fxml").openStream());
         Scene scene = new Scene(root,800,700);
         scene.getStylesheets().add(getClass().getResource("ViewStyle.css").toExternalForm());
-
-
 
         MyViewController myViewController = fxmlLoader.getController();
         myViewController.setResizeEvent(scene);
@@ -51,9 +37,6 @@ public class Main extends Application {
         scene.addEventFilter(KeyEvent.KEY_PRESSED, event -> myViewController.KeyPressed(event));
 
         primaryStage.setScene(scene);
-        //NewGameController gameController = fxmlLoader.getController();
-        //gameController.setViewModel(myViewModel);
-        //myViewModel.addObserver(gameController);
         SetStageCloseEvent(primaryStage, myViewController);
         primaryStage.show();
 

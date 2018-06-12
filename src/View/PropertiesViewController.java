@@ -28,7 +28,7 @@ public class PropertiesViewController extends Dialog implements Initializable {
         System.out.println(generatorString);
         System.out.println(algorithmString);
         System.out.println(spinner.getValue());
-        Configurations.setProperties(threadNum,algorithmString, generatorString);
+        Configurations.setNewProperties(threadNum,algorithmString, generatorString);
 
         Configurations.run();
         stage.close();

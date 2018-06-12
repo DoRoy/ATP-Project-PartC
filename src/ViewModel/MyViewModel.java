@@ -26,6 +26,15 @@ public class MyViewModel extends Observable implements Observer {
     @Override
     public void update(Observable o, Object arg) {
         if(o == model){
+            if(arg != null) {
+                String argument = (String) arg;
+                if(argument == "Maze Load") {
+                    secondCharacter.setCharacterName(model.getLoadedCharacter().getCharacterName() + "Second_");
+                    secondCharacter.setCharacterRow(model.getMainCharacterPositionRow());
+                    secondCharacter.setCharacterCol(model.getMainCharacterPositionColumn());
+                    startSoundTrack(model.getLoadedCharacter().getCharacterName());
+                }
+            }
             setChanged();
             notifyObservers(arg);
         }
@@ -64,22 +73,20 @@ public class MyViewModel extends Observable implements Observer {
     }
     public String getMainCharacterName(){ return mainCharacter.getCharacterName();}
 
-    public int getCharacterPositionRow() {
-        return model.getCharacterPositionRow();
+    public int getSecondCharacterPositionRow() {
+        return model.getSecondCharacterPositionRow();
     }
-
-    public String getCharacterDirection() {
-        return model.getCharacterDirection();
+    public int getSecondCharacterPositionColumn() {
+        return model.getSecondCharacterPositionColumn();
     }
+    public String getSecondCharacterDirection() {
+        return model.getSecondCharacterDirection();
+    }
+    public String getSecondCharacterName(){ return secondCharacter.getCharacterName();}
 
 
     public boolean isAtTheEnd() {
         return model.isAtTheEnd();
-    }
-
-
-    public int getCharacterPositionColumn() {
-        return model.getCharacterPositionColumn();
     }
 
     public int[][] getSolution(){
@@ -103,6 +110,7 @@ public class MyViewModel extends Observable implements Observer {
     }
 
     public void loadFile(File file){
+
         model.loadMaze(file);
     }
 
@@ -143,5 +151,20 @@ public class MyViewModel extends Observable implements Observer {
         }
         return isPlayed;
     }
+
+    public void setSecondCharacterName(String secondCharacterName) {
+        this.secondCharacter.setCharacterName(secondCharacterName);
+    }
+
+    public MazeCharacter getLoadedCharacter() {
+        return model.getLoadedCharacter();
+    }
+
+
+    //public void setMultiPlayerMode(boolean setMode){
+     //   MyModel.setMultiPlayerMode(setMode);
+    //}
+
+
 
 }

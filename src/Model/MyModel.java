@@ -18,7 +18,8 @@ import java.util.concurrent.Executors;
 public class MyModel extends Observable implements IModel {
 
     //TODO-Add Scroll with the mouse - 5 points
-    //TODO-Drag the character with the mouse - 10 points
+    //TODO - DONE
+    // Drag the character with the mouse - 10 points
 
 
 
@@ -26,16 +27,16 @@ public class MyModel extends Observable implements IModel {
 
     private MazeCharacter mainCharacter;
     private MazeCharacter secondCharacter;
-    //private int characterPositionRow;
-    //private int characterPositionCol;
-    //private String characterDirection = "front";
     private Maze maze;
     private Solution mazeSolution;
     private boolean isAtTheEnd;
     private int[][] mazeSolutionArr;
+    private boolean multiPlayerMode = false;
+    private String mainCharacterName = "Crash_";
+    private String secondCharacterName = "Mask_";
+
     private Server serverMazeGenerator;
     private Server serverSolveMaze;
-    private String mainCharacterName = "Crash_";
 
     private ExecutorService threadPool = Executors.newCachedThreadPool();;
 
@@ -44,7 +45,7 @@ public class MyModel extends Observable implements IModel {
     }
 
     public MyModel(){
-        Configurations.run(); // TODO should be removed
+        Configurations.run();
         isAtTheEnd = false;
         startServers(); //TODO remove all server things
 
@@ -116,51 +117,96 @@ public class MyModel extends Observable implements IModel {
             case UP:
             case NUMPAD8:
                 mainCharacter.setCharacterDirection("back");
-                if(isNotWall(mainCharacterPositionRow - 1, mainCharacterPositionCol ))
+                secondCharacter.setCharacterDirection(mainCharacter.getCharacterDirection());
+                if(isNotWall(mainCharacterPositionRow - 1, mainCharacterPositionCol )){
+                    if(!multiPlayerMode){
+                        secondCharacter.setCharacterRow(mainCharacterPositionRow);
+                        secondCharacter.setCharacterCol(mainCharacterPositionCol);
+                    }
                     mainCharacter.setCharacterRow(mainCharacterPositionRow - 1);
+
+                }
                 break;
             case DOWN:
             case NUMPAD2:
                 mainCharacter.setCharacterDirection("front");
-                if(isNotWall(mainCharacterPositionRow + 1, mainCharacterPositionCol))
+                secondCharacter.setCharacterDirection(mainCharacter.getCharacterDirection());
+                if(isNotWall(mainCharacterPositionRow + 1, mainCharacterPositionCol)) {
+                    if(!multiPlayerMode){
+                        secondCharacter.setCharacterRow(mainCharacterPositionRow);
+                        secondCharacter.setCharacterCol(mainCharacterPositionCol);
+                    }
                     mainCharacter.setCharacterRow(mainCharacterPositionRow + 1);
+                }
                 break;
             case LEFT:
             case NUMPAD4:
                 mainCharacter.setCharacterDirection("left");
-                if(isNotWall(mainCharacterPositionRow, mainCharacterPositionCol - 1))
+                secondCharacter.setCharacterDirection(mainCharacter.getCharacterDirection());
+                if(isNotWall(mainCharacterPositionRow, mainCharacterPositionCol - 1)) {
+                    if(!multiPlayerMode){
+                        secondCharacter.setCharacterRow(mainCharacterPositionRow);
+                        secondCharacter.setCharacterCol(mainCharacterPositionCol);
+                    }
                     mainCharacter.setCharacterCol(mainCharacterPositionCol - 1);
+                }
                 break;
             case RIGHT:
             case NUMPAD6:
                 mainCharacter.setCharacterDirection("right");
-                if(isNotWall(mainCharacterPositionRow, mainCharacterPositionCol + 1))
+                secondCharacter.setCharacterDirection(mainCharacter.getCharacterDirection());
+                if(isNotWall(mainCharacterPositionRow, mainCharacterPositionCol + 1)) {
+                    if(!multiPlayerMode){
+                        secondCharacter.setCharacterRow(mainCharacterPositionRow);
+                        secondCharacter.setCharacterCol(mainCharacterPositionCol);
+                    }
                     mainCharacter.setCharacterCol(mainCharacterPositionCol + 1);
+                }
                 break;
             case NUMPAD7:
                 mainCharacter.setCharacterDirection("left");
+                secondCharacter.setCharacterDirection(mainCharacter.getCharacterDirection());
                 if(isNotWall(mainCharacterPositionRow - 1, mainCharacterPositionCol - 1) && (isNotWall(mainCharacterPositionRow, mainCharacterPositionCol - 1) || isNotWall(mainCharacterPositionRow - 1, mainCharacterPositionCol) )){
+                    if(!multiPlayerMode){
+                        secondCharacter.setCharacterRow(mainCharacterPositionRow);
+                        secondCharacter.setCharacterCol(mainCharacterPositionCol);
+                    }
                     mainCharacter.setCharacterRow(mainCharacterPositionRow - 1);
                     mainCharacter.setCharacterCol(mainCharacterPositionCol - 1);
                 }
                 break;
             case NUMPAD9:
                 mainCharacter.setCharacterDirection("right");
+                secondCharacter.setCharacterDirection(mainCharacter.getCharacterDirection());
                 if(isNotWall(mainCharacterPositionRow - 1, mainCharacterPositionCol + 1) && (isNotWall(mainCharacterPositionRow, mainCharacterPositionCol + 1) || isNotWall(mainCharacterPositionRow - 1, mainCharacterPositionCol) )){
+                    if(!multiPlayerMode){
+                        secondCharacter.setCharacterRow(mainCharacterPositionRow);
+                        secondCharacter.setCharacterCol(mainCharacterPositionCol);
+                    }
                     mainCharacter.setCharacterRow(mainCharacterPositionRow - 1);
                     mainCharacter.setCharacterCol(mainCharacterPositionCol + 1);
                 }
                 break;
             case NUMPAD1:
                 mainCharacter.setCharacterDirection("left");
+                secondCharacter.setCharacterDirection(mainCharacter.getCharacterDirection());
                 if(isNotWall(mainCharacterPositionRow + 1, mainCharacterPositionCol - 1) && (isNotWall(mainCharacterPositionRow, mainCharacterPositionCol - 1) || isNotWall(mainCharacterPositionRow + 1, mainCharacterPositionCol) )){
+                    if(!multiPlayerMode){
+                        secondCharacter.setCharacterRow(mainCharacterPositionRow);
+                        secondCharacter.setCharacterCol(mainCharacterPositionCol);
+                    }
                     mainCharacter.setCharacterRow(mainCharacterPositionRow + 1);
                     mainCharacter.setCharacterCol(mainCharacterPositionCol - 1);
                 }
                 break;
             case NUMPAD3:
                 mainCharacter.setCharacterDirection("right");
+                secondCharacter.setCharacterDirection(mainCharacter.getCharacterDirection());
                 if(isNotWall(mainCharacterPositionRow + 1, mainCharacterPositionCol + 1) && (isNotWall(mainCharacterPositionRow, mainCharacterPositionCol + 1) || isNotWall(mainCharacterPositionRow + 1, mainCharacterPositionCol) )){
+                    if(!multiPlayerMode){
+                        secondCharacter.setCharacterRow(mainCharacterPositionRow);
+                        secondCharacter.setCharacterCol(mainCharacterPositionCol);
+                    }
                     mainCharacter.setCharacterRow(mainCharacterPositionRow + 1);
                     mainCharacter.setCharacterCol(mainCharacterPositionCol + 1);
                 }
@@ -236,15 +282,18 @@ public class MyModel extends Observable implements IModel {
         return mainCharacter.getCharacterDirection();
     }
 
-    @Override
-    public int getCharacterPositionRow() {
-        return mainCharacter.getCharacterRow();
+    public int getSecondCharacterPositionRow() {
+        return secondCharacter.getCharacterRow();
     }
 
-    @Override
-    public String getCharacterDirection() {
-        return mainCharacter.getCharacterDirection();
+    public int getSecondCharacterPositionColumn() {
+        return secondCharacter.getCharacterCol();
     }
+
+    public String getSecondCharacterDirection() {
+        return secondCharacter.getCharacterDirection();
+    }
+
 
     @Override
     public int[][] getSolution() {
@@ -256,15 +305,9 @@ public class MyModel extends Observable implements IModel {
         return isAtTheEnd;
     }
 
-    @Override
-    public int getCharacterPositionColumn() {
-        return mainCharacter.getCharacterCol();
-    }
 
     @Override
     public void closeModel() {
-        //TODO implement
-
         System.out.println("Close Model");
         closeServers();
         threadPool.shutdown();
@@ -276,7 +319,9 @@ public class MyModel extends Observable implements IModel {
             FileOutputStream fileWriter = null;
             fileWriter = new FileOutputStream(file);
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileWriter);
-            objectOutputStream.writeObject(maze);
+            MazeCharacter mazeCharacter = new MazeCharacter(Configurations.getValue("mazeCharacter"), maze.getStartPosition().getRowIndex(), maze.getStartPosition().getColumnIndex());
+            MazeDisplayState mazeDisplayState = new MazeDisplayState(maze, mazeCharacter);
+            objectOutputStream.writeObject(mazeDisplayState);
             objectOutputStream.flush();
             objectOutputStream.close();
             fileWriter.close();
@@ -292,7 +337,9 @@ public class MyModel extends Observable implements IModel {
             fileWriter = new FileOutputStream(file);
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileWriter);
             Maze currentMaze = getCurrentMaze();
-            objectOutputStream.writeObject(currentMaze);
+            MazeCharacter mazeCharacter = new MazeCharacter(Configurations.getValue("mazeCharacter"), mainCharacter.getCharacterRow(), mainCharacter.getCharacterCol());
+            MazeDisplayState mazeDisplayState = new MazeDisplayState(currentMaze, mazeCharacter);
+            objectOutputStream.writeObject(mazeDisplayState);
             objectOutputStream.flush();
             objectOutputStream.close();
             fileWriter.close();
@@ -312,18 +359,25 @@ public class MyModel extends Observable implements IModel {
 
     }
 
+
+
+    public MazeCharacter getLoadedCharacter() {
+        return mainCharacter;
+    }
+
     public void loadMaze(File file){
         try{
             FileInputStream fin = new FileInputStream(file);
             ObjectInputStream oin = new ObjectInputStream(fin);
-            Maze loadedMaze = (Maze) oin.readObject();
-            if(loadedMaze != null) {
-                maze = loadedMaze;
-                mainCharacter.setCharacterRow(maze.getStartPosition().getRowIndex());
-                mainCharacter.setCharacterCol(maze.getStartPosition().getColumnIndex());
-                mainCharacter.setCharacterDirection("front");
+            MazeDisplayState loadedMazeDisplayState = (MazeDisplayState) oin.readObject();
+            if(loadedMazeDisplayState != null) {
+                maze = loadedMazeDisplayState.getMaze();
+                mainCharacter = loadedMazeDisplayState.getMazeCharacter();
+                secondCharacter.setCharacterRow(loadedMazeDisplayState.getMazeCharacter().getCharacterRow());
+                secondCharacter.setCharacterCol(loadedMazeDisplayState.getMazeCharacter().getCharacterCol());
+                secondCharacter.setCharacterName(loadedMazeDisplayState.getMazeCharacter().getCharacterName());
                 setChanged();
-                notifyObservers("Maze");
+                notifyObservers("Maze Load");
             }
             else{
                 //TODO maybe add something here
@@ -338,12 +392,23 @@ public class MyModel extends Observable implements IModel {
         }
     }
 
+    public void setMultiPlayerMode(boolean setMode){
+        multiPlayerMode = setMode;
+    }
 
+    public void setMainCharacterName(String name) {
+        mainCharacterName = name;
+    }
+    public void setSecondCharacterName(String name) {
+        secondCharacterName = name;
+    }
 
     public String getMainCharacterName(){
         return mainCharacterName;
     }
 
-
+    public String getSecondCharacterName(){
+        return secondCharacterName;
+    }
 
 }

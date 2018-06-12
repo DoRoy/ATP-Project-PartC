@@ -1,6 +1,8 @@
 package Model;
 
-public class MazeCharacter {
+import java.io.Serializable;
+
+public class MazeCharacter implements Serializable {
 
 
     private String characterName;
