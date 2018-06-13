@@ -81,9 +81,9 @@ public class MazeDisplayer extends Canvas {
             this.setWidth( this.getScene().getWidth() * 19/20);
             double canvasHeight = getHeight();
             double canvasWidth = getWidth();
-            double minSize = Math.max(colMazeSize,rowMazeSize);
-            double cellHeight = canvasHeight / minSize;
-            double cellWidth = canvasWidth / minSize;
+            double maxSize = Math.max(colMazeSize,rowMazeSize);
+            double cellHeight = canvasHeight / maxSize;
+            double cellWidth = canvasWidth / maxSize;
             double startRow = (canvasHeight/2 - (cellHeight * rowMazeSize / 2)) / cellHeight;
             double startCol = (canvasWidth/2 - (cellWidth * colMazeSize / 2)) / cellWidth;
 
@@ -121,11 +121,14 @@ public class MazeDisplayer extends Canvas {
                 graphicsContext2D.drawImage(mainCharacterImage, (startCol + getMainCharacterColumn()) * cellWidth, (startRow + getMainCharacterRow()) * cellHeight, cellWidth, cellHeight);
 
                 if (!(secondCharacter.getCharacterRow() == mainCharacter.getCharacterRow() && secondCharacter.getCharacterCol() == mainCharacter.getCharacterCol())) {
-                Image secondCharacterImage = new Image(new FileInputStream("Resources/Characters/" + secondCharacterName + secondCharacter.getCharacterDirection() + ".png"));
-                graphicsContext2D.drawImage(secondCharacterImage, (startCol + getSecondCharacterColumn()) * cellWidth, (startRow + getSecondCharacterRow()) * cellHeight, cellWidth, cellHeight);
+                    Image secondCharacterImage = new Image(new FileInputStream("Resources/Characters/" + secondCharacterName + secondCharacter.getCharacterDirection() + ".png"));
+                    graphicsContext2D.drawImage(secondCharacterImage, (startCol + getSecondCharacterColumn()) * cellWidth, (startRow + getSecondCharacterRow()) * cellHeight, cellWidth, cellHeight);
                 }
+
+                if (mainCharacter.getCharacterRow() != goalPositionRow || mainCharacter.getCharacterCol() != goalPositionColumn) {
                     Image goalImage = new Image(new FileInputStream("Resources/Characters/" + mainCharacterName + "goal.png"));
-                graphicsContext2D.drawImage(goalImage, (startCol + goalPositionColumn) * cellWidth, (startRow + goalPositionRow) * cellHeight, cellWidth, cellHeight);
+                    graphicsContext2D.drawImage(goalImage, (startCol + goalPositionColumn) * cellWidth, (startRow + goalPositionRow) * cellHeight, cellWidth, cellHeight);
+                }
 
             } catch (FileNotFoundException e) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -140,7 +143,4 @@ public class MazeDisplayer extends Canvas {
         this.mazeSolutionArr = mazeSolutionArr;
     }
 
-    public void requestFocus(){
-        this.requestFocus();
-    }
 }

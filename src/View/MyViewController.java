@@ -21,6 +21,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.stage.*;
 
 import java.io.*;
@@ -115,8 +116,8 @@ public class MyViewController implements IView, Observer, Initializable {
 
                         //Second Character
                         mazeDisplayer.setSecondCharacterName(myViewModel.getSecondCharacterName());
-                        mazeDisplayer.setSecondCharacterPosition(myViewModel.getSecondCharacterPositionRow(), myViewModel.getSecondCharacterPositionColumn());
-                        mazeDisplayer.setSecondCharacterDirection(myViewModel.getSecondCharacterDirection());
+                        mazeDisplayer.setSecondCharacterPosition(myViewModel.getMainCharacterPositionRow(), myViewModel.getMainCharacterPositionColumn());
+                        mazeDisplayer.setSecondCharacterDirection(myViewModel.getMainCharacterDirection());
 
                         mazeDisplayer.setMazeSolutionArr(null);
                         Platform.runLater(()->{
@@ -211,7 +212,6 @@ public class MyViewController implements IView, Observer, Initializable {
     }
 
     public void KeyPressed(KeyEvent keyEvent){
-        System.out.println("MyViewController: KeyPressed");
         if(!myViewModel.isAtTheEnd()){
             //TODO - DONE..
             // make it not able to move the character
@@ -242,6 +242,8 @@ public class MyViewController implements IView, Observer, Initializable {
 
     public void showAlert(String alertMessage) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setGraphic(null);
+        alert.setTitle("Error Alert");
         alert.setContentText(alertMessage);
         alert.show();
     }
@@ -268,7 +270,6 @@ public class MyViewController implements IView, Observer, Initializable {
 
 
     public void exitCorrectly(){
-        System.out.println("Exit Correctly");
         Alert alert = new Alert(Alert.AlertType.NONE    );
         ButtonType leaveButton = new ButtonType("Leave", ButtonBar.ButtonData.NO);
         ButtonType stayButton = new ButtonType("Stay", ButtonBar.ButtonData.YES);
@@ -291,7 +292,6 @@ public class MyViewController implements IView, Observer, Initializable {
 
 
     public void saveFile(ActionEvent event){
-        System.out.println("saveFile");
         int[] choose = {0};
         Alert alert = new Alert(Alert.AlertType.NONE);
         alert.setTitle("Save Maze");
@@ -319,6 +319,7 @@ public class MyViewController implements IView, Observer, Initializable {
         if(!filePath.exists())
             filePath.mkdir();
         fileChooser.setInitialDirectory(filePath);
+        fileChooser.setInitialFileName("myMaze");
 
         //Show save file dialog
         File file = fileChooser.showSaveDialog(new PopupWindow() {
@@ -421,10 +422,10 @@ public class MyViewController implements IView, Observer, Initializable {
             showAlert("Exception!");
         }
         helpStage.setTitle("Help");
-        Scene scene = new Scene(root,500,550);
+        Scene scene = new Scene(root,520,495);
         scene.getStylesheets().add(getClass().getResource("viewStyle.css").toExternalForm());
         helpStage.setScene(scene);
-        helpStage.initModality(Modality.APPLICATION_MODAL);
+        helpStage.initModality(Modality.WINDOW_MODAL);
         helpStage.show();
     }
 
@@ -495,16 +496,22 @@ public class MyViewController implements IView, Observer, Initializable {
 
 
     public void mouseDragged(MouseEvent mouseEvent){
-        System.out.println("mouseDragged");
+
         if (mazeDisplayer != null) {
-            int mouseX = (int) ((mouseEvent.getX()) / (mazeDisplayer.getWidth() / myViewModel.getMaze()[0].length));
-            int mouseY = (int) ((mouseEvent.getY()) / (mazeDisplayer.getHeight() / myViewModel.getMaze().length));
-            System.out.println("mouseX = " + mouseX);
-            System.out.println("mouseY = " + mouseY);
-            System.out.println("mouseEvent-X = " + mouseEvent.getX());
-            System.out.println("mouseEvent-Y = " + mouseEvent.getY());
-            System.out.println("mouseEvent-SceneX = " + mouseEvent.getSceneX());
-            System.out.println("mouseEvent-SceneY = " + mouseEvent.getSceneY() + "\n");
+            lbl_statusBar.setText("");
+            int maxSize = Math.max(myViewModel.getMaze()[0].length, myViewModel.getMaze().length);
+            double cellHeight = mazeDisplayer.getHeight() / maxSize;
+            double cellWidth = mazeDisplayer.getWidth() / maxSize;
+            double canvasHeight = mazeDisplayer.getHeight();
+            double canvasWidth = mazeDisplayer.getWidth();
+            int rowMazeSize = myViewModel.getMaze().length;
+            int colMazeSize = myViewModel.getMaze()[0].length;
+            double startRow = (canvasHeight / 2 - (cellHeight * rowMazeSize / 2)) / cellHeight;
+            double startCol = (canvasWidth / 2 -(cellWidth * colMazeSize / 2)) / cellWidth;
+            int mouseX = (int) ((mouseEvent.getX() ) / (mazeDisplayer.getWidth()  / maxSize));
+            int mouseY = (int) ((mouseEvent.getY() ) / (mazeDisplayer.getHeight() / maxSize));
+            //System.out.println("MouseX = " + mouseX);
+            //System.out.println("MouseY = " + mouseY + "\n");
             if(!myViewModel.isAtTheEnd()) {
                 if (mouseY < myViewModel.getMainCharacterPositionRow()) {
                     myViewModel.moveCharacter(KeyCode.UP);
@@ -519,6 +526,26 @@ public class MyViewController implements IView, Observer, Initializable {
                     myViewModel.moveCharacter(KeyCode.RIGHT);
                 }
             }
+        }
+    }
+
+    public void scrollInOut(ScrollEvent scrollEvent) {
+        System.out.println("zoomInOut");
+        try {
+            myViewModel.getMaze();
+            AnimatedZoomOperator zoomOperator = new AnimatedZoomOperator();
+            double zoomFactor;
+            if (scrollEvent.isControlDown()) {
+                zoomFactor = 1.5;
+                double deltaY = scrollEvent.getDeltaY();
+                if (deltaY < 0) {
+                    zoomFactor = 1 / zoomFactor;
+                }
+                zoomOperator.zoom(mazeDisplayer, zoomFactor, scrollEvent.getSceneX(), scrollEvent.getSceneY());
+                scrollEvent.consume();
+            }
+        } catch (NullPointerException e) {
+            scrollEvent.consume();
         }
     }
 

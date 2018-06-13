@@ -102,11 +102,11 @@ public class MyViewModel extends Observable implements Observer {
     }
 
     public void saveOriginalMaze(File file){
-        model.saveOriginalMaze(file);
+        model.saveOriginalMaze(file,mainCharacter.getCharacterName());
     }
 
     public void saveCurrentMaze(File file){
-        model.saveCurrentMaze(file);
+        model.saveCurrentMaze(file,mainCharacter.getCharacterName());
     }
 
     public void loadFile(File file){

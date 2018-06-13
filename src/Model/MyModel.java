@@ -5,6 +5,7 @@ import IO.MyDecompressorInputStream;
 import Server.*;
 import algorithms.mazeGenerators.Maze;
 import algorithms.search.*;
+import javafx.scene.control.Alert;
 import javafx.scene.input.KeyCode;
 
 import java.io.*;
@@ -17,7 +18,8 @@ import java.util.concurrent.Executors;
 
 public class MyModel extends Observable implements IModel {
 
-    //TODO-Add Scroll with the mouse - 5 points
+    //TODO - DONE
+    // Add Scroll with the mouse - 5 points
     //TODO - DONE
     // Drag the character with the mouse - 10 points
 
@@ -25,15 +27,15 @@ public class MyModel extends Observable implements IModel {
 
 
 
-    private MazeCharacter mainCharacter;
-    private MazeCharacter secondCharacter;
+    private MazeCharacter mainCharacter = new MazeCharacter("Main_",0,0);;
+    private MazeCharacter secondCharacter = new MazeCharacter("Second_",0,0);
     private Maze maze;
     private Solution mazeSolution;
     private boolean isAtTheEnd;
     private int[][] mazeSolutionArr;
     private boolean multiPlayerMode = false;
-    private String mainCharacterName = "Crash_";
-    private String secondCharacterName = "Mask_";
+    //private String mainCharacterName = "Crash_";
+    //private String secondCharacterName = "Mask_";
 
     private Server serverMazeGenerator;
     private Server serverSolveMaze;
@@ -47,7 +49,7 @@ public class MyModel extends Observable implements IModel {
     public MyModel(){
         Configurations.run();
         isAtTheEnd = false;
-        startServers(); //TODO remove all server things
+        startServers();
 
     }
 
@@ -92,8 +94,8 @@ public class MyModel extends Observable implements IModel {
                 clientMazeGenerator.communicateWithServer();
                 int mazeRow = maze.getStartPosition().getRowIndex();
                 int mazeCol = maze.getStartPosition().getColumnIndex();
-                mainCharacter = new MazeCharacter("Crash_",mazeRow,mazeCol);
-                secondCharacter = new MazeCharacter("Mask_", mazeRow,mazeCol);
+                mainCharacter = new MazeCharacter("Main_",mazeRow,mazeCol);
+                secondCharacter = new MazeCharacter("Second_", mazeRow,mazeCol);
 
                 isAtTheEnd = false;
                 mazeSolutionArr = null;
@@ -314,12 +316,12 @@ public class MyModel extends Observable implements IModel {
     }
 
     @Override
-    public void saveOriginalMaze(File file){
+    public void saveOriginalMaze(File file, String name){
         try {
             FileOutputStream fileWriter = null;
             fileWriter = new FileOutputStream(file);
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileWriter);
-            MazeCharacter mazeCharacter = new MazeCharacter(Configurations.getValue("mazeCharacter"), maze.getStartPosition().getRowIndex(), maze.getStartPosition().getColumnIndex());
+            MazeCharacter mazeCharacter = new MazeCharacter(name, maze.getStartPosition().getRowIndex(), maze.getStartPosition().getColumnIndex());
             MazeDisplayState mazeDisplayState = new MazeDisplayState(maze, mazeCharacter);
             objectOutputStream.writeObject(mazeDisplayState);
             objectOutputStream.flush();
@@ -331,13 +333,13 @@ public class MyModel extends Observable implements IModel {
     }
 
     @Override
-    public void saveCurrentMaze(File file){
+    public void saveCurrentMaze(File file,String name){
         try {
             FileOutputStream fileWriter = null;
             fileWriter = new FileOutputStream(file);
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileWriter);
             Maze currentMaze = getCurrentMaze();
-            MazeCharacter mazeCharacter = new MazeCharacter(Configurations.getValue("mazeCharacter"), mainCharacter.getCharacterRow(), mainCharacter.getCharacterCol());
+            MazeCharacter mazeCharacter = new MazeCharacter(name, mainCharacter.getCharacterRow(), mainCharacter.getCharacterCol());
             MazeDisplayState mazeDisplayState = new MazeDisplayState(currentMaze, mazeCharacter);
             objectOutputStream.writeObject(mazeDisplayState);
             objectOutputStream.flush();
@@ -373,32 +375,32 @@ public class MyModel extends Observable implements IModel {
             if(loadedMazeDisplayState != null) {
                 maze = loadedMazeDisplayState.getMaze();
                 mainCharacter = loadedMazeDisplayState.getMazeCharacter();
-                secondCharacter.setCharacterRow(loadedMazeDisplayState.getMazeCharacter().getCharacterRow());
-                secondCharacter.setCharacterCol(loadedMazeDisplayState.getMazeCharacter().getCharacterCol());
-                secondCharacter.setCharacterName(loadedMazeDisplayState.getMazeCharacter().getCharacterName());
+                //secondCharacter = loadedMazeDisplayState.getMazeCharacter();
+                //secondCharacter.setCharacterName(secondCharacter.getCharacterName() + "Second_");
                 setChanged();
                 notifyObservers("Maze Load");
             }
-            else{
-                //TODO maybe add something here
-            }
+
             fin.close();
             oin.close();
-        }catch (IOException e){
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            //TODO-LoadMaze: add alert
-            e.printStackTrace();
+        }catch (IOException | ClassNotFoundException e) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Loaded Maze ERROR");
+            alert.setHeaderText("Exception caught trying to load:\n" + file.getName());
+            alert.setGraphic(null);
+            alert.setContentText("Loaded file was not a saved maze!\nPlease load the right type of file");
+            alert.show();
         }
     }
 
-    public void setMultiPlayerMode(boolean setMode){
+/*    public void setMultiPlayerMode(boolean setMode){
         multiPlayerMode = setMode;
     }
 
     public void setMainCharacterName(String name) {
         mainCharacterName = name;
     }
+
     public void setSecondCharacterName(String name) {
         secondCharacterName = name;
     }
@@ -409,6 +411,6 @@ public class MyModel extends Observable implements IModel {
 
     public String getSecondCharacterName(){
         return secondCharacterName;
-    }
+    }*/
 
 }
