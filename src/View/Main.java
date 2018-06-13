@@ -29,8 +29,6 @@ public class Main extends Application {
         Scene scene = new Scene(root,800,700);
         scene.getStylesheets().add(getClass().getResource("ViewStyle.css").toExternalForm());
 
-
-
         MyViewController myViewController = fxmlLoader.getController();
         myViewController.setResizeEvent(scene);
         myViewController.setViewModel(myViewModel);
@@ -39,9 +37,6 @@ public class Main extends Application {
         scene.addEventFilter(KeyEvent.KEY_PRESSED, event -> myViewController.KeyPressed(event));
 
         primaryStage.setScene(scene);
-        //NewGameController gameController = fxmlLoader.getController();
-        //gameController.setViewModel(myViewModel);
-        //myViewModel.addObserver(gameController);
         SetStageCloseEvent(primaryStage, myViewController);
         primaryStage.show();
 

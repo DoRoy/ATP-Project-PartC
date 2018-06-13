@@ -324,7 +324,7 @@ public class ZoomAndScrollApplication extends Application {
         rect1.addEventFilter( MouseEvent.MOUSE_PRESSED, nodeGestures.getOnMousePressedEventHandler());
         rect1.addEventFilter( MouseEvent.MOUSE_DRAGGED, nodeGestures.getOnMouseDraggedEventHandler());
 
-        //canvas.getChildren().addAll(label1, label2, label3, circle1, rect1);
+        canvas.getChildren().addAll(label1, label2, label3, circle1, rect1);
 
 
         File file = new File("Resources/Characters/Crash_box1.png");

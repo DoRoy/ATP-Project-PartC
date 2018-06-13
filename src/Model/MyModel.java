@@ -18,21 +18,22 @@ import java.util.concurrent.Executors;
 public class MyModel extends Observable implements IModel {
 
     //TODO-Add Scroll with the mouse - 5 points
-    //TODO-Drag the character with the mouse - 10 points
+    //TODO - DONE
+    // Drag the character with the mouse - 10 points
 
 
 
 
 
-    private MazeCharacter mainCharacter;
-    private MazeCharacter secondCharacter;
+    private MazeCharacter mainCharacter = new MazeCharacter("Main_",0,0);;
+    private MazeCharacter secondCharacter = new MazeCharacter("Second_",0,0);
     private Maze maze;
     private Solution mazeSolution;
     private boolean isAtTheEnd;
     private int[][] mazeSolutionArr;
     private boolean multiPlayerMode = false;
-    private String mainCharacterName = "Crash_";
-    private String secondCharacterName = "Mask_";
+    //private String mainCharacterName = "Crash_";
+    //private String secondCharacterName = "Mask_";
 
     private Server serverMazeGenerator;
     private Server serverSolveMaze;
@@ -44,7 +45,7 @@ public class MyModel extends Observable implements IModel {
     }
 
     public MyModel(){
-        Configurations.run(); // TODO should be removed
+        Configurations.run();
         isAtTheEnd = false;
         startServers(); //TODO remove all server things
 
@@ -91,8 +92,8 @@ public class MyModel extends Observable implements IModel {
                 clientMazeGenerator.communicateWithServer();
                 int mazeRow = maze.getStartPosition().getRowIndex();
                 int mazeCol = maze.getStartPosition().getColumnIndex();
-                mainCharacter = new MazeCharacter("Crash_",mazeRow,mazeCol);
-                secondCharacter = new MazeCharacter("Mask_", mazeRow,mazeCol);
+                mainCharacter = new MazeCharacter("Main_",mazeRow,mazeCol);
+                secondCharacter = new MazeCharacter("Second_", mazeRow,mazeCol);
 
                 isAtTheEnd = false;
                 mazeSolutionArr = null;
@@ -307,19 +308,20 @@ public class MyModel extends Observable implements IModel {
 
     @Override
     public void closeModel() {
-        //TODO implement
         System.out.println("Close Model");
         closeServers();
         threadPool.shutdown();
     }
 
     @Override
-    public void saveOriginalMaze(File file){
+    public void saveOriginalMaze(File file, String name){
         try {
             FileOutputStream fileWriter = null;
             fileWriter = new FileOutputStream(file);
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileWriter);
-            objectOutputStream.writeObject(maze);
+            MazeCharacter mazeCharacter = new MazeCharacter(name, maze.getStartPosition().getRowIndex(), maze.getStartPosition().getColumnIndex());
+            MazeDisplayState mazeDisplayState = new MazeDisplayState(maze, mazeCharacter);
+            objectOutputStream.writeObject(mazeDisplayState);
             objectOutputStream.flush();
             objectOutputStream.close();
             fileWriter.close();
@@ -329,13 +331,15 @@ public class MyModel extends Observable implements IModel {
     }
 
     @Override
-    public void saveCurrentMaze(File file){
+    public void saveCurrentMaze(File file,String name){
         try {
             FileOutputStream fileWriter = null;
             fileWriter = new FileOutputStream(file);
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileWriter);
             Maze currentMaze = getCurrentMaze();
-            objectOutputStream.writeObject(currentMaze);
+            MazeCharacter mazeCharacter = new MazeCharacter(name, mainCharacter.getCharacterRow(), mainCharacter.getCharacterCol());
+            MazeDisplayState mazeDisplayState = new MazeDisplayState(currentMaze, mazeCharacter);
+            objectOutputStream.writeObject(mazeDisplayState);
             objectOutputStream.flush();
             objectOutputStream.close();
             fileWriter.close();
@@ -355,18 +359,24 @@ public class MyModel extends Observable implements IModel {
 
     }
 
+
+
+    public MazeCharacter getLoadedCharacter() {
+        return mainCharacter;
+    }
+
     public void loadMaze(File file){
         try{
             FileInputStream fin = new FileInputStream(file);
             ObjectInputStream oin = new ObjectInputStream(fin);
-            Maze loadedMaze = (Maze) oin.readObject();
-            if(loadedMaze != null) {
-                maze = loadedMaze;
-                mainCharacter.setCharacterRow(maze.getStartPosition().getRowIndex());
-                mainCharacter.setCharacterCol(maze.getStartPosition().getColumnIndex());
-                mainCharacter.setCharacterDirection("front");
+            MazeDisplayState loadedMazeDisplayState = (MazeDisplayState) oin.readObject();
+            if(loadedMazeDisplayState != null) {
+                maze = loadedMazeDisplayState.getMaze();
+                mainCharacter = loadedMazeDisplayState.getMazeCharacter();
+                //secondCharacter = loadedMazeDisplayState.getMazeCharacter();
+                //secondCharacter.setCharacterName(secondCharacter.getCharacterName() + "Second_");
                 setChanged();
-                notifyObservers("Maze");
+                notifyObservers("Maze Load");
             }
             else{
                 //TODO maybe add something here
@@ -376,6 +386,7 @@ public class MyModel extends Observable implements IModel {
         }catch (IOException e){
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
+            //TODO-LoadMaze: add alert
             e.printStackTrace();
         }
     }
@@ -384,7 +395,7 @@ public class MyModel extends Observable implements IModel {
         multiPlayerMode = setMode;
     }
 
-    public void setMainCharacterName(String name) {
+/*    public void setMainCharacterName(String name) {
         mainCharacterName = name;
     }
     public void setSecondCharacterName(String name) {
@@ -397,6 +408,6 @@ public class MyModel extends Observable implements IModel {
 
     public String getSecondCharacterName(){
         return secondCharacterName;
-    }
+    }*/
 
 }

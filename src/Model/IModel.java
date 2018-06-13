@@ -24,7 +24,9 @@ public interface IModel {
     boolean isAtTheEnd();
     int[][] getSolution();
     int[][] getMazeSolutionArr();
-    void saveCurrentMaze(File file);
-    void saveOriginalMaze(File file);
+    void saveCurrentMaze(File file,String name);
+    void saveOriginalMaze(File file, String name);
     void loadMaze(File file);
+
+    MazeCharacter getLoadedCharacter();
 }

@@ -8,13 +8,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+
 
 import java.io.File;
 import java.net.URL;
@@ -58,13 +56,13 @@ public class NewGameController implements IView, Initializable {
         int cols = Integer.valueOf(newGame_colsInput.getText());
         myViewModel.setMainCharacterName(mainCharacter);
         myViewModel.setSecondCharacterName(secondCharacter);
-        Configurations.setCharacterName(mainCharacter);
         myViewModel.generateMaze(rows, cols);
         myViewModel.startSoundTrack(mainCharacter);
+
         //myViewModel.setMultiPlayerMode(newGame_multiPlayer_checkBox.isSelected());
         event.consume();
 
-        stage.close();
+        //stage.close();
 
     }
 
@@ -98,6 +96,7 @@ public class NewGameController implements IView, Initializable {
         newGame_mainCharacter_imageView.setImage(image);
         mainCharacter = prevCharacter;
     }
+
 
 
 }

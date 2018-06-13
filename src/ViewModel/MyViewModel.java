@@ -26,6 +26,15 @@ public class MyViewModel extends Observable implements Observer {
     @Override
     public void update(Observable o, Object arg) {
         if(o == model){
+            if(arg != null) {
+                String argument = (String) arg;
+                if(argument == "Maze Load") {
+                    secondCharacter.setCharacterName(model.getLoadedCharacter().getCharacterName() + "Second_");
+                    secondCharacter.setCharacterRow(model.getMainCharacterPositionRow());
+                    secondCharacter.setCharacterCol(model.getMainCharacterPositionColumn());
+                    startSoundTrack(model.getLoadedCharacter().getCharacterName());
+                }
+            }
             setChanged();
             notifyObservers(arg);
         }
@@ -38,7 +47,6 @@ public class MyViewModel extends Observable implements Observer {
     public void setMainCharacterName(String character){
         mainCharacter.setCharacterName(character);
     }
-
 
 
     public void moveCharacter(KeyCode movement){
@@ -93,14 +101,15 @@ public class MyViewModel extends Observable implements Observer {
     }
 
     public void saveOriginalMaze(File file){
-        model.saveOriginalMaze(file);
+        model.saveOriginalMaze(file,mainCharacter.getCharacterName());
     }
 
     public void saveCurrentMaze(File file){
-        model.saveCurrentMaze(file);
+        model.saveCurrentMaze(file,mainCharacter.getCharacterName());
     }
 
     public void loadFile(File file){
+
         model.loadMaze(file);
     }
 
@@ -145,6 +154,11 @@ public class MyViewModel extends Observable implements Observer {
     public void setSecondCharacterName(String secondCharacterName) {
         this.secondCharacter.setCharacterName(secondCharacterName);
     }
+
+    public MazeCharacter getLoadedCharacter() {
+        return model.getLoadedCharacter();
+    }
+
 
     //public void setMultiPlayerMode(boolean setMode){
      //   MyModel.setMultiPlayerMode(setMode);

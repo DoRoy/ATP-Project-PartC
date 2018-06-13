@@ -12,7 +12,6 @@ import java.io.FileNotFoundException;
 
 public class MazeDisplayer extends Canvas {
 
-
     private MazeCharacter mainCharacter = new MazeCharacter("Crash_",0,0);;
     private MazeCharacter secondCharacter = new MazeCharacter("Mask_",0,0);;
     private char[][] mazeCharArr;
@@ -78,7 +77,7 @@ public class MazeDisplayer extends Canvas {
 
     public void redraw() {
         if (mazeCharArr != null) {
-            this.setHeight( this.getScene().getHeight() * 6/8);
+            this.setHeight(this.getScene().getHeight() - 80 /*ToolBar*/ - 105 /*LowerBar*/ );
             this.setWidth( this.getScene().getWidth() * 19/20);
             double canvasHeight = getHeight();
             double canvasWidth = getWidth();
@@ -125,8 +124,11 @@ public class MazeDisplayer extends Canvas {
                     Image secondCharacterImage = new Image(new FileInputStream("Resources/Characters/" + secondCharacterName + secondCharacter.getCharacterDirection() + ".png"));
                     graphicsContext2D.drawImage(secondCharacterImage, (startCol + getSecondCharacterColumn()) * cellWidth, (startRow + getSecondCharacterRow()) * cellHeight, cellWidth, cellHeight);
                 }
-                Image goalImage = new Image(new FileInputStream("Resources/Characters/" + mainCharacterName + "goal.png"));
-                graphicsContext2D.drawImage(goalImage, (startCol + goalPositionColumn) * cellWidth, (startRow + goalPositionRow) * cellHeight, cellWidth, cellHeight);
+
+                if (mainCharacter.getCharacterRow() != goalPositionRow || mainCharacter.getCharacterCol() != goalPositionColumn) {
+                    Image goalImage = new Image(new FileInputStream("Resources/Characters/" + mainCharacterName + "goal.png"));
+                    graphicsContext2D.drawImage(goalImage, (startCol + goalPositionColumn) * cellWidth, (startRow + goalPositionRow) * cellHeight, cellWidth, cellHeight);
+                }
 
             } catch (FileNotFoundException e) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -141,7 +143,4 @@ public class MazeDisplayer extends Canvas {
         this.mazeSolutionArr = mazeSolutionArr;
     }
 
-    public void requestFocus(){
-        this.requestFocus();
-    }
 }

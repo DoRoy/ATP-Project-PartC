@@ -15,7 +15,7 @@
 <GridPane prefHeight="500.0" prefWidth="600.0" stylesheets="@ViewStyle.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.NewGameController">
    <columnConstraints>
       <ColumnConstraints maxWidth="364.0" minWidth="255.0" prefWidth="322.0" />
-      <ColumnConstraints maxWidth="230.0" minWidth="116.0" prefWidth="158.0" />
+      <ColumnConstraints maxWidth="230.0" minWidth="150.0" prefWidth="158.0" />
    </columnConstraints>
    <rowConstraints>
       <RowConstraints />
@@ -26,6 +26,8 @@
       <RowConstraints />
       <RowConstraints maxHeight="58.0" minHeight="5.0" prefHeight="38.0" />
       <RowConstraints maxHeight="80.0" minHeight="27.0" prefHeight="47.0" />
+      <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
+      <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
       <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
       <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
    </rowConstraints>
@@ -42,10 +44,6 @@
          <GridPane.margin>
             <Insets left="50.0" top="20.0" />
          </GridPane.margin></ImageView>
-      <Button id="newGame_Button" fx:id="newGame_Button" minWidth="150.0" mnemonicParsing="false" onAction="#startGame" prefWidth="100.0" text="Start Game" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="7">
-         <GridPane.margin>
-            <Insets bottom="20.0" left="50.0" top="20.0" />
-         </GridPane.margin></Button>
       <Label contentDisplay="CENTER" prefWidth="100.0" text="Rows" textAlignment="CENTER" GridPane.rowIndex="4">
          <GridPane.margin>
             <Insets left="50.0" top="30.0" />
@@ -82,5 +80,14 @@
             <Insets left="20.0" top="40.0" />
          </GridPane.margin>
       </CheckBox>
+      <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="7">
+         <children>
+            <Button id="newGame_Button" fx:id="newGame_Button" minWidth="150.0" mnemonicParsing="false" onAction="#startGame" prefWidth="100.0" text="Start Game" textAlignment="CENTER">
+               <HBox.margin>
+                  <Insets left="50.0" />
+               </HBox.margin>
+            </Button>
+         </children>
+      </HBox>
    </children>
 </GridPane>
