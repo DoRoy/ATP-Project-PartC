@@ -57,15 +57,15 @@ public class HelpController implements Initializable {
                                     "   You can move around the maze as long as you don't go into a wall\n" +
                                     "   or try to exit the maze perimeters.\n\n" +
                                     "   To move regular moves you can use:\n" +
-                                    "       Up: UP arrow or 8 in NUMPAD\n" +
-                                    "       Down: DOWN arrow or 2 in NUMPAD\n" +
-                                    "       Right: RIGHT arrow or 6 in NUMPAD\n" +
-                                    "       Left: LEFT arrow or 4 in NUMPAD\n\n" +
+                                    "       Up: UP arrow, W or 8 in NUMPAD\n" +
+                                    "       Down: DOWN arrow, X or 2 in NUMPAD\n" +
+                                    "       Right: RIGHT arrow, D or 6 in NUMPAD\n" +
+                                    "       Left: LEFT arrow, A or 4 in NUMPAD\n\n" +
                                     "   You can also move in cross if there is a regular move to that location\n" +
-                                    "       Up & Right: 9 in NUMPAD\n" +
-                                    "       Up & Left: 7 in NUMPAD\n" +
-                                    "       Down & Left: 1 in NUMPAD\n" +
-                                    "       Down & Right: 3 in NUMPAD\n\n" +
+                                    "       Up & Right: E or 9 in NUMPAD\n" +
+                                    "       Up & Left: Q or 7 in NUMPAD\n" +
+                                    "       Down & Left: Z or 1 in NUMPAD\n" +
+                                    "       Down & Right: C or 3 in NUMPAD\n\n" +
                                     "   It doesn't ends there, you can also move you character by clicking on\n" +
                                     "   character with your mouse, keep clicking and drag your character around\n" +
                                     "   the maze.\n\n" );

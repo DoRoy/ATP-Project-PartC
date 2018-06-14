@@ -117,6 +117,7 @@ public class MyModel extends Observable implements IModel {
         int mainCharacterPositionCol = mainCharacter.getCharacterCol();
         switch(movement){
             case UP:
+            case W:
             case NUMPAD8:
                 mainCharacter.setCharacterDirection("back");
                 secondCharacter.setCharacterDirection(mainCharacter.getCharacterDirection());
@@ -130,6 +131,7 @@ public class MyModel extends Observable implements IModel {
                 }
                 break;
             case DOWN:
+            case X:
             case NUMPAD2:
                 mainCharacter.setCharacterDirection("front");
                 secondCharacter.setCharacterDirection(mainCharacter.getCharacterDirection());
@@ -142,6 +144,7 @@ public class MyModel extends Observable implements IModel {
                 }
                 break;
             case LEFT:
+            case A:
             case NUMPAD4:
                 mainCharacter.setCharacterDirection("left");
                 secondCharacter.setCharacterDirection(mainCharacter.getCharacterDirection());
@@ -154,6 +157,7 @@ public class MyModel extends Observable implements IModel {
                 }
                 break;
             case RIGHT:
+            case D:
             case NUMPAD6:
                 mainCharacter.setCharacterDirection("right");
                 secondCharacter.setCharacterDirection(mainCharacter.getCharacterDirection());
@@ -165,6 +169,7 @@ public class MyModel extends Observable implements IModel {
                     mainCharacter.setCharacterCol(mainCharacterPositionCol + 1);
                 }
                 break;
+            case Q:
             case NUMPAD7:
                 mainCharacter.setCharacterDirection("left");
                 secondCharacter.setCharacterDirection(mainCharacter.getCharacterDirection());
@@ -177,6 +182,7 @@ public class MyModel extends Observable implements IModel {
                     mainCharacter.setCharacterCol(mainCharacterPositionCol - 1);
                 }
                 break;
+            case E:
             case NUMPAD9:
                 mainCharacter.setCharacterDirection("right");
                 secondCharacter.setCharacterDirection(mainCharacter.getCharacterDirection());
@@ -189,6 +195,7 @@ public class MyModel extends Observable implements IModel {
                     mainCharacter.setCharacterCol(mainCharacterPositionCol + 1);
                 }
                 break;
+            case Z:
             case NUMPAD1:
                 mainCharacter.setCharacterDirection("left");
                 secondCharacter.setCharacterDirection(mainCharacter.getCharacterDirection());
@@ -201,6 +208,7 @@ public class MyModel extends Observable implements IModel {
                     mainCharacter.setCharacterCol(mainCharacterPositionCol - 1);
                 }
                 break;
+            case C:
             case NUMPAD3:
                 mainCharacter.setCharacterDirection("right");
                 secondCharacter.setCharacterDirection(mainCharacter.getCharacterDirection());
