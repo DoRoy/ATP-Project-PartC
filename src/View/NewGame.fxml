@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<GridPane prefHeight="500.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.NewGameController">
+<GridPane prefHeight="500.0" prefWidth="600.0" onKeyPressed="#newGameKeyPressed" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.NewGameController">
    <columnConstraints>
       <ColumnConstraints maxWidth="364.0" minWidth="255.0" prefWidth="322.0" />
       <ColumnConstraints maxWidth="230.0" minWidth="150.0" prefWidth="158.0" />

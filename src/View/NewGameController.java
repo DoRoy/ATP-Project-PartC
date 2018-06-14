@@ -10,6 +10,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.util.converter.IntegerStringConverter;
@@ -51,7 +53,7 @@ public class NewGameController implements IView, Initializable {
         Image image = new Image(file.toURI().toString());
         newGame_mainCharacter_imageView.setImage(image);
         newGame_rowsInput.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(),Integer.valueOf(newGame_rowsInput.getText()),integerFilter));
-        newGame_rowsInput.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(),Integer.valueOf(newGame_colsInput.getText()),integerFilter));
+        newGame_colsInput.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(),Integer.valueOf(newGame_colsInput.getText()),integerFilter));
     }
 
     UnaryOperator<TextFormatter.Change> integerFilter = change -> {
@@ -63,7 +65,13 @@ public class NewGameController implements IView, Initializable {
         return null;
     };
 
-    public void startGame(ActionEvent event){
+    public void newGameKeyPressed(KeyEvent keyEvent){
+        if(keyEvent.getCode() == KeyCode.ENTER)
+            startGame();
+        keyEvent.consume();
+    }
+
+    public void startGame(){
         int rows = 0;
         int cols = 0;
 
@@ -78,7 +86,7 @@ public class NewGameController implements IView, Initializable {
             myViewModel.startSoundTrack(mainCharacter);
 
             //myViewModel.setMultiPlayerMode(newGame_multiPlayer_checkBox.isSelected());
-            event.consume();
+
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setGraphic(null);
