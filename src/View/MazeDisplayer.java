@@ -119,13 +119,16 @@ public class MazeDisplayer extends Canvas {
                 //draw solution
                 int solLength = 0;
                 if(mazeSolutionArr != null){
-                    solLength = mazeSolutionArr.length - 1;
+
                     if (hint) {
-                        if (solLength != 1 && (int) Math.sqrt(solLength) == 1)
+                        if (mazeSolutionArr.length - 1 != 1 && (int) Math.sqrt(mazeSolutionArr.length - 1) == 1)
                             solLength = 2;
                         else
-                            solLength = (int) Math.sqrt(solLength);
-                        hint = false;
+                            solLength = (int) Math.sqrt(mazeSolutionArr.length - 1);
+
+                    }
+                    else{
+                        solLength = mazeSolutionArr.length - 1;
                     }
                 }
                 for(int i = 1; mazeSolutionArr != null && i < solLength ;i++){
@@ -172,6 +175,9 @@ public class MazeDisplayer extends Canvas {
                 double startRow = (canvasHeight / 2 - (cellHeight * rowMazeSize / 2)) / cellHeight;
                 double startCol = (canvasWidth / 2 - (cellWidth * colMazeSize / 2)) / cellWidth;
                 GraphicsContext graphicsContext2D = getGraphicsContext2D();
+                hint = false;
+                mazeSolutionArr = null;
+                graphicsContext2D.clearRect(0, 0, getWidth(), getHeight()); //Clears the canvas
                 for (int i = 0; i < rowMazeSize; i++) {
                     for (int j = 0; j < colMazeSize; j++) {
                         graphicsContext2D.drawImage(backGroundImage, (startCol + j) * cellWidth, (startRow + i) * cellHeight, cellWidth, cellHeight);
@@ -204,6 +210,7 @@ public class MazeDisplayer extends Canvas {
             double cellWidth = canvasWidth / maxSize;
             double startRow = (canvasHeight / 2 - (cellHeight * rowMazeSize / 2)) / cellHeight;
             double startCol = (canvasWidth / 2 - (cellWidth * colMazeSize / 2)) / cellWidth;
+            hint = false;
             GraphicsContext graphicsContext2D = getGraphicsContext2D();
             graphicsContext2D.drawImage(backGroundImage, (startCol + oldSecondCharacterCol) * cellWidth, (startRow + oldSecondCharacterRow) * cellHeight, cellWidth, cellHeight);
             Image mainCharacterImage = new Image(new FileInputStream("Resources/Characters/" + mainCharacterName + mainCharacter.getCharacterDirection() + ".png"));
@@ -258,7 +265,7 @@ public class MazeDisplayer extends Canvas {
                         solLength = 2;
                     else
                         solLength = (int) Math.sqrt(solLength);
-                    hint = false;
+
                 }
             }
             for(int i = 1; mazeSolutionArr != null && i < solLength ;i++){
@@ -294,7 +301,7 @@ public class MazeDisplayer extends Canvas {
                         solLength = 2;
                     else
                         solLength = (int) Math.sqrt(solLength);
-                    hint = false;
+
                 }
             }
             for(int i = 1; mazeSolutionArr != null && i < solLength ;i++){

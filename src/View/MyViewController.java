@@ -382,6 +382,7 @@ public class MyViewController implements IView, Observer, Initializable {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 mazeDisplayer.redraw();
+
             }
         });
         scene.heightProperty().addListener(new ChangeListener<Number>() {
