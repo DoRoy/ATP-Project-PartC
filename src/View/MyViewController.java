@@ -62,6 +62,7 @@ public class MyViewController implements IView, Observer, Initializable {
     public javafx.scene.image.ImageView icon_fullSolution;
     public javafx.scene.image.ImageView icon_makeNewMaze;
     private Stage stageNewGameController;
+    public ScrollPane mazeScrollPane;
 
 
     //region String Property for Binding
@@ -191,6 +192,7 @@ public class MyViewController implements IView, Observer, Initializable {
                 String argument = (String)arg;
                 switch (argument){
                     case "Maze":
+                        mazeScrollPane.setVisible(true);
                         mazeDisplayer.setMaze(myViewModel.getMaze());
                         //MainCharacter
                         mazeDisplayer.setMainCharacterPosition(myViewModel.getMainCharacterPositionRow(), myViewModel.getMainCharacterPositionColumn());
@@ -307,6 +309,7 @@ public class MyViewController implements IView, Observer, Initializable {
         //Set Binding for Properties
         lbl_characterRow.textProperty().bind(CharacterRow);
         lbl_characterColumn.textProperty().bind(CharacterColumn);
+        mazeScrollPane.setVisible(false);
         initImages();
     }
 
@@ -674,11 +677,11 @@ public class MyViewController implements IView, Observer, Initializable {
             AnimatedZoomOperator zoomOperator = new AnimatedZoomOperator();
             double zoomFactor;
             if (scrollEvent.isControlDown()) {
-                zoomFactor = 1.5;
-                double deltaY = scrollEvent.getDeltaY();
-                if (deltaY < 0) {
-                    zoomFactor = 1 / zoomFactor;
-                }
+            zoomFactor = 1.5;
+            double deltaY = scrollEvent.getDeltaY();
+            if (deltaY < 0) {
+                zoomFactor = 1 / zoomFactor;
+            }
                 zoomOperator.zoom(mazeDisplayer, zoomFactor, scrollEvent.getSceneX(), scrollEvent.getSceneY());
                 scrollEvent.consume();
             }
