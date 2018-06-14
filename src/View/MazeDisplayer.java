@@ -21,6 +21,8 @@ public class MazeDisplayer extends Canvas {
     private int rowMazeSize;
     private int colMazeSize;
     private boolean hint;
+    private int oldSecondCharacterRow;
+    private int oldSecondCharacterCol;
 
 
 
@@ -55,8 +57,13 @@ public class MazeDisplayer extends Canvas {
     }
 
     public void setSecondCharacterPosition(int row, int column) {
+        //if(oldSecondCharacterRow != row || oldSecondCharacterCol != column) {
+        oldSecondCharacterRow = secondCharacter.getCharacterRow();
+        oldSecondCharacterCol = secondCharacter.getCharacterCol();
+        //}
         secondCharacter.setCharacterRow(row);
         secondCharacter.setCharacterCol(column);
+
     }
 
     public void setMainCharacterDirection(String direction){
@@ -110,14 +117,25 @@ public class MazeDisplayer extends Canvas {
                 }
 
                 //draw solution
-                for(int i = 1; mazeSolutionArr != null && i < mazeSolutionArr.length -1 ;i++){
+                int solLength = 0;
+                if(mazeSolutionArr != null){
+                    solLength = mazeSolutionArr.length - 1;
+                    if (hint) {
+                        if (solLength != 1 && (int) Math.sqrt(solLength) == 1)
+                            solLength = 2;
+                        else
+                            solLength = (int) Math.sqrt(solLength);
+                        hint = false;
+                    }
+                }
+                for(int i = 1; mazeSolutionArr != null && i < solLength ;i++){
                     graphicsContext2D.drawImage(solutionImage, (startCol + mazeSolutionArr[i][1]) * cellWidth, (startRow + mazeSolutionArr[i][0]) * cellHeight, cellWidth, cellHeight);
                 }
 
 
                 //Draw Character
 
-                 Image mainCharacterImage = new Image(new FileInputStream("Resources/Characters/" + mainCharacterName + mainCharacter.getCharacterDirection() + ".png"));
+                Image mainCharacterImage = new Image(new FileInputStream("Resources/Characters/" + mainCharacterName + mainCharacter.getCharacterDirection() + ".png"));
                 graphicsContext2D.drawImage(mainCharacterImage, (startCol + getMainCharacterColumn()) * cellWidth, (startRow + getMainCharacterRow()) * cellHeight, cellWidth, cellHeight);
 
                 if (!(secondCharacter.getCharacterRow() == mainCharacter.getCharacterRow() && secondCharacter.getCharacterCol() == mainCharacter.getCharacterCol())) {
@@ -138,9 +156,163 @@ public class MazeDisplayer extends Canvas {
         }
     }
 
+    public void redrawMaze(){
+        if (mazeCharArr != null) {
+            try {
+                String mainCharacterName = mainCharacter.getCharacterName();
+                Image wallImage = new Image(new FileInputStream("Resources/Images/" + mainCharacterName + "wall.png"));
+                Image backGroundImage = new Image(new FileInputStream("Resources/Images/" + mainCharacterName + "backGround.png"));
+                this.setHeight(this.getScene().getHeight() - 80 /*ToolBar*/ - 105 /*LowerBar*/);
+                this.setWidth(this.getScene().getWidth() * 19 / 20);
+                double canvasHeight = getHeight();
+                double canvasWidth = getWidth();
+                double maxSize = Math.max(colMazeSize, rowMazeSize);
+                double cellHeight = canvasHeight / maxSize;
+                double cellWidth = canvasWidth / maxSize;
+                double startRow = (canvasHeight / 2 - (cellHeight * rowMazeSize / 2)) / cellHeight;
+                double startCol = (canvasWidth / 2 - (cellWidth * colMazeSize / 2)) / cellWidth;
+                GraphicsContext graphicsContext2D = getGraphicsContext2D();
+                for (int i = 0; i < rowMazeSize; i++) {
+                    for (int j = 0; j < colMazeSize; j++) {
+                        graphicsContext2D.drawImage(backGroundImage, (startCol + j) * cellWidth, (startRow + i) * cellHeight, cellWidth, cellHeight);
+                        if (mazeCharArr[i][j] == '1') {
+                            graphicsContext2D.drawImage(wallImage, (startCol + j) * cellWidth, (startRow + i) * cellHeight, cellWidth, cellHeight);
+                        } else if (mazeCharArr[i][j] == 'E') {
+                            setGoalPosition(i, j);
+                        }
+                    }
+                }
+            }catch (FileNotFoundException e) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setContentText(String.format("Image doesn't exist: %s", e.getMessage()));
+                alert.show();
+            }
+        }
+    }
+
+    public void redrawCharacter(){
+        try {
+            String mainCharacterName = mainCharacter.getCharacterName();
+            String secondCharacterName = secondCharacter.getCharacterName();
+            Image backGroundImage = new Image(new FileInputStream("Resources/Images/" + mainCharacterName + "backGround.png"));
+            this.setHeight(this.getScene().getHeight() - 80 /*ToolBar*/ - 105 /*LowerBar*/);
+            this.setWidth(this.getScene().getWidth() * 19 / 20);
+            double canvasHeight = getHeight();
+            double canvasWidth = getWidth();
+            double maxSize = Math.max(colMazeSize, rowMazeSize);
+            double cellHeight = canvasHeight / maxSize;
+            double cellWidth = canvasWidth / maxSize;
+            double startRow = (canvasHeight / 2 - (cellHeight * rowMazeSize / 2)) / cellHeight;
+            double startCol = (canvasWidth / 2 - (cellWidth * colMazeSize / 2)) / cellWidth;
+            GraphicsContext graphicsContext2D = getGraphicsContext2D();
+            graphicsContext2D.drawImage(backGroundImage, (startCol + oldSecondCharacterCol) * cellWidth, (startRow + oldSecondCharacterRow) * cellHeight, cellWidth, cellHeight);
+            Image mainCharacterImage = new Image(new FileInputStream("Resources/Characters/" + mainCharacterName + mainCharacter.getCharacterDirection() + ".png"));
+            graphicsContext2D.drawImage(backGroundImage, (startCol + getMainCharacterColumn()) * cellWidth, (startRow + getMainCharacterRow()) * cellHeight, cellWidth, cellHeight);
+            graphicsContext2D.drawImage(mainCharacterImage, (startCol + getMainCharacterColumn()) * cellWidth, (startRow + getMainCharacterRow()) * cellHeight, cellWidth, cellHeight);
+
+            //set the old position to be background
+            //if(oldSecondCharacterCol != getSecondCharacterColumn() && oldSecondCharacterRow != getSecondCharacterRow() &&
+            //        oldSecondCharacterCol != getMainCharacterColumn() && oldSecondCharacterRow != getMainCharacterRow()) {
+            //}
+
+            // *************
+
+
+            if (!(secondCharacter.getCharacterRow() == mainCharacter.getCharacterRow() && secondCharacter.getCharacterCol() == mainCharacter.getCharacterCol())) {
+                graphicsContext2D.drawImage(backGroundImage, (startCol + getSecondCharacterColumn()) * cellWidth, (startRow + getSecondCharacterRow()) * cellHeight, cellWidth, cellHeight);
+                Image secondCharacterImage = new Image(new FileInputStream("Resources/Characters/" + secondCharacterName + secondCharacter.getCharacterDirection() + ".png"));
+                graphicsContext2D.drawImage(secondCharacterImage, (startCol + getSecondCharacterColumn()) * cellWidth, (startRow + getSecondCharacterRow()) * cellHeight, cellWidth, cellHeight);
+            }
+
+            if (mainCharacter.getCharacterRow() != goalPositionRow || mainCharacter.getCharacterCol() != goalPositionColumn) {
+                graphicsContext2D.drawImage(backGroundImage, (startCol + goalPositionColumn) * cellWidth, (startRow + goalPositionRow) * cellHeight, cellWidth, cellHeight);
+                Image goalImage = new Image(new FileInputStream("Resources/Characters/" + mainCharacterName + "goal.png"));
+                graphicsContext2D.drawImage(goalImage, (startCol + goalPositionColumn) * cellWidth, (startRow + goalPositionRow) * cellHeight, cellWidth, cellHeight);
+            }
+        }catch (FileNotFoundException e) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setContentText(String.format("Image doesn't exist: %s", e.getMessage()));
+            alert.show();
+        }
+    }
+
+    public void redrawSolution(){
+        try{
+            String mainCharacterName = mainCharacter.getCharacterName();
+            Image solutionImage = new Image(new FileInputStream("Resources/Images/" + mainCharacterName + "showSolution.png"));
+            this.setHeight(this.getScene().getHeight() - 80 /*ToolBar*/ - 105 /*LowerBar*/);
+            this.setWidth(this.getScene().getWidth() * 19 / 20);
+            double canvasHeight = getHeight();
+            double canvasWidth = getWidth();
+            double maxSize = Math.max(colMazeSize, rowMazeSize);
+            double cellHeight = canvasHeight / maxSize;
+            double cellWidth = canvasWidth / maxSize;
+            double startRow = (canvasHeight / 2 - (cellHeight * rowMazeSize / 2)) / cellHeight;
+            double startCol = (canvasWidth / 2 - (cellWidth * colMazeSize / 2)) / cellWidth;
+            GraphicsContext graphicsContext2D = getGraphicsContext2D();
+            int solLength = 0;
+            if(mazeSolutionArr != null){
+                solLength = mazeSolutionArr.length - 1;
+                if (hint) {
+                    if (solLength != 1 && (int) Math.sqrt(solLength) == 1)
+                        solLength = 2;
+                    else
+                        solLength = (int) Math.sqrt(solLength);
+                    hint = false;
+                }
+            }
+            for(int i = 1; mazeSolutionArr != null && i < solLength ;i++){
+                graphicsContext2D.drawImage(solutionImage, (startCol + mazeSolutionArr[i][1]) * cellWidth, (startRow + mazeSolutionArr[i][0]) * cellHeight, cellWidth, cellHeight);
+            }
+        }catch (FileNotFoundException e) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setContentText(String.format("Image doesn't exist: %s", e.getMessage()));
+            alert.show();
+        }
+
+    }
+
+    public void redrawCancelSolution(){
+        try{
+            String mainCharacterName = mainCharacter.getCharacterName();
+            Image backGroundImage = new Image(new FileInputStream("Resources/Images/" + mainCharacterName + "backGround.png"));
+            this.setHeight(this.getScene().getHeight() - 80 /*ToolBar*/ - 105 /*LowerBar*/);
+            this.setWidth(this.getScene().getWidth() * 19 / 20);
+            double canvasHeight = getHeight();
+            double canvasWidth = getWidth();
+            double maxSize = Math.max(colMazeSize, rowMazeSize);
+            double cellHeight = canvasHeight / maxSize;
+            double cellWidth = canvasWidth / maxSize;
+            double startRow = (canvasHeight / 2 - (cellHeight * rowMazeSize / 2)) / cellHeight;
+            double startCol = (canvasWidth / 2 - (cellWidth * colMazeSize / 2)) / cellWidth;
+            GraphicsContext graphicsContext2D = getGraphicsContext2D();
+            int solLength = 0;
+            if(mazeSolutionArr != null){
+                solLength = mazeSolutionArr.length - 1;
+                if (hint) {
+                    if (solLength != 1 && (int) Math.sqrt(solLength) == 1)
+                        solLength = 2;
+                    else
+                        solLength = (int) Math.sqrt(solLength);
+                    hint = false;
+                }
+            }
+            for(int i = 1; mazeSolutionArr != null && i < solLength ;i++){
+                graphicsContext2D.drawImage(backGroundImage, (startCol + mazeSolutionArr[i][1]) * cellWidth, (startRow + mazeSolutionArr[i][0]) * cellHeight, cellWidth, cellHeight);
+            }
+        }catch (FileNotFoundException e) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setContentText(String.format("Image doesn't exist: %s", e.getMessage()));
+            alert.show();
+        }
+    }
 
     public void setMazeSolutionArr(int[][] mazeSolutionArr) {
         this.mazeSolutionArr = mazeSolutionArr;
+    }
+
+    public void setHint(boolean hint){
+        this.hint = hint;
     }
 
 }

@@ -2,6 +2,7 @@
 
 <?import View.MazeDisplayer?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -9,11 +10,9 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.control.*?>
-
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane onKeyPressed="#KeyPressed" onKeyTyped="#KeyPressed" onScroll="#scrollInOut" stylesheets="@ViewStyle.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MyViewController">
+<BorderPane onKeyPressed="#KeyPressed" onKeyTyped="#KeyPressed" onScroll="#scrollInOut" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MyViewController">
     <left>
         <VBox prefHeight="200.0" prefWidth="20.0" spacing="5.0" BorderPane.alignment="CENTER">
             <padding>
@@ -127,7 +126,7 @@
                         <Insets bottom="5.0" left="10.0" right="5.0" top="5.0" />
                     </HBox.margin></ImageView>
 
-                <ImageView fx:id="icon_partSolution" fitHeight="70.0" fitWidth="70.0">
+                <ImageView fx:id="icon_partSolution" fitHeight="70.0" fitWidth="70.0" visible="false">
                     <HBox.margin>
                         <Insets bottom="5.0" left="10.0" right="5.0" top="5.0" />
                     </HBox.margin></ImageView>

@@ -140,14 +140,18 @@ public class MyViewModel extends Observable implements Observer {
 
     public boolean setSound(){
         if (gameSoundTrack == null)
-            return true;
-        if (isPlayed) {
-            gameSoundTrack.stop();
-            isPlayed = false;
-        }
-        else{
+            isPlayed = !isPlayed;
+        else {
             gameSoundTrack.play();
-            isPlayed = true;
+            if (isPlayed) {
+                /*gameSoundTrack.stop();*/
+                gameSoundTrack.setMute(true);
+                isPlayed = false;
+            } else {
+                /*gameSoundTrack.play();*/
+                gameSoundTrack.setMute(false);
+                isPlayed = true;
+            }
         }
         return isPlayed;
     }

@@ -19,13 +19,13 @@
             <children>
                 <TabPane prefHeight="478.0" prefWidth="613.0" tabClosingPolicy="UNAVAILABLE">
                     <tabs>
-                        <Tab text="Characters">
+                        <Tab text="How to play">
                      <content>
                         <ScrollPane prefHeight="200.0" prefWidth="200.0">
                            <content>
-                                      <Label fx:id="Characters" alignment="TOP_LEFT" prefHeight="500.0" prefWidth="500.0" text="Label">
+                                      <Label fx:id="newMazeWindowLabel" alignment="TOP_LEFT" text="Label">
                                           <padding>
-                                              <Insets left="5.0" />
+                                              <Insets left="10.0" />
                                           </padding>
                               </Label>
                            </content>
@@ -36,14 +36,17 @@
                      <content>
                         <ScrollPane prefHeight="200.0" prefWidth="200.0">
                            <content>
-                              <Label fx:id="MenuBar" text="Label" />
+                              <Label fx:id="MenuBar" text="Label">
+                                 <padding>
+                                    <Insets left="10.0" />
+                                 </padding></Label>
                            </content>
                         </ScrollPane>
                      </content>
                         </Tab>
                         <Tab text="Shortcuts Buttons">
                      <content>
-                        <GridPane prefHeight="433.0" prefWidth="686.0">
+                        <GridPane>
                           <columnConstraints>
                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="337.0" minWidth="10.0" prefWidth="73.0" />
                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="613.0" minWidth="10.0" prefWidth="613.0" />
@@ -84,6 +87,19 @@
                         </GridPane>
                      </content>
                         </Tab>
+                  <Tab text="Extras">
+                     <content>
+                        <ScrollPane prefHeight="200.0" prefWidth="200.0">
+                           <content>
+                              <Label fx:id="extraLabel" text="Label">
+                                 <padding>
+                                    <Insets left="10.0" />
+                                 </padding>
+                              </Label>
+                           </content>
+                        </ScrollPane>
+                     </content>
+                  </Tab>
                     </tabs>
                 </TabPane>
                 <Button fx:id="OK" alignment="CENTER" mnemonicParsing="false" onAction="#close" prefWidth="70.0" text="OK">

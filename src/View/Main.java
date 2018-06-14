@@ -13,8 +13,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 public class Main extends Application {
-    private Server serverMazeGenerator;
-    private Server serverSolveMaze;
+
     @Override
     public void start(Stage primaryStage) throws Exception{
         MyModel model = new MyModel();

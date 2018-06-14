@@ -9,7 +9,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class HelpController implements Initializable {
-    public javafx.scene.control.Label Characters;
+    public javafx.scene.control.Label newMazeWindowLabel;
     public javafx.scene.control.Label MenuBar;
     public javafx.scene.control.Button OK;
     public javafx.scene.image.ImageView soundImage;
@@ -20,22 +20,55 @@ public class HelpController implements Initializable {
     public javafx.scene.control.Label newMazeLabel;
     public javafx.scene.control.Label getHintLabel;
     public javafx.scene.control.Label solveLabel;
+    public javafx.scene.control.Label extraLabel;
 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Characters.setWrapText(true);// lets the label text to break row when it is in need.
+        newMazeWindowLabel.setWrapText(true);// lets the label text to break row when it is in need.
         MenuBar.setWrapText(true);
         soundLabel.setWrapText(true);
         newMazeLabel.setWrapText(true);
         getHintLabel.setWrapText(true);
         solveLabel.setWrapText(true);
+        extraLabel.setWrapText(true);
 
-        Characters.setText("\nCharacters:\n\n" +
-                            "Crash Bandicoot and Mask:\n" +
-                            "   Bla bla.\n" +
-                            "\n Ash ketchum:\n" +
-                            "   Bla bla.");
+        extraLabel.setText("\nHere are all the extras we added to the game:\n\n" +
+                            "    - Background music & On/Off button.\n\n" +
+                            "    - Drag the character using the mouse.\n\n" +
+                            "    - Use Zoom In/Out by clicking on CTRL & SCROLL with your mouse.\n\n" +
+                            "    - When saving a maze you can choose between saving the current maze.\n" +
+                            "      or the original maze.\n\n" +
+                            "    - Multiple character options that change the entire game.\n\n" +
+                            "    - Getting a hint instead of the full solution.");
+
+        newMazeWindowLabel.setText("\nTo create a new game you can click on \n" +
+                                    "'NewGame', 'New' in the 'File' in the menu or using 'Load'.\n" +
+                                    "By clicking on 'New' or 'NewGame' a new window will pop up:\n" +
+                                    "   In this window you create a new maze.\n\n" +
+                                    "   You can choose a character using the arrow button.\n\n" +
+                                    "   The character you can choose from are:\n" +
+                                    "       Crash\n" +
+                                    "       Ashe\n\n" +
+                                    "   Choosing a character will change the entire game looks and sound.\n\n" +
+                                    "   You can decide the maze size by changing the 'Rows' and 'Columns'.\n\n" +
+                                    "   Click on 'Start Game' to start playing.\n\n" +
+                                    "Game Controls:\n" +
+                                    "   You can move around the maze as long as you don't go into a wall\n" +
+                                    "   or try to exit the maze perimeters.\n\n" +
+                                    "   To move regular moves you can use:\n" +
+                                    "       Up: UP arrow or 8 in NUMPAD\n" +
+                                    "       Down: DOWN arrow or 2 in NUMPAD\n" +
+                                    "       Right: RIGHT arrow or 6 in NUMPAD\n" +
+                                    "       Left: LEFT arrow or 4 in NUMPAD\n\n" +
+                                    "   You can also move in cross if there is a regular move to that location\n" +
+                                    "       Up & Right: 9 in NUMPAD\n" +
+                                    "       Up & Left: 7 in NUMPAD\n" +
+                                    "       Down & Left: 1 in NUMPAD\n" +
+                                    "       Down & Right: 3 in NUMPAD\n\n" +
+                                    "   It doesn't ends there, you can also move you character by clicking on\n" +
+                                    "   character with your mouse, keep clicking and drag your character around\n" +
+                                    "   the maze.\n\n" );
 
 
         MenuBar.setText("\n" +
@@ -69,7 +102,7 @@ public class HelpController implements Initializable {
                 "       * Set the maze's size.");
 
         getHintLabel.setText("\nGet Hint:\n" +
-                "   Allows you to see the next steps towards the end." );
+                "   Allows you to see part of the solution without seeing it all." );
 
         solveLabel.setText("\nGet Solution:\n" +
                 "   Shows this maze solution on the board (until character moves).");
