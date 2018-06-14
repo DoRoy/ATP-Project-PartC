@@ -353,7 +353,7 @@ public class MyViewController implements IView, Observer, Initializable {
 
     public void solveMaze(){
         //TODO - DONE
-        // solve: check why it fails over 200
+        // solve: check why it fails over 20 0
         Platform.runLater(() ->{
             lbl_statusBar.setText("Computing solution, please wait.");
             solve_MenuItem.setDisable(true);
