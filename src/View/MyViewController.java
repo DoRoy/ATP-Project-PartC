@@ -401,8 +401,8 @@ public class MyViewController implements IView, Observer, Initializable {
 
     public void exitCorrectly(){
         Alert alert = new Alert(Alert.AlertType.NONE    );
-        ButtonType leaveButton = new ButtonType("Leave", ButtonBar.ButtonData.NO);
-        ButtonType stayButton = new ButtonType("Stay", ButtonBar.ButtonData.YES);
+        ButtonType leaveButton = new ButtonType("Leave", ButtonBar.ButtonData.YES);
+        ButtonType stayButton = new ButtonType("Stay", ButtonBar.ButtonData.NO);
         alert.getButtonTypes().setAll(stayButton,leaveButton);
         alert.setContentText("Are you sure you want to exit??");
         Optional<ButtonType> result = alert.showAndWait();
@@ -610,6 +610,7 @@ public class MyViewController implements IView, Observer, Initializable {
         icon_partSolution.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+
                 mazeDisplayer.setHint(true);
                 solveMaze();
                 event.consume();

@@ -49,7 +49,10 @@ public class HelpController implements Initializable {
                                     "   You can choose a character using the arrow button.\n\n" +
                                     "   The character you can choose from are:\n" +
                                     "       Crash\n" +
-                                    "       Ashe\n\n" +
+                                    "       Ash\n" +
+                                    "       Rick\n" +
+                                    "       Morty\n" +
+                                    "       Homer\n\n" +
                                     "   Choosing a character will change the entire game looks and sound.\n\n" +
                                     "   You can decide the maze size by changing the 'Rows' and 'Columns'.\n\n" +
                                     "   Click on 'Start Game' to start playing.\n\n" +
@@ -66,7 +69,7 @@ public class HelpController implements Initializable {
                                     "       Up & Left: Q or 7 in NUMPAD\n" +
                                     "       Down & Left: Z or 1 in NUMPAD\n" +
                                     "       Down & Right: C or 3 in NUMPAD\n\n" +
-                                    "   It doesn't ends there, you can also move you character by clicking on\n" +
+                                    "   It doesn't ends there, you can also move your character by clicking on the\n" +
                                     "   character with your mouse, keep clicking and drag your character around\n" +
                                     "   the maze.\n\n" );
 
