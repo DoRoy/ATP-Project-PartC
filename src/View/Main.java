@@ -13,8 +13,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 public class Main extends Application {
-    private Server serverMazeGenerator;
-    private Server serverSolveMaze;
+
     @Override
     public void start(Stage primaryStage) throws Exception{
         MyModel model = new MyModel();
@@ -23,7 +22,7 @@ public class Main extends Application {
 
         //TODO check if can be changed to IMODEL
 
-        primaryStage.setTitle("The Crash Maze!");
+        primaryStage.setTitle("The Incredible Maze!");
         FXMLLoader fxmlLoader = new FXMLLoader();
         Parent root = fxmlLoader.load(getClass().getResource("MyView.fxml").openStream());
         Scene scene = new Scene(root,800,700);

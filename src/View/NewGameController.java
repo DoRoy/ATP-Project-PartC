@@ -10,18 +10,21 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import javafx.util.converter.IntegerStringConverter;
 
 
 import java.io.File;
 import java.net.URL;
 import java.util.*;
+import java.util.function.UnaryOperator;
 
 public class NewGameController implements IView, Initializable {
 
-    ArrayList<String> mainCharacterList = new ArrayList( Arrays.asList( new String[]{"Crash_", "Ash_"}));
-    String[] secondCharacterList = {"Crash_Second_","Ash_Second_"};
+    ArrayList<String> mainCharacterList = new ArrayList( Arrays.asList( new String[]{"Crash_", "Ash_","Rick_","Simpsons_"}));
     String mainCharacter = "Crash_";
     String secondCharacter = "Crash_Second_";
     @FXML
@@ -48,19 +51,52 @@ public class NewGameController implements IView, Initializable {
         File file = new File("Resources/Characters/Crash_character.png");
         Image image = new Image(file.toURI().toString());
         newGame_mainCharacter_imageView.setImage(image);
+        newGame_rowsInput.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(),Integer.valueOf(newGame_rowsInput.getText()),integerFilter));
+        newGame_colsInput.setTextFormatter(new TextFormatter<Integer>(new IntegerStringConverter(),Integer.valueOf(newGame_colsInput.getText()),integerFilter));
     }
 
-    public void startGame(ActionEvent event){
-        System.out.println("NewGameController: startGame");
-        int rows = Integer.valueOf(newGame_rowsInput.getText());
-        int cols = Integer.valueOf(newGame_colsInput.getText());
-        myViewModel.setMainCharacterName(mainCharacter);
-        myViewModel.setSecondCharacterName(secondCharacter);
-        myViewModel.generateMaze(rows, cols);
-        myViewModel.startSoundTrack(mainCharacter);
+    UnaryOperator<TextFormatter.Change> integerFilter = change -> {
 
-        //myViewModel.setMultiPlayerMode(newGame_multiPlayer_checkBox.isSelected());
-        event.consume();
+        String newText = change.getControlNewText();
+        if (newText.matches("([1-9][0-9]*)?")) {
+            return change;
+        }
+        return null;
+    };
+
+    public void newGameKeyPressed(KeyEvent keyEvent){
+        if(keyEvent.getCode() == KeyCode.ENTER)
+            startGame();
+        keyEvent.consume();
+    }
+
+    public void startGame(){
+        int rows = 0;
+        int cols = 0;
+
+        try {
+            rows = Integer.valueOf(newGame_rowsInput.getText());
+            cols = Integer.valueOf(newGame_colsInput.getText());
+            if(rows < 5 || cols < 5)
+                throw new Exception();
+            myViewModel.setMainCharacterName(mainCharacter);
+            myViewModel.setSecondCharacterName(secondCharacter);
+            myViewModel.generateMaze(rows, cols);
+            myViewModel.startSoundTrack(mainCharacter);
+
+            //myViewModel.setMultiPlayerMode(newGame_multiPlayer_checkBox.isSelected());
+
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setGraphic(null);
+            alert.setTitle("Error Alert");
+            alert.setHeaderText("ERROR!");
+            alert.setContentText("Please enter a number above 5.");
+            alert.showAndWait();
+
+        }
+
+
 
         //stage.close();
 
@@ -96,7 +132,6 @@ public class NewGameController implements IView, Initializable {
         newGame_mainCharacter_imageView.setImage(image);
         mainCharacter = prevCharacter;
     }
-
 
 
 }

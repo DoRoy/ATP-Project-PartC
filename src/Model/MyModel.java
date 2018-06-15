@@ -5,6 +5,7 @@ import IO.MyDecompressorInputStream;
 import Server.*;
 import algorithms.mazeGenerators.Maze;
 import algorithms.search.*;
+import javafx.scene.control.Alert;
 import javafx.scene.input.KeyCode;
 
 import java.io.*;
@@ -17,7 +18,8 @@ import java.util.concurrent.Executors;
 
 public class MyModel extends Observable implements IModel {
 
-    //TODO-Add Scroll with the mouse - 5 points
+    //TODO - DONE
+    // Add Scroll with the mouse - 5 points
     //TODO - DONE
     // Drag the character with the mouse - 10 points
 
@@ -47,7 +49,7 @@ public class MyModel extends Observable implements IModel {
     public MyModel(){
         Configurations.run();
         isAtTheEnd = false;
-        startServers(); //TODO remove all server things
+        startServers();
 
     }
 
@@ -115,6 +117,7 @@ public class MyModel extends Observable implements IModel {
         int mainCharacterPositionCol = mainCharacter.getCharacterCol();
         switch(movement){
             case UP:
+            case W:
             case NUMPAD8:
                 mainCharacter.setCharacterDirection("back");
                 secondCharacter.setCharacterDirection(mainCharacter.getCharacterDirection());
@@ -128,6 +131,7 @@ public class MyModel extends Observable implements IModel {
                 }
                 break;
             case DOWN:
+            case X:
             case NUMPAD2:
                 mainCharacter.setCharacterDirection("front");
                 secondCharacter.setCharacterDirection(mainCharacter.getCharacterDirection());
@@ -140,6 +144,7 @@ public class MyModel extends Observable implements IModel {
                 }
                 break;
             case LEFT:
+            case A:
             case NUMPAD4:
                 mainCharacter.setCharacterDirection("left");
                 secondCharacter.setCharacterDirection(mainCharacter.getCharacterDirection());
@@ -152,6 +157,7 @@ public class MyModel extends Observable implements IModel {
                 }
                 break;
             case RIGHT:
+            case D:
             case NUMPAD6:
                 mainCharacter.setCharacterDirection("right");
                 secondCharacter.setCharacterDirection(mainCharacter.getCharacterDirection());
@@ -163,6 +169,7 @@ public class MyModel extends Observable implements IModel {
                     mainCharacter.setCharacterCol(mainCharacterPositionCol + 1);
                 }
                 break;
+            case Q:
             case NUMPAD7:
                 mainCharacter.setCharacterDirection("left");
                 secondCharacter.setCharacterDirection(mainCharacter.getCharacterDirection());
@@ -175,6 +182,7 @@ public class MyModel extends Observable implements IModel {
                     mainCharacter.setCharacterCol(mainCharacterPositionCol - 1);
                 }
                 break;
+            case E:
             case NUMPAD9:
                 mainCharacter.setCharacterDirection("right");
                 secondCharacter.setCharacterDirection(mainCharacter.getCharacterDirection());
@@ -187,6 +195,7 @@ public class MyModel extends Observable implements IModel {
                     mainCharacter.setCharacterCol(mainCharacterPositionCol + 1);
                 }
                 break;
+            case Z:
             case NUMPAD1:
                 mainCharacter.setCharacterDirection("left");
                 secondCharacter.setCharacterDirection(mainCharacter.getCharacterDirection());
@@ -199,6 +208,7 @@ public class MyModel extends Observable implements IModel {
                     mainCharacter.setCharacterCol(mainCharacterPositionCol - 1);
                 }
                 break;
+            case C:
             case NUMPAD3:
                 mainCharacter.setCharacterDirection("right");
                 secondCharacter.setCharacterDirection(mainCharacter.getCharacterDirection());
@@ -378,26 +388,27 @@ public class MyModel extends Observable implements IModel {
                 setChanged();
                 notifyObservers("Maze Load");
             }
-            else{
-                //TODO maybe add something here
-            }
+
             fin.close();
             oin.close();
-        }catch (IOException e){
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            //TODO-LoadMaze: add alert
-            e.printStackTrace();
+        }catch (IOException | ClassNotFoundException e) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Loaded Maze ERROR");
+            alert.setHeaderText("Exception caught trying to load:\n" + file.getName());
+            alert.setGraphic(null);
+            alert.setContentText("Loaded file was not a saved maze!\nPlease load the right type of file");
+            alert.show();
         }
     }
 
-    public void setMultiPlayerMode(boolean setMode){
+/*    public void setMultiPlayerMode(boolean setMode){
         multiPlayerMode = setMode;
     }
 
-/*    public void setMainCharacterName(String name) {
+    public void setMainCharacterName(String name) {
         mainCharacterName = name;
     }
+
     public void setSecondCharacterName(String name) {
         secondCharacterName = name;
     }

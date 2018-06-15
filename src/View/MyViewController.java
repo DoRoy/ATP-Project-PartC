@@ -14,6 +14,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -21,6 +22,11 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.VBox;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.stage.*;
 
 import java.io.*;
@@ -61,6 +67,7 @@ public class MyViewController implements IView, Observer, Initializable {
     public javafx.scene.image.ImageView icon_fullSolution;
     public javafx.scene.image.ImageView icon_makeNewMaze;
     private Stage stageNewGameController;
+    public ScrollPane mazeScrollPane;
 
 
     //region String Property for Binding
@@ -72,7 +79,7 @@ public class MyViewController implements IView, Observer, Initializable {
     public void setViewModel(MyViewModel myViewModel){
         this.myViewModel = myViewModel;
     }
-    @Override
+/*    @Override
     public void update(Observable o, Object arg) {
         if(o == myViewModel) {
             if(arg != null){
@@ -100,6 +107,7 @@ public class MyViewController implements IView, Observer, Initializable {
                             save_MenuItem.setDisable(false);
                             solve_MenuItem.setDisable(false);
                             icon_fullSolution.setVisible(true);
+                            icon_partSolution.setVisible(true);
                             stageNewGameController.close();
                         });
 
@@ -128,6 +136,7 @@ public class MyViewController implements IView, Observer, Initializable {
                             solve_MenuItem.setDisable(false);
                             save_MenuItem.setDisable(false);
                             icon_fullSolution.setVisible(true);
+                            icon_partSolution.setVisible(true);
                         });
                         break;
                     case "Character":
@@ -141,6 +150,8 @@ public class MyViewController implements IView, Observer, Initializable {
                             CharacterRow.set(myViewModel.getMainCharacterPositionRow() + "");
                             label_mainCharacterRow.setText(myViewModel.getMainCharacterName()+"Row");
                             label_mainCharacterCol.setText(myViewModel.getMainCharacterName()+"Col");
+                            icon_fullSolution.setVisible(true);
+                            icon_partSolution.setVisible(true);
                         });
                         break;
                     case "Solution":
@@ -148,7 +159,8 @@ public class MyViewController implements IView, Observer, Initializable {
                         Platform.runLater(() -> {
                             lbl_statusBar.setText("Here's the solution");
                             solve_MenuItem.setDisable(false);
-                            icon_fullSolution.setVisible(true);
+                            icon_fullSolution.setVisible(false);
+                            icon_partSolution.setVisible(false);
                         });
 
                         break;
@@ -164,6 +176,7 @@ public class MyViewController implements IView, Observer, Initializable {
                     save_MenuItem.setDisable(true);
                     solve_MenuItem.setDisable(true);
                     icon_fullSolution.setVisible(false);
+                    icon_partSolution.setVisible(false);
                     lbl_statusBar.setText("Good Job! Try a different maze");
                     alert.showAndWait();
 
@@ -175,12 +188,175 @@ public class MyViewController implements IView, Observer, Initializable {
         }
 
     }
+    */
+
+    @Override
+    public void update(Observable o, Object arg) {
+        if(o == myViewModel) {
+            if(arg != null){
+                String argument = (String)arg;
+                switch (argument){
+                    case "Maze":
+                        mazeScrollPane.setVisible(true);
+                        mazeDisplayer.setMaze(myViewModel.getMaze());
+                        //MainCharacter
+                        mazeDisplayer.setMainCharacterPosition(myViewModel.getMainCharacterPositionRow(), myViewModel.getMainCharacterPositionColumn());
+                        mazeDisplayer.setMainCharacterDirection(myViewModel.getMainCharacterDirection());
+                        mazeDisplayer.setMainCharacterName(myViewModel.getMainCharacterName());
+
+                        //Second Character
+                        mazeDisplayer.setSecondCharacterName(myViewModel.getSecondCharacterName());
+                        mazeDisplayer.setSecondCharacterPosition(myViewModel.getSecondCharacterPositionRow(), myViewModel.getSecondCharacterPositionColumn());
+                        mazeDisplayer.setSecondCharacterDirection(myViewModel.getSecondCharacterDirection());
+
+                        //mazeDisplayer.setMazeSolutionArr(null);
+                        Platform.runLater(()->{
+                            CharacterColumn.set(myViewModel.getMainCharacterPositionColumn() + "");
+                            CharacterRow.set(myViewModel.getMainCharacterPositionRow() + "");
+                            label_mainCharacterRow.setText(myViewModel.getMainCharacterName()+"Row");
+                            label_mainCharacterCol.setText(myViewModel.getMainCharacterName()+"Col");
+                            lbl_statusBar.setText("Lets see you solve this!");
+                            save_MenuItem.setDisable(false);
+                            solve_MenuItem.setDisable(false);
+                            icon_fullSolution.setVisible(true);
+                            icon_partSolution.setVisible(true);
+                            stageNewGameController.close();
+                        });
+                        mazeDisplayer.redrawMaze();
+                        mazeDisplayer.redrawCharacter();
+
+                        break;
+                    case "Maze Load":
+
+                        MazeCharacter mazeCharacter = myViewModel.getLoadedCharacter();
+                        mazeDisplayer.setMaze(myViewModel.getMaze());
+                        //MainCharacter
+                        mazeDisplayer.setMainCharacterPosition(mazeCharacter.getCharacterRow() , mazeCharacter.getCharacterCol());
+                        mazeDisplayer.setMainCharacterDirection("front");
+                        mazeDisplayer.setMainCharacterName(mazeCharacter.getCharacterName());
+
+                        //Second Character
+                        mazeDisplayer.setSecondCharacterName(myViewModel.getSecondCharacterName());
+                        mazeDisplayer.setSecondCharacterPosition(myViewModel.getMainCharacterPositionRow(), myViewModel.getMainCharacterPositionColumn());
+                        mazeDisplayer.setSecondCharacterDirection(myViewModel.getMainCharacterDirection());
+
+                        //mazeDisplayer.setMazeSolutionArr(null);
+                        Platform.runLater(()->{
+                            CharacterColumn.set(myViewModel.getMainCharacterPositionColumn() + "");
+                            CharacterRow.set(myViewModel.getMainCharacterPositionRow() + "");
+                            label_mainCharacterRow.setText(myViewModel.getMainCharacterName()+"Row");
+                            label_mainCharacterCol.setText(myViewModel.getMainCharacterName()+"Col");
+                            lbl_statusBar.setText("Lets see you solve this!");
+                            solve_MenuItem.setDisable(false);
+                            save_MenuItem.setDisable(false);
+                            icon_fullSolution.setVisible(true);
+                            icon_partSolution.setVisible(true);
+                        });
+                        mazeDisplayer.redrawMaze();
+                        mazeDisplayer.redrawCharacter();
+                        break;
+                    case "Character":
+                        mazeDisplayer.setMainCharacterPosition(myViewModel.getMainCharacterPositionRow(), myViewModel.getMainCharacterPositionColumn());
+                        mazeDisplayer.setSecondCharacterPosition(myViewModel.getSecondCharacterPositionRow(), myViewModel.getSecondCharacterPositionColumn());
+                        mazeDisplayer.setMainCharacterDirection(myViewModel.getMainCharacterDirection());
+                        mazeDisplayer.setSecondCharacterDirection(myViewModel.getSecondCharacterDirection());
+                        //mazeDisplayer.setMazeSolutionArr(null);
+                        Platform.runLater(() -> {
+                            CharacterColumn.set(myViewModel.getMainCharacterPositionColumn() + "");
+                            CharacterRow.set(myViewModel.getMainCharacterPositionRow() + "");
+                            label_mainCharacterRow.setText(myViewModel.getMainCharacterName()+"Row");
+                            label_mainCharacterCol.setText(myViewModel.getMainCharacterName()+"Col");
+                            icon_fullSolution.setVisible(true);
+                            icon_partSolution.setVisible(true);
+                        });
+                        mazeDisplayer.redrawCancelSolution();
+                        mazeDisplayer.redrawCharacter();
+
+                        break;
+
+                    case "Solution":
+                        mazeDisplayer.setMazeSolutionArr(myViewModel.getSolution());
+                        Platform.runLater(() -> {
+                            lbl_statusBar.setText("Here's the solution");
+                            solve_MenuItem.setDisable(false);
+                            icon_fullSolution.setVisible(false);
+                            icon_partSolution.setVisible(false);
+                        });
+                        mazeDisplayer.redrawSolution();
+                        break;
+                }
+            }
+
+
+            if(myViewModel.isAtTheEnd()){
+                //TODO-The End: make a cool winning GIF/Video/Pic
+
+
+                Stage winningStage = new Stage();
+                VBox root = new VBox();
+                root.setAlignment(Pos.CENTER);
+
+                MediaPlayer player = new MediaPlayer(new Media(new File("Resources/Music/"+ myViewModel.getMainCharacterName()+"winVideo.mp4").toURI().toString()));
+                MediaView mediaView = new MediaView(player);
+
+                //mediaView.setFitWidth(500);
+                //mediaView.setFitHeight(500);
+                player.setOnEndOfMedia(new Runnable() {
+                    @Override
+                    public void run() {
+                        winningStage.close();
+                    }
+                });
+
+                Button skipBtn = new Button();
+                skipBtn.setText("Click to skip...");
+
+                skipBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        player.stop();
+                        winningStage.close();
+                    }
+                });
+
+
+                root.getChildren().add(mediaView);
+                root.getChildren().add(skipBtn);
+
+                Scene scene = new Scene(root, 600, 400);
+
+                winningStage.setScene(scene);
+
+
+
+                //Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                //alert.setContentText(String.format("Congratulations!!"));
+                Platform.runLater(() -> {
+                    save_MenuItem.setDisable(true);
+                    solve_MenuItem.setDisable(true);
+                    icon_fullSolution.setVisible(false);
+                    icon_partSolution.setVisible(false);
+                    lbl_statusBar.setText("Good Job! Try a different maze");
+                    //alert.showAndWait();
+                    player.play();
+                    winningStage.showAndWait();
+
+
+                    newMaze();
+                });
+
+            }
+            //mazeDisplayer.redraw();
+        }
+
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         //Set Binding for Properties
         lbl_characterRow.textProperty().bind(CharacterRow);
         lbl_characterColumn.textProperty().bind(CharacterColumn);
+        mazeScrollPane.setVisible(false);
         initImages();
     }
 
@@ -196,7 +372,7 @@ public class MyViewController implements IView, Observer, Initializable {
         file = new File("Resources/Icons/icon_partSolution.png");
         image = new Image(file.toURI().toString());
         icon_partSolution.setImage(image);
-        //setHint();
+        setHint();
 
         file = new File("Resources/Icons/icon_fullSolution.png");
         image = new Image(file.toURI().toString());
@@ -211,7 +387,6 @@ public class MyViewController implements IView, Observer, Initializable {
     }
 
     public void KeyPressed(KeyEvent keyEvent){
-        System.out.println("MyViewController: KeyPressed");
         if(!myViewModel.isAtTheEnd()){
             //TODO - DONE..
             // make it not able to move the character
@@ -226,13 +401,14 @@ public class MyViewController implements IView, Observer, Initializable {
     }
 
 
-    public void solveMaze(Event event){
+    public void solveMaze(){
         //TODO - DONE
-        // solve: check why it fails over 200
+        // solve: check why it fails over 20 0
         Platform.runLater(() ->{
             lbl_statusBar.setText("Computing solution, please wait.");
             solve_MenuItem.setDisable(true);
             icon_fullSolution.setVisible(false);
+            icon_partSolution.setVisible(false);
         });
 
         myViewModel.generateSolution();
@@ -242,6 +418,8 @@ public class MyViewController implements IView, Observer, Initializable {
 
     public void showAlert(String alertMessage) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setGraphic(null);
+        alert.setTitle("Error Alert");
         alert.setContentText(alertMessage);
         alert.show();
     }
@@ -251,6 +429,7 @@ public class MyViewController implements IView, Observer, Initializable {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 mazeDisplayer.redraw();
+
             }
         });
         scene.heightProperty().addListener(new ChangeListener<Number>() {
@@ -268,22 +447,20 @@ public class MyViewController implements IView, Observer, Initializable {
 
 
     public void exitCorrectly(){
-        System.out.println("Exit Correctly");
         Alert alert = new Alert(Alert.AlertType.NONE    );
-        ButtonType leaveButton = new ButtonType("Leave", ButtonBar.ButtonData.NO);
-        ButtonType stayButton = new ButtonType("Stay", ButtonBar.ButtonData.YES);
+        ButtonType leaveButton = new ButtonType("Leave", ButtonBar.ButtonData.YES);
+        ButtonType stayButton = new ButtonType("Stay", ButtonBar.ButtonData.NO);
         alert.getButtonTypes().setAll(stayButton,leaveButton);
         alert.setContentText("Are you sure you want to exit??");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == leaveButton){
-            System.out.println("LeaveButton was clicked");
-            // ... user chose OK
+            // ... user chose Leave
             // Close program
             myViewModel.closeModel();
             Platform.exit();
         } else {
             // ... user chose CANCEL or closed the dialog
-            System.out.println("StayButton was clicked");
+
             alert.close();
         }
 
@@ -291,7 +468,6 @@ public class MyViewController implements IView, Observer, Initializable {
 
 
     public void saveFile(ActionEvent event){
-        System.out.println("saveFile");
         int[] choose = {0};
         Alert alert = new Alert(Alert.AlertType.NONE);
         alert.setTitle("Save Maze");
@@ -319,6 +495,7 @@ public class MyViewController implements IView, Observer, Initializable {
         if(!filePath.exists())
             filePath.mkdir();
         fileChooser.setInitialDirectory(filePath);
+        fileChooser.setInitialFileName("myMaze");
 
         //Show save file dialog
         File file = fileChooser.showSaveDialog(new PopupWindow() {
@@ -404,7 +581,8 @@ public class MyViewController implements IView, Observer, Initializable {
 
     public void help()
     {
-        //TODO-Help: fill content and make sure it looks good
+        //TODO - DONE
+        // Help: fill content and make sure it looks good
         Stage helpStage = new Stage();
         helpStage.setAlwaysOnTop(true);
         helpStage.setResizable(false);
@@ -418,20 +596,22 @@ public class MyViewController implements IView, Observer, Initializable {
         }
         catch(IOException e)
         {
+            e.printStackTrace();
             showAlert("Exception!");
         }
         helpStage.setTitle("Help");
-        Scene scene = new Scene(root,500,550);
+        Scene scene = new Scene(root,520,495);
         scene.getStylesheets().add(getClass().getResource("viewStyle.css").toExternalForm());
         helpStage.setScene(scene);
-        helpStage.initModality(Modality.APPLICATION_MODAL);
+        helpStage.initModality(Modality.WINDOW_MODAL);
         helpStage.show();
     }
 
 
     public void About()
     {
-        //TODO-About: fill content and make sure it looks good
+        //TODO - DONE
+        // About: fill content and make sure it looks good
         Stage aboutStage = new Stage();
         aboutStage.setAlwaysOnTop(true);
         aboutStage.setResizable(false);
@@ -448,7 +628,7 @@ public class MyViewController implements IView, Observer, Initializable {
             showAlert("Exception!");
         }
         aboutStage.setTitle("About");
-        Scene scene = new Scene(root,700,400);
+        Scene scene = new Scene(root,600,400);
         scene.getStylesheets().add(getClass().getResource("ViewStyle.css").toExternalForm());
         aboutStage.setScene(scene);
         aboutStage.initModality(Modality.APPLICATION_MODAL);
@@ -473,11 +653,23 @@ public class MyViewController implements IView, Observer, Initializable {
         });
     }
 
+    public void setHint(){
+        icon_partSolution.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+
+                mazeDisplayer.setHint(true);
+                solveMaze();
+                event.consume();
+            }
+        });
+    }
+
     public void setFullSolution(){
         icon_fullSolution.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                solveMaze(event);
+                solveMaze();
                 event.consume();
             }
         });
@@ -495,30 +687,57 @@ public class MyViewController implements IView, Observer, Initializable {
 
 
     public void mouseDragged(MouseEvent mouseEvent){
-        System.out.println("mouseDragged");
+
         if (mazeDisplayer != null) {
-            int mouseX = (int) ((mouseEvent.getX()) / (mazeDisplayer.getWidth() / myViewModel.getMaze()[0].length));
-            int mouseY = (int) ((mouseEvent.getY()) / (mazeDisplayer.getHeight() / myViewModel.getMaze().length));
-            System.out.println("mouseX = " + mouseX);
-            System.out.println("mouseY = " + mouseY);
-            System.out.println("mouseEvent-X = " + mouseEvent.getX());
-            System.out.println("mouseEvent-Y = " + mouseEvent.getY());
-            System.out.println("mouseEvent-SceneX = " + mouseEvent.getSceneX());
-            System.out.println("mouseEvent-SceneY = " + mouseEvent.getSceneY() + "\n");
+            lbl_statusBar.setText("");
+            int maxSize = Math.max(myViewModel.getMaze()[0].length, myViewModel.getMaze().length);
+            double cellHeight = mazeDisplayer.getHeight() / maxSize;
+            double cellWidth = mazeDisplayer.getWidth() / maxSize;
+            double canvasHeight = mazeDisplayer.getHeight();
+            double canvasWidth = mazeDisplayer.getWidth();
+            int rowMazeSize = myViewModel.getMaze().length;
+            int colMazeSize = myViewModel.getMaze()[0].length;
+            double startRow = (canvasHeight / 2 - (cellHeight * rowMazeSize / 2)) / cellHeight;
+            double startCol = (canvasWidth / 2 -(cellWidth * colMazeSize / 2)) / cellWidth;
+            //double mouseX = 1 + (int) ((mouseEvent.getX() + startRow ) / (mazeDisplayer.getWidth()  / maxSize));
+            //double mouseY = 1 + (int) ((mouseEvent.getY() + startCol ) / (mazeDisplayer.getHeight() / maxSize));
+            double mouseX =(int) ((mouseEvent.getX()) / (mazeDisplayer.getWidth()  / maxSize) - startCol);
+            double mouseY =(int) ((mouseEvent.getY()) / (mazeDisplayer.getHeight() / maxSize) - startRow);
+            //System.out.println("MouseX = " + mouseX);
+            //System.out.println("MouseY = " + mouseY + "\n");
             if(!myViewModel.isAtTheEnd()) {
-                if (mouseY < myViewModel.getMainCharacterPositionRow()) {
+                if (mouseY < myViewModel.getMainCharacterPositionRow() && mouseX == myViewModel.getMainCharacterPositionColumn()) {
                     myViewModel.moveCharacter(KeyCode.UP);
                 }
-                if (mouseY > myViewModel.getMainCharacterPositionRow()) {
+                if (mouseY > myViewModel.getMainCharacterPositionRow() && mouseX == myViewModel.getMainCharacterPositionColumn()) {
                     myViewModel.moveCharacter(KeyCode.DOWN);
                 }
-                if (mouseX < myViewModel.getMainCharacterPositionColumn()) {
+                if (mouseX < myViewModel.getMainCharacterPositionColumn() && mouseY == myViewModel.getMainCharacterPositionRow()) {
                     myViewModel.moveCharacter(KeyCode.LEFT);
                 }
-                if (mouseX > myViewModel.getMainCharacterPositionColumn()) {
+                if (mouseX > myViewModel.getMainCharacterPositionColumn() && mouseY == myViewModel.getMainCharacterPositionRow()) {
                     myViewModel.moveCharacter(KeyCode.RIGHT);
                 }
             }
+        }
+    }
+
+    public void scrollInOut(ScrollEvent scrollEvent) {
+        try {
+            myViewModel.getMaze();//TODO change this
+            AnimatedZoomOperator zoomOperator = new AnimatedZoomOperator();
+            double zoomFactor;
+            if (scrollEvent.isControlDown()) {
+            zoomFactor = 1.5;
+            double deltaY = scrollEvent.getDeltaY();
+            if (deltaY < 0) {
+                zoomFactor = 1 / zoomFactor;
+            }
+                zoomOperator.zoom(mazeDisplayer, zoomFactor, scrollEvent.getSceneX(), scrollEvent.getSceneY());
+                scrollEvent.consume();
+            }
+        } catch (NullPointerException e) {
+            scrollEvent.consume();
         }
     }
 
