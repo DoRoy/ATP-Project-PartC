@@ -24,8 +24,7 @@ import java.util.function.UnaryOperator;
 
 public class NewGameController implements IView, Initializable {
 
-    ArrayList<String> mainCharacterList = new ArrayList( Arrays.asList( new String[]{"Crash_", "Ash_"}));
-    String[] secondCharacterList = {"Crash_Second_","Ash_Second_"};
+    ArrayList<String> mainCharacterList = new ArrayList( Arrays.asList( new String[]{"Crash_", "Ash_","Rick_","Simpsons_"}));
     String mainCharacter = "Crash_";
     String secondCharacter = "Crash_Second_";
     @FXML
