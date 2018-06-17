@@ -136,7 +136,7 @@
                     <HBox.margin>
                         <Insets bottom="5.0" left="10.0" right="5.0" top="5.0" />
                     </HBox.margin></ImageView>
-            <ImageView fx:id="icon_zoomImageView" fitHeight="60.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="icon_zoomImageView" fitHeight="70.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true">
                <HBox.margin>
                   <Insets bottom="5.0" left="10.0" right="5.0" top="5.0" />
                </HBox.margin>

@@ -1,19 +1,13 @@
 package View;
 
-import Server.Configurations;
 import ViewModel.MyViewModel;
-import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 import javafx.util.converter.IntegerStringConverter;
 
 
@@ -24,7 +18,7 @@ import java.util.function.UnaryOperator;
 
 public class NewGameController implements IView, Initializable {
 
-    ArrayList<String> mainCharacterList = new ArrayList( Arrays.asList( new String[]{"Crash_", "Ash_","Rick_","Simpsons_"}));
+    ArrayList<String> mainCharacterList = new ArrayList( Arrays.asList( new String[]{"Crash_", "Ash_","Rick_","Morty_","Simpsons_"}));
     String mainCharacter = "Crash_";
     String secondCharacter = "Crash_Second_";
     @FXML
@@ -64,6 +58,7 @@ public class NewGameController implements IView, Initializable {
         return null;
     };
 
+
     public void newGameKeyPressed(KeyEvent keyEvent){
         if(keyEvent.getCode() == KeyCode.ENTER)
             startGame();
@@ -84,7 +79,7 @@ public class NewGameController implements IView, Initializable {
             myViewModel.generateMaze(rows, cols);
             myViewModel.startSoundTrack(mainCharacter);
 
-            //myViewModel.setMultiPlayerMode(newGame_multiPlayer_checkBox.isSelected());
+            myViewModel.setMultiPlayerMode(newGame_multiPlayer_checkBox.isSelected());
 
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -97,8 +92,6 @@ public class NewGameController implements IView, Initializable {
         }
 
 
-
-        //stage.close();
 
     }
 

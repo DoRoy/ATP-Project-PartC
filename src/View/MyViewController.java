@@ -1,7 +1,6 @@
 package View;
 
 import Model.MazeCharacter;
-import Server.Configurations;
 import ViewModel.*;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -12,7 +11,6 @@ import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -107,23 +105,26 @@ public class MyViewController implements IView, Observer, Initializable {
 
                         //mazeDisplayer.setMazeSolutionArr(null);
                         Platform.runLater(()->{
-                            CharacterColumn.set(myViewModel.getMainCharacterPositionColumn() + "");
-                            CharacterRow.set(myViewModel.getMainCharacterPositionRow() + "");
-                            label_mainCharacterRow.setText(myViewModel.getMainCharacterName()+"Row");
-                            label_mainCharacterCol.setText(myViewModel.getMainCharacterName()+"Col");
+                        CharacterColumn.set(myViewModel.getMainCharacterPositionColumn() + "");
+                        CharacterRow.set(myViewModel.getMainCharacterPositionRow() + "");
+                        label_mainCharacterRow.setText(myViewModel.getMainCharacterName()+"Row");
+                        label_mainCharacterCol.setText(myViewModel.getMainCharacterName()+"Col");
                             lbl_statusBar.setText("Lets see you solve this!");
-                            save_MenuItem.setDisable(false);
-                            solve_MenuItem.setDisable(false);
-                            icon_fullSolution.setVisible(true);
-                            icon_partSolution.setVisible(true);
-                            stageNewGameController.close();
-                            resetZoom();
+                        save_MenuItem.setDisable(false);
+                        solve_MenuItem.setDisable(false);
+                        icon_fullSolution.setVisible(true);
+                        icon_partSolution.setVisible(true);
+                        stageNewGameController.close();
+
+                        resetZoom();
                         });
                         mazeDisplayer.redrawMaze();
                         mazeDisplayer.redrawCharacter();
 
+
                         break;
                     case "Maze Load":
+
 
                         MazeCharacter mazeCharacter = myViewModel.getLoadedCharacter();
                         mazeDisplayer.setMaze(myViewModel.getMaze());
@@ -139,16 +140,18 @@ public class MyViewController implements IView, Observer, Initializable {
 
                         //mazeDisplayer.setMazeSolutionArr(null);
                         Platform.runLater(()->{
-                            CharacterColumn.set(myViewModel.getMainCharacterPositionColumn() + "");
-                            CharacterRow.set(myViewModel.getMainCharacterPositionRow() + "");
-                            label_mainCharacterRow.setText(myViewModel.getMainCharacterName()+"Row");
-                            label_mainCharacterCol.setText(myViewModel.getMainCharacterName()+"Col");
-                            lbl_statusBar.setText("Lets see you solve this!");
-                            solve_MenuItem.setDisable(false);
-                            save_MenuItem.setDisable(false);
-                            icon_fullSolution.setVisible(true);
-                            icon_partSolution.setVisible(true);
-                            resetZoom();
+                        CharacterColumn.set(myViewModel.getMainCharacterPositionColumn() + "");
+                        CharacterRow.set(myViewModel.getMainCharacterPositionRow() + "");
+                        label_mainCharacterRow.setText(myViewModel.getMainCharacterName()+"Row");
+                        label_mainCharacterCol.setText(myViewModel.getMainCharacterName()+"Col");
+                        lbl_statusBar.setText("Lets see you solve this!");
+                        solve_MenuItem.setDisable(false);
+                        save_MenuItem.setDisable(false);
+                        icon_fullSolution.setVisible(true);
+                        icon_partSolution.setVisible(true);
+
+
+                        resetZoom();
                         });
                         mazeDisplayer.redrawMaze();
                         mazeDisplayer.redrawCharacter();
@@ -159,11 +162,11 @@ public class MyViewController implements IView, Observer, Initializable {
                         mazeDisplayer.setMainCharacterDirection(myViewModel.getMainCharacterDirection());
                         mazeDisplayer.setSecondCharacterDirection(myViewModel.getSecondCharacterDirection());
                         //mazeDisplayer.setMazeSolutionArr(null);
+
                         Platform.runLater(() -> {
                             CharacterColumn.set(myViewModel.getMainCharacterPositionColumn() + "");
                             CharacterRow.set(myViewModel.getMainCharacterPositionRow() + "");
-                            label_mainCharacterRow.setText(myViewModel.getMainCharacterName()+"Row");
-                            label_mainCharacterCol.setText(myViewModel.getMainCharacterName()+"Col");
+                            lbl_statusBar.setText("");
                             icon_fullSolution.setVisible(true);
                             icon_partSolution.setVisible(true);
                         });
@@ -187,7 +190,8 @@ public class MyViewController implements IView, Observer, Initializable {
 
 
             if(myViewModel.isAtTheEnd()){
-                //TODO-The End: make a cool winning GIF/Video/Pic
+                //TODO - DONE
+                // The End: make a cool winning GIF/Video/Pic
 
 
                 Stage winningStage = new Stage();
@@ -237,6 +241,7 @@ public class MyViewController implements IView, Observer, Initializable {
                     lbl_statusBar.setText("Good Job! Try a different maze");
                     //alert.showAndWait();
                     player.play();
+                    player.setMute(true);
                     winningStage.showAndWait();
 
 
@@ -244,7 +249,6 @@ public class MyViewController implements IView, Observer, Initializable {
                 });
 
             }
-            //mazeDisplayer.redraw();
         }
 
     }
@@ -306,9 +310,10 @@ public class MyViewController implements IView, Observer, Initializable {
         if(!myViewModel.isAtTheEnd()){
             //TODO - DONE..
             // make it not able to move the character
+            //TODO when you click something that isn't the controllers it wont make solution disapear
+
             myViewModel.moveCharacter(keyEvent.getCode());
-            mazeDisplayer.setMazeSolutionArr(null);
-            lbl_statusBar.setText("");
+
         }
         else{
             lbl_statusBar.setText("If you want to play again just generate a new maze!");
@@ -451,14 +456,14 @@ public class MyViewController implements IView, Observer, Initializable {
     }
 
     public void newMaze(){
-        System.out.println("New Maze");
+
         try{
             if(stageNewGameController == null) {
                 stageNewGameController = new Stage();
                 stageNewGameController.setTitle("New Maze Window");
                 FXMLLoader fxmlLoader = new FXMLLoader();
                 Parent root = fxmlLoader.load(getClass().getResource("NewGame.fxml").openStream());
-                Scene scene = new Scene(root, 600, 500);
+                Scene scene = new Scene(root, 650, 500);
                 scene.getStylesheets().add(getClass().getResource("ViewStyle.css").toExternalForm());
                 stageNewGameController.setScene(scene);
                 stageNewGameController.setResizable(false);
@@ -466,8 +471,10 @@ public class MyViewController implements IView, Observer, Initializable {
                 newGameController.setStage(stageNewGameController);
                 newGameController.setViewModel(myViewModel);
                 stageNewGameController.initModality(Modality.APPLICATION_MODAL);
+
             }
             stageNewGameController.show();
+
         }catch (Exception e){
 
         }
@@ -673,7 +680,6 @@ public class MyViewController implements IView, Observer, Initializable {
                                         new KeyFrame(Duration.millis(100), new KeyValue(mazeDisplayer.scaleXProperty(), 1)),
                                         new KeyFrame(Duration.millis(100), new KeyValue(mazeDisplayer.scaleYProperty(), 1)));
         timeLine.play();
-
 
     }
 

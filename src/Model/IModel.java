@@ -29,4 +29,7 @@ public interface IModel {
     void loadMaze(File file);
 
     MazeCharacter getLoadedCharacter();
+
+
+    void setMultiPlayerMode(boolean setMode);
 }
