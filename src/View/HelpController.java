@@ -16,11 +16,13 @@ public class HelpController implements Initializable {
     public javafx.scene.image.ImageView newMazeImage;
     public javafx.scene.image.ImageView getHintImage;
     public javafx.scene.image.ImageView solveImage;
+    public javafx.scene.image.ImageView resetZoomImage;
     public javafx.scene.control.Label soundLabel;
     public javafx.scene.control.Label newMazeLabel;
     public javafx.scene.control.Label getHintLabel;
     public javafx.scene.control.Label solveLabel;
     public javafx.scene.control.Label extraLabel;
+    public javafx.scene.control.Label resetZoomLabel;
 
 
     @Override
@@ -32,6 +34,7 @@ public class HelpController implements Initializable {
         getHintLabel.setWrapText(true);
         solveLabel.setWrapText(true);
         extraLabel.setWrapText(true);
+        resetZoomLabel.setWrapText(true);
 
         extraLabel.setText("\nHere are all the extras we added to the game:\n\n" +
                             "    - Background music & On/Off button.\n\n" +
@@ -95,20 +98,22 @@ public class HelpController implements Initializable {
                 "The Status Bar will help you understand what's going on in the game.");
 
 
-        soundLabel.setText("\n" +
-                "Sound On/Off:\n" +
-                "   App provides a suitable background song according\n to the chosen characters.");
+        soundLabel.setText("Sound On/Off:\n" +
+                            "   App provides a suitable background song according\n to the chosen characters.");
 
-        newMazeLabel.setText("\nNew Maze:\n" +
+        newMazeLabel.setText("New Maze:\n" +
                 "   Opens up another window where you can:\n" +
                 "       * Choose your character.\n" +
                 "       * Set the maze's size.");
 
-        getHintLabel.setText("\nGet Hint:\n" +
+        getHintLabel.setText("Get Hint:\n" +
                 "   Allows you to see part of the solution without seeing it all." );
 
-        solveLabel.setText("\nGet Solution:\n" +
+        solveLabel.setText("Get Solution:\n" +
                 "   Shows this maze solution on the board (until character moves).");
+
+        resetZoomLabel.setText("Reset Zoom:\n" +
+                                "   Allows you to reset the zoom.");
         initImages();
     }
 
@@ -135,6 +140,10 @@ public class HelpController implements Initializable {
         file = new File("Resources/Icons/icon_makeNewMaze.png");
         image = new Image(file.toURI().toString());
         newMazeImage.setImage(image);
+
+        file = new File("Resources/Icons/icon_resetZoom.png");
+        image = new Image(file.toURI().toString());
+        resetZoomImage.setImage(image);
 
 
     }

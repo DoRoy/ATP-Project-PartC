@@ -1,15 +1,16 @@
 package View;
 
 import Model.MazeCharacter;
-import Server.Configurations;
 import ViewModel.*;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -28,6 +29,7 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.stage.*;
+import javafx.util.Duration;
 
 import java.io.*;
 import java.net.URL;
@@ -66,6 +68,7 @@ public class MyViewController implements IView, Observer, Initializable {
     public javafx.scene.image.ImageView icon_partSolution;
     public javafx.scene.image.ImageView icon_fullSolution;
     public javafx.scene.image.ImageView icon_makeNewMaze;
+    public javafx.scene.image.ImageView icon_zoomImageView;
     private Stage stageNewGameController;
     public ScrollPane mazeScrollPane;
 
@@ -220,7 +223,9 @@ public class MyViewController implements IView, Observer, Initializable {
                             solve_MenuItem.setDisable(false);
                             icon_fullSolution.setVisible(true);
                             icon_partSolution.setVisible(true);
-                            stageNewGameController.close();
+                            if (stageNewGameController != null)
+                                stageNewGameController.close();
+                            resetZoom();
                         });
                         mazeDisplayer.redrawMaze();
                         mazeDisplayer.redrawCharacter();
@@ -251,6 +256,7 @@ public class MyViewController implements IView, Observer, Initializable {
                             save_MenuItem.setDisable(false);
                             icon_fullSolution.setVisible(true);
                             icon_partSolution.setVisible(true);
+                            resetZoom();
                         });
                         mazeDisplayer.redrawMaze();
                         mazeDisplayer.redrawCharacter();
@@ -296,7 +302,7 @@ public class MyViewController implements IView, Observer, Initializable {
                 VBox root = new VBox();
                 root.setAlignment(Pos.CENTER);
 
-                MediaPlayer player = new MediaPlayer(new Media(new File("Resources/Music/"+ myViewModel.getMainCharacterName()+"winVideo.mp4").toURI().toString()));
+                MediaPlayer player = new MediaPlayer(new Media(new File("Resources/Music/" + myViewModel.getMainCharacterName()+"winVideo.mp4").toURI().toString()));
                 MediaView mediaView = new MediaView(player);
 
                 //mediaView.setFitWidth(500);
@@ -339,6 +345,7 @@ public class MyViewController implements IView, Observer, Initializable {
                     lbl_statusBar.setText("Good Job! Try a different maze");
                     //alert.showAndWait();
                     player.play();
+                    player.setMute(true);
                     winningStage.showAndWait();
 
 
@@ -384,6 +391,25 @@ public class MyViewController implements IView, Observer, Initializable {
         icon_makeNewMaze.setImage(image);
         makeNewMaze();
 
+        //zoom button
+        file = new File("Resources/Icons/icon_resetZoom.png");
+        image = new Image(file.toURI().toString());
+        icon_zoomImageView.setImage(image);
+        icon_zoomImageView.setVisible(false);
+        setZoom();
+
+
+    }
+
+    private void setZoom() {
+        icon_zoomImageView.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+
+            @Override
+            public void handle(MouseEvent event) {
+                resetZoom();
+                event.consume();
+            }
+        });
     }
 
     public void KeyPressed(KeyEvent keyEvent){
@@ -441,7 +467,6 @@ public class MyViewController implements IView, Observer, Initializable {
     }
 
     public void exitButton(){
-        System.out.println("Exit button");
         exitCorrectly();
     }
 
@@ -543,7 +568,7 @@ public class MyViewController implements IView, Observer, Initializable {
                 stageNewGameController.setTitle("New Maze Window");
                 FXMLLoader fxmlLoader = new FXMLLoader();
                 Parent root = fxmlLoader.load(getClass().getResource("NewGame.fxml").openStream());
-                Scene scene = new Scene(root, 600, 500);
+                Scene scene = new Scene(root, 650, 500);
                 scene.getStylesheets().add(getClass().getResource("ViewStyle.css").toExternalForm());
                 stageNewGameController.setScene(scene);
                 stageNewGameController.setResizable(false);
@@ -722,23 +747,44 @@ public class MyViewController implements IView, Observer, Initializable {
         }
     }
 
+
+
     public void scrollInOut(ScrollEvent scrollEvent) {
+
         try {
             myViewModel.getMaze();//TODO change this
             AnimatedZoomOperator zoomOperator = new AnimatedZoomOperator();
             double zoomFactor;
             if (scrollEvent.isControlDown()) {
-            zoomFactor = 1.5;
-            double deltaY = scrollEvent.getDeltaY();
-            if (deltaY < 0) {
-                zoomFactor = 1 / zoomFactor;
-            }
-                zoomOperator.zoom(mazeDisplayer, zoomFactor, scrollEvent.getSceneX(), scrollEvent.getSceneY());
-                scrollEvent.consume();
+                icon_zoomImageView.setVisible(true);
+                zoomFactor = 1.5;
+                double deltaY = scrollEvent.getDeltaY();
+                if (deltaY < 0) {
+                    zoomFactor = 1 / zoomFactor;
+                }
+                    zoomOperator.zoom(mazeDisplayer, zoomFactor, scrollEvent.getSceneX(), scrollEvent.getSceneY());
+                    scrollEvent.consume();
             }
         } catch (NullPointerException e) {
             scrollEvent.consume();
         }
+    }
+
+    public void resetZoom(){
+        icon_zoomImageView.setVisible(false);
+        //setFitToHeight(true);
+        Timeline timeLine = new Timeline(60);
+        timeLine.getKeyFrames().clear();
+
+        //mazeScrollPane.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
+        //mazeDisplayer.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
+        timeLine.getKeyFrames().addAll( new KeyFrame(Duration.millis(100), new KeyValue(mazeDisplayer.translateXProperty(), 0)),
+                                        new KeyFrame(Duration.millis(100), new KeyValue(mazeDisplayer.translateYProperty(), 0)),
+                                        new KeyFrame(Duration.millis(100), new KeyValue(mazeDisplayer.scaleXProperty(), 1)),
+                                        new KeyFrame(Duration.millis(100), new KeyValue(mazeDisplayer.scaleYProperty(), 1)));
+        timeLine.play();
+
+
     }
 
 

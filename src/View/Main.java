@@ -38,6 +38,8 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         SetStageCloseEvent(primaryStage, myViewController);
         primaryStage.show();
+        myViewModel.generateMaze(10,10);
+
 
         //Rise Servers
 

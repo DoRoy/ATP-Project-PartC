@@ -17,7 +17,8 @@ public class MyViewModel extends Observable implements Observer {
     private MediaPlayer gameSoundTrack;
     private boolean isPlayed = true;
     private MazeCharacter mainCharacter = new MazeCharacter("Crash_",0,0);
-    private MazeCharacter secondCharacter = new MazeCharacter("Mask_",0,0);
+    private MazeCharacter secondCharacter = new MazeCharacter("Crash_Second_",0,0);
+
 
     public MyViewModel(IModel model) {
         this.model = model;
@@ -164,10 +165,9 @@ public class MyViewModel extends Observable implements Observer {
         return model.getLoadedCharacter();
     }
 
-
-    //public void setMultiPlayerMode(boolean setMode){
-     //   MyModel.setMultiPlayerMode(setMode);
-    //}
+    public void setMultiPlayerMode(boolean setMode){
+        model.setMultiPlayerMode(setMode);
+    }
 
 
 

@@ -136,6 +136,11 @@
                     <HBox.margin>
                         <Insets bottom="5.0" left="10.0" right="5.0" top="5.0" />
                     </HBox.margin></ImageView>
+            <ImageView fx:id="icon_zoomImageView" fitHeight="70.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true">
+               <HBox.margin>
+                  <Insets bottom="5.0" left="10.0" right="5.0" top="5.0" />
+               </HBox.margin>
+            </ImageView>
 
 
 
@@ -145,7 +150,7 @@
         </VBox>
     </top>
     <center>
-        <Pane  layoutX="80.0" BorderPane.alignment="CENTER">
+        <Pane layoutX="80.0" BorderPane.alignment="CENTER">
             <children>
             <ScrollPane fx:id="mazeScrollPane">
                <content>

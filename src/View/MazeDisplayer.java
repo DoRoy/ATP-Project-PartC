@@ -13,7 +13,7 @@ import java.io.FileNotFoundException;
 public class MazeDisplayer extends Canvas {
 
     private MazeCharacter mainCharacter = new MazeCharacter("Crash_",0,0);;
-    private MazeCharacter secondCharacter = new MazeCharacter("Mask_",0,0);;
+    private MazeCharacter secondCharacter = new MazeCharacter("Crash_Second_",0,0);;
     private char[][] mazeCharArr;
     private int[][] mazeSolutionArr;
     private int goalPositionRow;
@@ -23,6 +23,8 @@ public class MazeDisplayer extends Canvas {
     private boolean hint;
     private int oldSecondCharacterRow;
     private int oldSecondCharacterCol;
+    private int oldMainCharacterRow;
+    private int oldMainCharacterCol;
 
 
 
@@ -71,6 +73,9 @@ public class MazeDisplayer extends Canvas {
     }
 
     public void setMainCharacterPosition(int row, int column) {
+        oldMainCharacterRow = mainCharacter.getCharacterRow();
+        oldMainCharacterCol = mainCharacter.getCharacterCol();
+
         mainCharacter.setCharacterRow(row);
         mainCharacter.setCharacterCol(column);
     }
@@ -189,7 +194,11 @@ public class MazeDisplayer extends Canvas {
             double startCol = (canvasWidth / 2 - (cellWidth * colMazeSize / 2)) / cellWidth;
             hint = false;
             GraphicsContext graphicsContext2D = getGraphicsContext2D();
+            graphicsContext2D.drawImage(backGroundImage, (startCol + oldMainCharacterCol) * cellWidth, (startRow + oldMainCharacterRow) * cellHeight, cellWidth, cellHeight);
             graphicsContext2D.drawImage(backGroundImage, (startCol + oldSecondCharacterCol) * cellWidth, (startRow + oldSecondCharacterRow) * cellHeight, cellWidth, cellHeight);
+
+
+
             Image mainCharacterImage = new Image(new FileInputStream("Resources/Characters/" + mainCharacterName + mainCharacter.getCharacterDirection() + ".png"));
             graphicsContext2D.drawImage(backGroundImage, (startCol + getMainCharacterColumn()) * cellWidth, (startRow + getMainCharacterRow()) * cellHeight, cellWidth, cellHeight);
             graphicsContext2D.drawImage(mainCharacterImage, (startCol + getMainCharacterColumn()) * cellWidth, (startRow + getMainCharacterRow()) * cellHeight, cellWidth, cellHeight);
@@ -240,8 +249,14 @@ public class MazeDisplayer extends Canvas {
     public void redrawSolution(){
         try{
             String mainCharacterName = mainCharacter.getCharacterName();
-            Image solutionImage = new Image(new FileInputStream("Resources/Images/" + mainCharacterName + "showSolution.png"));
-            drawSolutionGeneric(solutionImage);
+            if (mainCharacterName == "Morty_"){
+                Image solutionImage = new Image(new FileInputStream("Resources/Images/" + "Rick_" + "showSolution.png"));
+                drawSolutionGeneric(solutionImage);
+            }else{
+                Image solutionImage = new Image(new FileInputStream("Resources/Images/" + mainCharacterName + "showSolution.png"));
+                drawSolutionGeneric(solutionImage);
+            }
+
         }catch (FileNotFoundException e) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setContentText(String.format("Image doesn't exist: %s", e.getMessage()));
