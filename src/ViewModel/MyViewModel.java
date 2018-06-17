@@ -162,7 +162,8 @@ public class MyViewModel extends Observable implements Observer {
     }
 
     public MazeCharacter getLoadedCharacter() {
-        return model.getLoadedCharacter();
+        mainCharacter = model.getLoadedCharacter();
+        return mainCharacter;
     }
 
     public void setMultiPlayerMode(boolean setMode){

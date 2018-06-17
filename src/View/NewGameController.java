@@ -30,6 +30,8 @@ public class NewGameController implements IView, Initializable {
     public Button newGame_Button;
     public CheckBox newGame_multiPlayer_checkBox;
 
+    public Label pleaseWait_lbl;
+
     private  MyViewModel myViewModel;
     private Stage stage;
 
@@ -64,6 +66,26 @@ public class NewGameController implements IView, Initializable {
         keyEvent.consume();
     }
 
+    public void enableButtons(){
+        newGame_mainCharacter_nextBtn.setDisable(false);
+        newGame_mainCharacter_prevBtn.setDisable(false);
+        newGame_Button.setDisable(false);
+        newGame_colsInput.setDisable(false);
+        newGame_rowsInput.setDisable(false);
+        newGame_multiPlayer_checkBox.setDisable(false);
+        pleaseWait_lbl.setVisible(false);
+    }
+
+    private void disableButtons(){
+        newGame_mainCharacter_nextBtn.setDisable(true);
+        newGame_mainCharacter_prevBtn.setDisable(true);
+        newGame_Button.setDisable(true);
+        newGame_colsInput.setDisable(true);
+        newGame_rowsInput.setDisable(true);
+        newGame_multiPlayer_checkBox.setDisable(true);
+        pleaseWait_lbl.setVisible(true);
+    }
+
     public void startGame(){
         int rows = 0;
         int cols = 0;
@@ -75,9 +97,9 @@ public class NewGameController implements IView, Initializable {
                 throw new Exception();
             myViewModel.setMainCharacterName(mainCharacter);
             myViewModel.setSecondCharacterName(secondCharacter);
+            disableButtons();
             myViewModel.generateMaze(rows, cols);
             myViewModel.startSoundTrack(mainCharacter);
-
             myViewModel.setMultiPlayerMode(newGame_multiPlayer_checkBox.isSelected());
 
         } catch (Exception e) {

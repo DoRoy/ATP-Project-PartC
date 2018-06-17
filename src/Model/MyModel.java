@@ -90,7 +90,8 @@ public class MyModel extends Observable implements IModel {
                     }
                 }
             });
-            threadPool.execute(() ->{
+            //threadPool.execute(() ->{
+            Thread t = new Thread(()->{
                 clientMazeGenerator.communicateWithServer();
                 int mazeRow = maze.getStartPosition().getRowIndex();
                 int mazeCol = maze.getStartPosition().getColumnIndex();
@@ -102,6 +103,8 @@ public class MyModel extends Observable implements IModel {
                 setChanged();
                 notifyObservers("Maze");
             });
+            t.start();
+            //});
             //clientMazeGenerator.communicateWithServer();
         } catch (UnknownHostException e) {
             e.printStackTrace();
@@ -113,6 +116,7 @@ public class MyModel extends Observable implements IModel {
     @Override
     public void moveCharacter(KeyCode movement) {
         mazeSolutionArr = null;
+        boolean legitKey = false;
         int mainCharacterPositionRow = mainCharacter.getCharacterRow();
         int mainCharacterPositionCol = mainCharacter.getCharacterCol();
         int secondCharacterPositionRow = secondCharacter.getCharacterRow();
@@ -121,6 +125,7 @@ public class MyModel extends Observable implements IModel {
             case UP:
             case W:
             case NUMPAD8:
+                legitKey = true;
                 mainCharacter.setCharacterDirection("back");
                 if(!multiPlayerMode)
                     secondCharacter.setCharacterDirection(mainCharacter.getCharacterDirection());
@@ -136,6 +141,7 @@ public class MyModel extends Observable implements IModel {
             case DOWN:
             case X:
             case NUMPAD2:
+                legitKey = true;
                 mainCharacter.setCharacterDirection("front");
                 if(!multiPlayerMode)
                     secondCharacter.setCharacterDirection(mainCharacter.getCharacterDirection());
@@ -150,6 +156,7 @@ public class MyModel extends Observable implements IModel {
             case LEFT:
             case A:
             case NUMPAD4:
+                legitKey = true;
                 mainCharacter.setCharacterDirection("left");
                 if(!multiPlayerMode)
                     secondCharacter.setCharacterDirection(mainCharacter.getCharacterDirection());
@@ -164,6 +171,7 @@ public class MyModel extends Observable implements IModel {
             case RIGHT:
             case D:
             case NUMPAD6:
+                legitKey = true;
                 mainCharacter.setCharacterDirection("right");
                 if(!multiPlayerMode)
                     secondCharacter.setCharacterDirection(mainCharacter.getCharacterDirection());
@@ -177,6 +185,7 @@ public class MyModel extends Observable implements IModel {
                 break;
             case Q:
             case NUMPAD7:
+                legitKey = true;
                 mainCharacter.setCharacterDirection("left");
                 if(!multiPlayerMode)
                     secondCharacter.setCharacterDirection(mainCharacter.getCharacterDirection());
@@ -191,6 +200,7 @@ public class MyModel extends Observable implements IModel {
                 break;
             case E:
             case NUMPAD9:
+                legitKey = true;
                 mainCharacter.setCharacterDirection("right");
                 if(!multiPlayerMode)
                     secondCharacter.setCharacterDirection(mainCharacter.getCharacterDirection());
@@ -205,6 +215,7 @@ public class MyModel extends Observable implements IModel {
                 break;
             case Z:
             case NUMPAD1:
+                legitKey = true;
                 mainCharacter.setCharacterDirection("left");
                 if(!multiPlayerMode)
                     secondCharacter.setCharacterDirection(mainCharacter.getCharacterDirection());
@@ -219,6 +230,7 @@ public class MyModel extends Observable implements IModel {
                 break;
             case C:
             case NUMPAD3:
+                legitKey = true;
                 mainCharacter.setCharacterDirection("right");
                 if(!multiPlayerMode)
                     secondCharacter.setCharacterDirection(mainCharacter.getCharacterDirection());
@@ -234,6 +246,7 @@ public class MyModel extends Observable implements IModel {
 
             case H:
                 if(multiPlayerMode){
+                    legitKey = true;
                     secondCharacter.setCharacterDirection("left");
                     if(isNotWall(secondCharacterPositionRow, secondCharacterPositionCol - 1)){
                         secondCharacter.setCharacterRow(secondCharacterPositionRow);
@@ -244,6 +257,7 @@ public class MyModel extends Observable implements IModel {
 
             case J:
                 if(multiPlayerMode){
+                    legitKey = true;
                     secondCharacter.setCharacterDirection("front");
                     if(isNotWall(secondCharacterPositionRow + 1, secondCharacterPositionCol)){
                         secondCharacter.setCharacterRow(secondCharacterPositionRow + 1);
@@ -254,6 +268,7 @@ public class MyModel extends Observable implements IModel {
 
             case U:
                 if(multiPlayerMode){
+                    legitKey = true;
                     secondCharacter.setCharacterDirection("back");
                     if(isNotWall(secondCharacterPositionRow - 1, secondCharacterPositionCol)){
                         secondCharacter.setCharacterRow(secondCharacterPositionRow - 1);
@@ -264,6 +279,7 @@ public class MyModel extends Observable implements IModel {
 
             case K:
                 if(multiPlayerMode){
+                    legitKey = true;
                     secondCharacter.setCharacterDirection("right");
                     if(isNotWall(secondCharacterPositionRow , secondCharacterPositionCol + 1)){
                         secondCharacter.setCharacterRow(secondCharacterPositionRow );
@@ -273,6 +289,7 @@ public class MyModel extends Observable implements IModel {
                 break;
             default:
                 break;
+
         }
 
         if(maze.getCharAt(mainCharacter.getCharacterRow(), mainCharacter.getCharacterCol()) == 'E')
@@ -280,8 +297,10 @@ public class MyModel extends Observable implements IModel {
         if(maze.getCharAt(secondCharacter.getCharacterRow(), secondCharacter.getCharacterCol()) == 'E')
             isAtTheEnd = true;
 
-        setChanged();
-        notifyObservers("Character");
+        if(legitKey) {
+            setChanged();
+            notifyObservers("Character");
+        }
 
     }
 
@@ -306,12 +325,15 @@ public class MyModel extends Observable implements IModel {
                 }
 
             });
-            threadPool.execute(()->{
+            //threadPool.execute(()->{
+            Thread t = new Thread(() -> {
                 clientSolveMaze.communicateWithServer();
                 mazeSolutionArr = mazeSolution.getSolution();
                 setChanged();
                 notifyObservers("Solution");
             });
+            t.start();
+            //});
             //clientSolveMaze.communicateWithServer();
         }catch (Exception e){
             e.printStackTrace();
@@ -436,6 +458,7 @@ public class MyModel extends Observable implements IModel {
                 mainCharacter = loadedMazeDisplayState.getMazeCharacter();
                 //secondCharacter = loadedMazeDisplayState.getMazeCharacter();
                 //secondCharacter.setCharacterName(secondCharacter.getCharacterName() + "Second_");
+                isAtTheEnd = false;
                 setChanged();
                 notifyObservers("Maze Load");
             }
@@ -456,22 +479,6 @@ public class MyModel extends Observable implements IModel {
         multiPlayerMode = setMode;
     }
 
-    /*
 
-    public void setMainCharacterName(String name) {
-        mainCharacterName = name;
-    }
-
-    public void setSecondCharacterName(String name) {
-        secondCharacterName = name;
-    }
-
-    public String getMainCharacterName(){
-        return mainCharacterName;
-    }
-
-    public String getSecondCharacterName(){
-        return secondCharacterName;
-    }*/
 
 }
