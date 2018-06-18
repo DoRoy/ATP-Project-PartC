@@ -162,8 +162,7 @@ public class MyViewController implements IView, Observer, Initializable {
                         Platform.runLater(() -> {
                             CharacterColumn.set(myViewModel.getMainCharacterPositionColumn() + "");
                             CharacterRow.set(myViewModel.getMainCharacterPositionRow() + "");
-                            label_mainCharacterRow.setText(myViewModel.getMainCharacterName()+"Row");
-                            label_mainCharacterCol.setText(myViewModel.getMainCharacterName()+"Col");
+                            lbl_statusBar.setText("");
                             icon_fullSolution.setVisible(true);
                             icon_partSolution.setVisible(true);
                         });
@@ -414,7 +413,7 @@ public class MyViewController implements IView, Observer, Initializable {
         if(!filePath.exists())
             filePath.mkdir();
         fileChooser.setInitialDirectory(filePath);
-        fileChooser.setInitialFileName("myMaze");
+        fileChooser.setInitialFileName("myMaze_" + myViewModel.getMainCharacterName());
 
         //Show save file dialog
         File file = fileChooser.showSaveDialog(new PopupWindow() {

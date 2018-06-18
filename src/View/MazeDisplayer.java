@@ -33,16 +33,19 @@ public class MazeDisplayer extends Canvas {
     private Image backGroundImage;
     private Image wallImage;
 
+    private  final String resourcesImages = (MazeDisplayer.class.getResource("/Images/").toExternalForm()).substring(5);
+    private  final String resourcesCharacters = (MazeDisplayer.class.getResource("/Characters/").toExternalForm()).substring(5);
+
 
     private void setImages(){
         String mainCharacterName = mainCharacter.getCharacterName();
         try {
-            solutionImage = new Image(new FileInputStream("Resources/Images/" + mainCharacterName + "showSolution.png"));
-            secondCharacterImage = new Image(new FileInputStream("Resources/Characters/" + mainCharacterName + "Second_" + secondCharacter.getCharacterDirection() + ".png"));
-            mainCharacterImage = new Image(new FileInputStream("Resources/Characters/" + mainCharacterName + mainCharacter.getCharacterDirection() + ".png"));
-            goalImage = new Image(new FileInputStream("Resources/Characters/" + mainCharacterName + "goal.png"));
-            wallImage = new Image(new FileInputStream("Resources/Images/" + mainCharacterName + "wall.png"));
-            backGroundImage = new Image(new FileInputStream("Resources/Images/" + mainCharacterName + "backGround.png"));
+            solutionImage = new Image(new FileInputStream(resourcesImages + mainCharacterName + "showSolution.png"));
+            secondCharacterImage = new Image(new FileInputStream(resourcesCharacters + mainCharacterName + "Second_" + secondCharacter.getCharacterDirection() + ".png"));
+            mainCharacterImage = new Image(new FileInputStream(resourcesCharacters + mainCharacterName + mainCharacter.getCharacterDirection() + ".png"));
+            goalImage = new Image(new FileInputStream(resourcesCharacters + mainCharacterName + "goal.png"));
+            wallImage = new Image(new FileInputStream(resourcesImages + mainCharacterName + "wall.png"));
+            backGroundImage = new Image(new FileInputStream(resourcesImages + "/Images/" + mainCharacterName + "backGround.png"));
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -51,8 +54,8 @@ public class MazeDisplayer extends Canvas {
     private void setCharactersImage(){
         String mainCharacterName = mainCharacter.getCharacterName();
         try {
-            secondCharacterImage = new Image(new FileInputStream("Resources/Characters/" + mainCharacterName + "Second_" + secondCharacter.getCharacterDirection() + ".png"));
-            mainCharacterImage = new Image(new FileInputStream("Resources/Characters/" + mainCharacterName + mainCharacter.getCharacterDirection() + ".png"));
+            secondCharacterImage = new Image(new FileInputStream(resourcesCharacters + "/Characters/" + mainCharacterName + "Second_" + secondCharacter.getCharacterDirection() + ".png"));
+            mainCharacterImage = new Image(new FileInputStream(resourcesCharacters + "/Characters/" + mainCharacterName + mainCharacter.getCharacterDirection() + ".png"));
         }catch(Exception e){
             e.printStackTrace();
         }
